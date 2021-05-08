@@ -47,7 +47,7 @@ x = increment(2);     // 3
 
 ### Argument Forwarding
 With the forward operator (`->`), functions snap together like Legos:
-```si
+```
 add = (a: number, b: number) => {
   return a + b;
 };
@@ -148,6 +148,18 @@ fn = () => {
 
 ### Modules
 
+#### sindarin.json example
+```json
+{
+  "name": "my-package-name",
+  "version": "1.0.0",
+  "dependencies": {
+    "other-library": "https://github.com/my-user/repo-name",
+    "relative-alias": "./source/example-dir"
+  }
+}
+```
+
 #### Imports
 
 Standard functions are imported:
@@ -160,15 +172,19 @@ All standard functions can also be imported with `*`:
 import *;
 ```
 
-External libraries can be imported with `from`:
+External and relative libraries can be imported with `from`:
 ```
-from "my-library" import { thing };
-from "other-library" import *;
+from "./relative/path" import *;
+from "other-library" import { thing };
+```
+Or import directly:
+```
+from "https://github.com/example/repo" import { otherThing };
 ```
 Imports can also be deeply nested:
 ```
 import { console.log };
-from "my-library" import { thing.run };
+from "other-library" import { thing.run };
 
 log();
 run();
