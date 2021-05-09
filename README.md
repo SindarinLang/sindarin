@@ -30,6 +30,7 @@
 - Type-safe
 - Garbage-collected
 - Multi-threaded
+- Copy-on-write
 
 <h2 id="blow-my-mind-in-30-seconds"><div align="right"><a href="#sindarin">🔝</a></div>"Blow my mind in 30 seconds"</h2>
 

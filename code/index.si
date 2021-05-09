@@ -1,0 +1,22 @@
+/*
+import *;
+from "sindarin" import *;
+import { a.b };
+from "sindarin" import { a, a.b };
+export *;
+from "sindarin" export *;
+export { a, a.b };
+from "sindarin" export { a, a.b };
+*/
+
+a = 1;
+a = true;
+a = false;
+a = infinity;
+a = "testing";
+a = undefined;
+
+/*
+a = [1, 2];
+a = [a, true, "ok"];
+*/
