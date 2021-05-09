@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "/usr/local/include/node"
+            ]
+        }
+    ],
+    "version": 4
+}

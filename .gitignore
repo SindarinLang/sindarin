@@ -1,3 +1,5 @@
+addons/addon.node
 build
 lib
+node_modules
 *.txt

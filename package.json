@@ -1,0 +1,46 @@
+{
+  "name": "sindarin",
+  "version": "0.0.1",
+  "description": "An elegant language, for a more civilized age.",
+  "repository": "https://github.com/bconnorwhite/sindarin.git",
+  "private": false,
+  "license": "MIT",
+  "author": {
+    "name": "Connor White",
+    "email": "connor.bcw@gmail.com",
+    "url": "https://connorwhite.org"
+  },
+  "keywords": [],
+  "files": [
+    "addons",
+    "build"
+  ],
+  "main": "./build/index.js",
+  "gypfile": true,
+  "scripts": {
+    "build": "bob build",
+    "build-cpp": "node-gyp configure && node-gyp build && cp build/Release/addon.node addons",
+    "compile": "node ./build/index.js"
+  },
+  "dependencies": {
+    "file-exists-safe": "^1.1.0",
+    "node-addon-api": "^3.1.0",
+    "read-dir-safe": "^1.0.1",
+    "read-file-safe": "^1.0.10"
+  },
+  "devDependencies": {
+    "@bconnorwhite/bob": "^2.9.4",
+    "node-gyp": "^8.0.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-bob"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "bob lint commit"
+    }
+  },
+  "npmpackagejsonlint": {
+    "extends": "npm-package-json-lint-config-bob"
+  }
+}
