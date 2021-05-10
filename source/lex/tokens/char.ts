@@ -1,6 +1,10 @@
 
 type Letter = number | string;
 
+export function isCapitalized(word: string) {
+  return word.charAt(0).toUpperCase() === word.charAt(0);
+}
+
 function toCharCode(letter: string) {
   return letter.charCodeAt(0);
 }

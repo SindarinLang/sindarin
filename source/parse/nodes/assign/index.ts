@@ -1,4 +1,4 @@
-import { Token, Tokens } from "../../../lex";
+import { Token } from "../../../lex";
 import { ParseResult, ASTNode } from "../..";
 import { ValueNode, parseValue } from "./value";
 
@@ -16,8 +16,9 @@ interface TypeNode extends ASTNode {
 }
 
 export function parseAssign(tokens: Token[]): ParseResult<AssignNode> {
-  // Ignore types assume `identifier =`
-  // value = parseValue(tokens.slice(2))
+  // TODO: parse multiple identifiers, ex: a, b =
+  // TODO: parse destructured identifiers: ex: { a, b } = and [a, b] =
+  // TODO: parse types
   const result = parseValue(tokens.slice(2));
   return {
     tokens: result.tokens,

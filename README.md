@@ -154,6 +154,7 @@ fn = () => {
 {
   "name": "my-package-name",
   "version": "1.0.0",
+  "main": "source/index.si",
   "dependencies": {
     "other-library": "https://github.com/my-user/repo-name",
     "relative-alias": "./source/example-dir"
@@ -582,5 +583,12 @@ log("Hi");
 
 <h2 id="development-setup"><div align="right"><a href="#sindarin">🔝</a></div>Development Setup</h2>
 
-Download llvm, and extract to `./lib/llvm`:  
-https://releases.llvm.org/download.html#12.0.0
+### Install on macOS:
+```
+brew install cmake llvm
+```
+
+### Install on Ubuntu:
+```
+sudo apt-get install cmake llvm-11
+```

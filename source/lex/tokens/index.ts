@@ -1,4 +1,4 @@
-import { isQuote, isAlpha, isNotDecimal, isNotAlphaNumeric, isNewline, isStarSlash, isSpace, isDigit } from "./char";
+import { isQuote, isAlpha, isNotDecimal, isNotAlphaNumeric, isNewline, isStarSlash, isSpace, isDigit, isCapitalized } from "./char";
 import { search } from "./search";
 
 // eslint-disable-next-line no-shadow
@@ -9,6 +9,7 @@ export enum Tokens {
   return,
   export,
   identifier,
+  type,
   true,
   false,
   undefined,
@@ -24,11 +25,11 @@ export enum Tokens {
   arrow,
   forward,
   backward,
-  destructure,
+  destruct,
   semi,
   add,
   comma,
-  minus,
+  subtract,
   multiply,
   divide,
   lt,
@@ -80,7 +81,7 @@ const identifiers: TokenMap = {
 
 const triples: TokenMap = {
   "===": Tokens.equals,
-  "...": Tokens.destructure
+  "...": Tokens.destruct
 };
 
 const doubles: TokenMap = {
@@ -98,7 +99,7 @@ const singles: TokenMap = {
   "+": Tokens.add,
   ";": Tokens.semi,
   ",": Tokens.comma,
-  "-": Tokens.minus,
+  "-": Tokens.subtract,
   "<": Tokens.lt,
   ">": Tokens.gt,
   "=": Tokens.assign,
@@ -134,7 +135,9 @@ export function getToken(file: string): ReturnValue {
     return search(file.substring(1), isQuote, Tokens.string, true);
   } else if(isAlpha(letter)) {
     return search(file, isNotAlphaNumeric, (value: string) => {
-      return identifiers[value] ?? Tokens.identifier;
+      return identifiers[value] ?? (
+        isCapitalized(value) ? Tokens.type : Tokens.identifier
+      );
     });
   } else if(isDigit(letter)) {
     return search(file, isNotDecimal, Tokens.number);
