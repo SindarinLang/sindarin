@@ -1,6 +1,14 @@
-<h1 id="sindarin"><div align="right">🕊</div><i>Sindarin ~</i></h1>
+<div id="sindarin" align="center">
+  <h1 align="center">
+    <div>🕊</div><i>Sindarin ~</i>
+  </h1>
+  <h6><a href="https://www.youtube.com/watch?v=vQA5aLctA0I"><i>"An elegant language, for a more civilized age."</i></a></h6>
+  <br />
+</div>
 
-> _["An elegant language, for a more civilized age."](https://www.youtube.com/watch?v=vQA5aLctA0I)_
+<h2 id="installation"><div align="right"><a href="#sindarin">🔝</a></div><i>Installation</i></h2>
+
+> Coming Soon™️
 
 <h2 id="contents"><div align="right"><a href="#sindarin">🔝</a></div><i>Contents</i></h2>
 
