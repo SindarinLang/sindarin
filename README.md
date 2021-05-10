@@ -2,7 +2,7 @@
 
 > _["An elegant language, for a more civilized age."](https://www.youtube.com/watch?v=vQA5aLctA0I)_
 
-<h2 id="contents"><div align="right"><a href="#sindarin">🔝</a></div>Contents</h2>
+<h2 id="contents"><div align="right"><a href="#sindarin">🔝</a></div><i>Contents</i></h2>
 
 - [The High Level](#the-high-level)
 - ["Blow my mind in 30 seconds"](#blow-my-mind-in-30-seconds)  
@@ -23,7 +23,7 @@
 - [Input / Output](#input-output)
 - [Development Setup](#development-setup)  
 
-<h2 id="the-high-level"><div align="right"><a href="#sindarin">🔝</a></div>The High Level</h2>
+<h2 id="the-high-level"><div align="right"><a href="#sindarin">🔝</a></div><i>The High Level</i></h2>
 
 - Functional
 - Compiled
@@ -32,9 +32,9 @@
 - Multi-threaded
 - Copy-on-write
 
-<h2 id="blow-my-mind-in-30-seconds"><div align="right"><a href="#sindarin">🔝</a></div>"Blow my mind in 30 seconds"</h2>
+<h2 id="blow-my-mind-in-30-seconds"><div align="right"><a href="#sindarin">🔝</a></div><i>"Blow my mind in 30 seconds"</i></h2>
 
-### Function Baking (currying, but better)
+### _Function Baking (currying, but better)_
 Commas leave some arguments unspecified, while baking others into a new function:
 ```
 add = (a: number, b: number) => {
@@ -46,7 +46,7 @@ increment = add(1,);  // (b: number) => number;
 x = increment(2);     // 3
 ```
 
-### Argument Forwarding
+### _Argument Forwarding_
 With the forward operator (`->`), functions snap together like Legos:
 ```
 add = (a: number, b: number) => {
@@ -74,7 +74,7 @@ z = if(x < y, 1)
 
 ```
 
-### Multi-Return
+### _Multi-Return_
 Functions can also return multiple values:
 ```si
 fetch = (url: string) => {
@@ -103,7 +103,7 @@ fetch("...")
   ->handleResult;
 ```
 
-### Naked Functions
+### _Naked Functions_
 Functions without argments don't require `() =>`, and are immediately called:
 ```
 myNum = {
@@ -125,9 +125,9 @@ a = if(1 < 2, {
 // a = 5
 ```
 
-<h2 id="syntax"><div align="right"><a href="#sindarin">🔝</a></div>Syntax</h2>
+<h2 id="syntax"><div align="right"><a href="#sindarin">🔝</a></div><i>Syntax</i></h2>
 
-### Comments
+### _Comments_
 ```
 // Single line comment
 
@@ -137,7 +137,7 @@ a = if(1 < 2, {
 * Comment
 */
 ```
-### Semi-colons
+### _Semi-colons_
 Semi-colons are required at the end of statements:
 ```
 x = 5;
@@ -147,9 +147,9 @@ fn = () => {
 };
 ```
 
-### Modules
+### _Modules_
 
-#### sindarin.json example
+#### _Example sindarin.json:_
 ```json
 {
   "name": "my-package-name",
@@ -162,7 +162,7 @@ fn = () => {
 }
 ```
 
-#### Imports
+#### _Imports_
 
 Standard functions are imported:
 ```
@@ -192,7 +192,7 @@ log();
 run();
 ```
 
-#### Exports
+#### _Exports_
 All values and functions can be exported:
 ```
 export x = 5;
@@ -215,7 +215,7 @@ from "module-1" import { x, add, struct.b };
 // b.nested = 5
 ```
 
-### Variables
+### _Variables_
 Variables can be initialized without a keyword, but must start lowercase:
 ```
 x = true;
@@ -262,7 +262,7 @@ x = {
 // x["SHORT"] = "SHORT"
 ```
 
-### Types
+### _Types_
 Types are capitalized and initialized with `=`, but applied with `:`:
 ```
 import { String, Number };
@@ -280,16 +280,16 @@ a: Person = {
 };
 ```
 
-<h2 id="standard-functions"><div align="right"><a href="#sindarin">🔝</a></div>Standard Functions</h2>
+<h2 id="standard-functions"><div align="right"><a href="#sindarin">🔝</a></div><i>Standard Functions</i></h2>
 
-### if
+### _if_
 ```
 import { if };
 
 if(1<2, 5, 7); // 5
 ```
 
-### for
+### _for_
 ```
 import { for };
 
@@ -298,7 +298,7 @@ for([1, 2, 3], (item: number, index: number, array: number[]) => {
 });
 ```
 
-### type
+### _type_
 ```
 import { type, types };
 
@@ -312,7 +312,7 @@ type(undefined);  // types.UNDEFINED
 
 ```
 
-### boolean
+### _boolean_
 ```
 import { boolean };
 
@@ -329,7 +329,7 @@ boolean(() => 5);   // true
 boolean(undefined); // false
 ```
 
-### number
+### _number_
 ```
 import { number };
 
@@ -342,7 +342,7 @@ number(() => 1);    // undefined
 number(undefined);  // undefined
 ```
 
-### string
+### _string_
 ```
 import { string };
 
@@ -355,7 +355,7 @@ string(undefined);  // "undefined"
 string(1, 2);       // "1,2"
 ```
 
-### array
+### _array_
 ```
 import { array };
 
@@ -368,7 +368,7 @@ array(undefined);               // []
 array(1, 2);                    // [1, 2]
 ```
 
-### struct
+### _struct_
 ```
 import { struct };
 
@@ -381,7 +381,7 @@ struct(undefined);          // {}
 struct(1, 2);               // { 0: 1, 1: 2 }
 ```
 
-### function
+### _function_
 ```
 import { function };
 
@@ -394,7 +394,7 @@ function(() => 5);    // () => () => 5;
 function(undefined);  // () => undefined;
 ```
 
-### destruct
+### _destruct_
 ```
 import { destruct };
 
@@ -408,9 +408,9 @@ destruct(undefined);      // undefined
 destruct([1, 2], [3, 4]); // 1, 2, 3, 4
 ```
 
-### As String Functions
+### _"As String" Functions_
 
-#### parse
+#### _parse_
 ```
 import { parse };
 
@@ -422,7 +422,7 @@ parse('"ok"');    // "ok"
 parse("[1]");     // [1]
 parse('{"a":1}'); // { a: 1 }
 ```
-#### length
+#### _length_
 ```
 import { length };
 
@@ -434,7 +434,7 @@ length(1);    // 1
 length(10);   // 2
 ```
 
-#### split
+#### _split_
 ```
 import { split };
 
@@ -442,9 +442,9 @@ split("abc");       // ["a", "b", "c"]
 split("abc", "b");  // ["a", "c"]
 ```
 
-### As Array Functions
+### _"As Array" Functions_
 
-#### count
+#### _count_
 ```
 import { count };
 
@@ -455,10 +455,10 @@ count(1);           // 1
 count({ 1, "b" });  // 2 
 ```
 
-<h2 id="operators"><div align="right"><a href="#sindarin">🔝</a></div>Operators</h2>
+<h2 id="operators"><div align="right"><a href="#sindarin">🔝</a></div><i>Operators</i></h2>
 
-### Generic Operators
-#### Addition
+### _Generic Operators_
+#### _Addition_
 ```
 x = true + true;      // true
 x = true + 1;         // true
@@ -485,7 +485,7 @@ x = { a: 1 } + "b";   // { 0: "b", a: 1 }
 x = { a: 1 } + [1];   // { 0: 1, a: 1 }
 ```
 
-#### Type-Agnostic Equals
+#### _Type-Agnostic Equals_
 ```
 true == true      // true
 true == 1         // true
@@ -499,39 +499,39 @@ true == { a: 1 }  // true
 1 == { a: 1 }     // false
 ```
 
-#### Type-Aware Equals
+#### _Type-Aware Equals_
 ```
 true === true // true
 true === 1    // false
 true === "a"  // false
 ```
 
-#### Less Than
+#### _Less Than_
 ```
 1 < "a"       // true   (compared as numbers)
 1 < () => 5   // undefined
 "a" < 1       // false  (compared as strings)
 ```
-#### Greater Than
-#### Less Than or Equal
-#### Greater Than or Equal 
+#### _Greater Than_
+#### _Less Than or Equal_
+#### _Greater Than or Equal_
 
 
-#### And
+#### _And_
 ```
 x = true & true;  // true
 x = true & 1;     // true
 x = true & "a";   // true
 ```
 
-#### Or
+#### _Or_
 ```
 x = false | true;  // true
 x = false | 1;     // true
 x = false | "a";   // true
 ```
 
-### As Number Operators
+### _"As Number" Operators_
 ```
 x = 4 - 2;    // 2
 x = 4 / 2;    // 2
@@ -544,7 +544,7 @@ x = 1 + true; // 2
 x = true + 1; // 2
 ```
 
-### Destructor
+### _Destructor_
 ```
 a = [1, 2, 3];
 b = [0, ...a];
@@ -561,19 +561,19 @@ fn = (..., error) => {
 a, b, c = fn(1, 2, 3, "ERROR");
 ```
 
-### Default
+### _Default_
 If `b` is `undefined`, set `a` to `c`, else set `a` to `b`.
 ```
 a = b ?? c;
 ```
 
-### Ternary
+### _Ternary_
 If `b` is truthy, set `a` to c, else set `a` to `d`.
 ```
 a = b ? c : d;
 ```
 
-<h2 id="input-output"><div align="right"><a href="#sindarin">🔝</a></div>Input / Output</h2>
+<h2 id="input-output"><div align="right"><a href="#sindarin">🔝</a></div><i>Input / Output</i></h2>
 
 ```
 import { console.log };
@@ -581,14 +581,14 @@ import { console.log };
 log("Hi");
 ```
 
-<h2 id="development-setup"><div align="right"><a href="#sindarin">🔝</a></div>Development Setup</h2>
+<h2 id="development-setup"><div align="right"><a href="#sindarin">🔝</a></div><i>Development Setup</i></h2>
 
-### Install on macOS:
+### _Install on macOS:_
 ```
 brew install cmake llvm
 ```
 
-### Install on Ubuntu:
+### _Install on Ubuntu:_
 ```
 sudo apt-get install cmake llvm-11
 ```
