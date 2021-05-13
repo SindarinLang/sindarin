@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "file-exists-safe": "^1.1.0",
+    "llvm-bindings": "^0.1.7",
     "node-addon-api": "^3.1.0",
     "read-dir-safe": "^1.0.1",
     "read-file-safe": "^1.0.10"

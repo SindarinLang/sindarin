@@ -1,14 +1,48 @@
+import { parseRoot, RootKind, RootNode } from "./root";
 import { Token, Tokens } from "../lex";
-import { TopLevelNode, getNode } from "./nodes";
+import { assignKind, AssignKind, ValueKind } from "./root/assign";
+import { InvalidKind } from "./root/invalid";
+import { ExportKind, FromKind, importKind, ImportKind, moduleKind, ModuleKind } from "./root/modules";
+import { VoidKind } from "./root/value/void";
+import { ParametersKind } from "./root/value/function/parameters";
+import { ReturnKind } from "./root/value/function/return";
+import { OperatorKind } from "./root/value/expression/operator";
+import { argumentsKind, ArgumentsKind } from "./root/value/identifier/arguments";
+import { pathKind, PathKind } from "./root/value/identifier/path";
+import { TypeKind } from "./root/assign/type";
+import { identifierKind } from "./root/value/identifier";
+import { numberKind } from "./root/value/number";
 
-export type ASTNode = {
-  kind: string;
+export const nodeKinds = {
+  PathKind: pathKind,
+  AssignKind: assignKind,
+  ImportKind: importKind,
+  ModuleKind: moduleKind,
+  IdentifierKind: identifierKind,
+  ArgumentsKind: argumentsKind,
+  NumberKind: numberKind
 };
 
-export interface AST extends ASTNode {
-  kind: "root";
-  nodes: TopLevelNode[];
-}
+export type ASTNodeKind =
+  | ModuleKind
+  | ImportKind
+  | ExportKind
+  | FromKind
+  | AssignKind
+  | ValueKind
+  | InvalidKind
+  | RootKind
+  | VoidKind
+  | ParametersKind
+  | ReturnKind
+  | OperatorKind
+  | ArgumentsKind
+  | PathKind
+  | TypeKind;
+
+export type ASTNode = {
+  kind: ASTNodeKind;
+};
 
 export type ParseResult<T = ASTNode> = {
   node: T;
@@ -23,18 +57,9 @@ const tokenFilter = [
   Tokens.multi_comment
 ];
 
-export function parse(source: Token[]) {
-  const ast: AST = {
-    kind: "root",
-    nodes: []
-  };
-  let tokens = source.filter((token) => !tokenFilter.includes(token.type));
-  while(tokens.length > 0) {
-    const result = getNode(tokens);
-    tokens = result.tokens ?? [];
-    if(result.node) {
-      ast.nodes.push(result.node);
-    }
-  }
-  return ast;
+export function parse(tokens: Token[]) {
+  const filteredTokens = tokens.filter((token) => !tokenFilter.includes(token.type));
+  return parseRoot(filteredTokens).node;
 }
+
+export type AST = RootNode;

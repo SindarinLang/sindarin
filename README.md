@@ -12,7 +12,7 @@
 
 <h2 id="contents"><div align="right"><a href="#sindarin">🔝</a></div><i>Contents</i></h2>
 
-- [The High Level](#the-high-level)
+- [Philosophy](#philosophy)
 - ["Blow my mind in 30 seconds"](#blow-my-mind-in-30-seconds)  
   - [Function Baking (currying, but better)](#function-baking-currying-but-better)
   - [Argument Forwarding](#argument-forwarding)
@@ -20,29 +20,40 @@
   - [Naked Functions](#naked-functions)
 - [Syntax](#syntax)
   - [Comments](#comments)
-  - [Semi-colons](#semi-colons)
+  - [Separators](#separators)
   - [Modules](#modules)
-    - [Imports](#imports)
-    - [Exports](#exports)
-  - [Variables](#variables)
+  - [Assignment](#assignment)
   - [Types](#types)
-- [Standard Funtions](#standard-functions)
+- [Standard Functions](#standard-functions)
+  - [Control Flow](#control-flow)
+  - [Loops](#loops)
+  - [Type Functions](#type-functions)
+  - [String Functions](#string-functions)
+  - [Array Functions](#array-functions)
 - [Operators](#operators)
+  - [Generic Operators](#generic-operators)
+  - [Comparison Operators](#comparison-operators)
+  - [Boolean Operators](#boolean-operators)
+  - [Numeric Operators](#numeric-operators)
+  - [Destructor Operator](#destructor-operator)
+  - [Default Operator](#default-operator)
+  - [Ternary Operator](#ternary-operator)
 - [Input / Output](#input-output)
 - [Development Setup](#development-setup)  
 
-<h2 id="the-high-level"><div align="right"><a href="#sindarin">🔝</a></div><i>The High Level</i></h2>
+<h2 id="philosophy"><div align="right"><a href="#sindarin">🔝</a></div><i>Philosophy</i></h2>
 
+- Minimize keywords, balance use of separators and operators
 - Functional
-- Compiled
-- Type-safe
-- Garbage-collected
-- Multi-threaded
+- Compiled to native
+- Type-safety
+- Memory-safety
 - Copy-on-write
+- Don't throw, no try/catch
 
 <h2 id="blow-my-mind-in-30-seconds"><div align="right"><a href="#sindarin">🔝</a></div><i>"Blow my mind in 30 seconds"</i></h2>
 
-### _Function Baking (currying, but better)_
+### _Partial Arguments_
 Commas leave some arguments unspecified, while baking others into a new function:
 ```
 add = (a: number, b: number) => {
@@ -145,8 +156,8 @@ a = if(1 < 2, {
 * Comment
 */
 ```
-### _Semi-colons_
-Semi-colons are required at the end of statements:
+### _Separators_
+Semi-colons are required at the end of assignments:
 ```
 x = 5;
 
@@ -156,19 +167,6 @@ fn = () => {
 ```
 
 ### _Modules_
-
-#### _Example sindarin.json:_
-```json
-{
-  "name": "my-package-name",
-  "version": "1.0.0",
-  "main": "source/index.si",
-  "dependencies": {
-    "other-library": "https://github.com/my-user/repo-name",
-    "relative-alias": "./source/example-dir"
-  }
-}
-```
 
 #### _Imports_
 
@@ -193,11 +191,15 @@ from "https://github.com/example/repo" import { otherThing };
 ```
 Imports can also be deeply nested:
 ```
-import { console.log };
 from "other-library" import { thing.run };
 
-log();
 run();
+```
+Imports can be aliased:
+```
+from "other-library" import { start = thing.run };
+
+start();
 ```
 
 #### _Exports_
@@ -223,8 +225,22 @@ from "module-1" import { x, add, struct.b };
 // b.nested = 5
 ```
 
-### _Variables_
-Variables can be initialized without a keyword, but must start lowercase:
+#### _Example sindarin.json:_
+Dependencies can be defined in sindarin.json:
+```json
+{
+  "name": "my-package-name",
+  "version": "1.0.0",
+  "main": "source/index.si",
+  "dependencies": {
+    "other-library": "https://github.com/my-user/repo-name",
+    "relative-alias": "./source/example-dir"
+  }
+}
+```
+
+### _Assignment_
+Variables can be assigned without a keyword, and are immuatable by default. Variables also should be camelcase:
 ```
 x = true;
 y = 5;
@@ -238,40 +254,70 @@ x = [
   () => 5
 ];
 ```
-Struct properties are initialized with `:` or `=`:
+Struct properties are assigned with `=`, and can be indexed with `.` or `[]`:
 ```
 x = {
-  a: 1,
-  b = "ok"
+  a = 2,
+  b = "ok",
+  1 = "c"
 };
+y = "b";
 
-// x.a = 1
-// x["b"] = "ok"
+// x.a == 1
+// x.1 == "c"
+// x.y == undefined
+// x[y] == "ok
 ```
 Sets are initialized as structs without keys:
 ```
+y = "b";
+
 x = {
   "a",
   1,
-  () => 5
+  y
 };
 
-// x.a = "a";
-// x[1] = 1;
+// x.a == "a";
+// y.b == "b";
+// x.1 == 1;
 ```
-Enums are initialized as structs without values:
+Sets are also nice for creating enums:
 ```
 x = {
-  TALL,
-  SHORT
+  "TALL",
+  "SHORT"
 };
 
-// x.TALL = "TALL"
-// x["SHORT"] = "SHORT"
+// x.TALL == "TALL"
+// x["SHORT"] == "SHORT"
+```
+#### _Mutable Assignment_
+Mutable variables can be created with the `~` operator:
+```
+a ~ 5;
+a ~ a + 1;
+
+// a == 6
+```
+If they are reassigned with `=`, they will remain mutable:
+```
+a ~ 5;
+a = a + 1;
+a = a + 1;
+
+// a == 7
+```
+Variables initialized without a value are also mutable:
+```
+a;
+if(true, a ~ 1);
+
+// a == 1
 ```
 
 ### _Types_
-Types are capitalized and initialized with `=`, but applied with `:`:
+Types should be capitalized and created with `=`, but applied with `:`:
 ```
 import { String, Number };
 
@@ -286,18 +332,34 @@ a: Person = {
   last = "Kenobi",
   age = 57
 };
+
+```
+Type assignment inside a struct:
+```
+b = {
+  name: string = "Obi-Wan",
+  age: number ~ 57            // Mutable field
+};
 ```
 
 <h2 id="standard-functions"><div align="right"><a href="#sindarin">🔝</a></div><i>Standard Functions</i></h2>
 
-### _if_
+### _Control Flow_
+
+#### _if_
 ```
 import { if };
 
-if(1<2, 5, 7); // 5
+x = if(1<2, 5, 7);          // x == 5
+
+x = if(false, 6);           // x == 5
+x = if(false, 6, undefined) // x == undefined
+y = if(false, 6);           // y == undefined
 ```
 
-### _for_
+### _Loops_
+
+#### _for_
 ```
 import { for };
 
@@ -306,21 +368,51 @@ for([1, 2, 3], (item: number, index: number, array: number[]) => {
 });
 ```
 
-### _type_
+#### _do_
 ```
-import { type, types };
+import { do };
 
-type(true);       // types.BOOLEAN
-type(1);          // types.NUMBER
-type("string");   // types.STRING
-type([1, 2]);     // types.ARRAY
-type({ a: 1 });   // types.STRUCT
-type(() => 5);    // types.FUNCTION
-type(undefined);  // types.UNDEFINED
-
+do({
+  // ...
+}, true);
 ```
 
-### _boolean_
+#### _while_
+```
+import { while };
+
+while(true, {
+  // ...
+});
+```
+
+### _Type Functions_
+
+#### _type_
+```
+import { type, types, String };
+
+types: { String } = {
+  "Boolean",
+  "Number",
+  "String",
+  "Array",
+  "Struct",
+  "Function",
+  "Undefined"
+};
+
+type(true);       // types.Boolean
+type(1);          // types.Number
+type("string");   // types.String
+type([1, 2]);     // types.Array
+type({ a: 1 });   // types.Struct
+type(() => 5);    // types.Function
+type(undefined);  // types.Undefined
+
+```
+
+#### _boolean_
 ```
 import { boolean };
 
@@ -337,7 +429,7 @@ boolean(() => 5);   // true
 boolean(undefined); // false
 ```
 
-### _number_
+#### _number_
 ```
 import { number };
 
@@ -350,46 +442,101 @@ number(() => 1);    // undefined
 number(undefined);  // undefined
 ```
 
-### _string_
+#### _string_
 ```
 import { string };
 
 string(true);       // "true"
 string(1);          // "1"
 string([1, 2]);     // "[1,2]"
+string("abc");      // '"abc"'
 string({ a: 1 });   // '{"a":1}'
-string(() => 1);    // some unique identifier for the function
+string(() => 1);    // some unique identifier for the function, memory address?
 string(undefined);  // "undefined"
 string(1, 2);       // "1,2"
 ```
 
-### _array_
+#### _parse_
+(inverse `string`)
+```
+import { parse };
+
+parse("true");    // true
+parse("1");       // 1
+parse("1.2");     // 1.2
+parse("ok");      // undefined
+parse('"ok"');    // "ok"
+parse("[1]");     // [1]
+parse('{"a":1}'); // { a: 1 }
+```
+#### _array_
 ```
 import { array };
 
 array(true);                    // [true]
 array(1);                       // [1]
-array([1, 2]);                  // [1, 2]
-array({ 0: 1, 1: "b", a: 3 });  // [1, "b", ["a", 3]]
+array([1, 2]);                  // [[1, 2]]
+array({ 0: 1, 1: "b", a: 3 });  // [{ 0: 1, 1: "b", a: 3 }]
 array(() => 5);                 // [() => 5]
 array(undefined);               // []
 array(1, 2);                    // [1, 2]
 ```
 
-### _struct_
+#### _asArray_
+```
+import { asArray };
+
+asArray(true);                    // [true]
+asArray(1);                       // [1]
+asArray([1, 2]);                  // [1, 2]
+asArray({ 0: 1, 1: "b", a: 3 });  // [1, "b", ["a", 3]]
+asArray(() => 5);                 // [() => 5]
+asArray(undefined);               // []
+asArray(1, 2);                    // [1, 2]
+```
+
+#### _struct_
 ```
 import { struct };
 
 struct(true);               // { 0: true }
 struct(1);                  // { 0: 1 }
-struct([1, "b", ["a", 3]]); // { 0: 1, 1: "b", a: 3 }
-struct({ a: 1 });           // { a: 1 }
+struct([1, "b", ["a", 3]]); // { 0: [1, "b", ["a", 3]] }
+struct({ a: 1 });           // { 0: { a: 1 } }
 struct(() => 5);            // { 0: () => 5 }
 struct(undefined);          // {}
 struct(1, 2);               // { 0: 1, 1: 2 }
 ```
 
-### _function_
+#### _asStruct_
+```
+import { asStruct };
+
+asStruct(true);               // { 0: true }
+asStruct(1);                  // { 0: 1 }
+asStruct([1, "b", ["a", 3]]); // { 0: 1, 1: "b", a: 3 }
+asStruct({ a: 1 });           // { a: 1 }
+asStruct(() => 5);            // { 0: () => 5 }
+asStruct(undefined);          // {}
+asStruct(1, 2);               // { 0: 1, 1: 2 }
+```
+
+#### _destruct_
+(inverse `array` / `struct`)
+```
+import { destruct };
+
+destruct(true);           // true
+destruct(5);              // [true, false, true]
+destruct("abc");          // ["a", "b", "c"]
+destruct([1, 2]);         // 1, 2
+destruct({ 0: 1, a: 2 }); // 1, ["a", 2]
+destruct(() => 5);        // () => 5
+destruct(undefined);      // undefined
+destruct([1, 2], [3, 4]); // 1, 2, 3, 4
+```
+
+#### _function_
 ```
 import { function };
 
@@ -402,55 +549,38 @@ function(() => 5);    // () => () => 5;
 function(undefined);  // () => undefined;
 ```
 
-### _destruct_
+#### _call_
+(reverse `function`)
 ```
-import { destruct };
+import { call };
 
-destruct(true);           // true
-destruct(1);              // 1
-destruct("string");       // "string"
-destruct([1, 2]);         // 1, 2
-destruct({ 0: 1, a: 2 }); // 1, ["a", 2]
-destruct(() => 5);        // () => 5
-destruct(undefined);      // undefined
-destruct([1, 2], [3, 4]); // 1, 2, 3, 4
+call(() => true);     // true;
 ```
 
-### _"As String" Functions_
 
-#### _parse_
-```
-import { parse };
+### _String Functions_
 
-parse("true");    // true
-parse("1");       // 1
-parse("1.2");     // 1.2
-parse("ok");      // undefined
-parse('"ok"');    // "ok"
-parse("[1]");     // [1]
-parse('{"a":1}'); // { a: 1 }
-```
 #### _length_
 ```
 import { length };
 
 length("ok"); // 2
 length("");   // 0
-
-length(true); // 4
-length(1);    // 1
-length(10);   // 2
 ```
 
 #### _split_
 ```
 import { split };
 
-split("abc");       // ["a", "b", "c"]
-split("abc", "b");  // ["a", "c"]
+split("abc");                             // ["a", "b", "c"]
+split("abc", "b");                        // ["a", "c"]
+split("abc", 2);                          // ["ab", "c"]
+split("05/14 12:00", ["/", " ", ":"]);    // ["05", "14", "12", "00"]
+split("05/14 12:00", [2, 3, 5, 6, 8, 9]); // ["05", "/", "14", " ", "12" ":", "00"]
 ```
 
-### _"As Array" Functions_
+
+### _Array Functions_
 
 #### _count_
 ```
@@ -463,73 +593,88 @@ count(1);           // 1
 count({ 1, "b" });  // 2 
 ```
 
+#### _fill_
+```
+import { fill };
+
+fill(3);                            // [,,];
+fill(3, "a");                       // ["a", "a", "a"];
+fill(3, (index: number) => index);  // [0, 1, 2];
+```
+
+#### _join_
+(inverse `destruct` for strings and boolean arrays)
+```
+import { join };
+
+join(["a", "b", "c"]);      // "abc"
+join([true, false, true]);  // 5
+```
+
 <h2 id="operators"><div align="right"><a href="#sindarin">🔝</a></div><i>Operators</i></h2>
 
 ### _Generic Operators_
 #### _Addition_
 ```
-x = true + true;      // true
-x = true + 1;         // true
-x = true + "a";       // true
-x = true + [1];       // undefined
-x = true + { a: 1 };  // undefined
-x = 1 + true;         // 2
-x = 1 + 1;            // 2
-x = 1 + "a";          // 98
-x = 1 + [1];          // undefined
-x = 1 + { a: 1 };     // undefined
-x = "a" + true;       // "atrue"
-x = "a" + 1;          // "a1"
-x = "a" + "b";        // "ab"
-x = "a" + [1];        // undefined
-x = "a" + { a: 1 };   // undefined
-x = [1] + true;       // [1, true]
-x = [1] + 1;          // [1, 1]
-x = [1] + "a";        // [1, "a"]
-x = [1] + { a: 1 };   // [1, ["a", 1]]
-x = { a: 1 } + true;  // { 0: true, a: 1 }
-x = { a: 1 } + 1;     // { 0: 1, a: 1 }
-x = { a: 1 } + "b";   // { 0: "b", a: 1 }
-x = { a: 1 } + [1];   // { 0: 1, a: 1 }
+x = 1 + 2;                            // 3
+x = "a" + "b";                        // "ab"
+x = [1] + [2];                        // [1, 2];
+x = { a: 1, b: 2 } + { b: 3, c: 4 };  // { a: 1, b: 3, c: 4 };
+x = (() => 5) + ((x: number) => x+2)  // (() => 5)->((x: number) => x-2), equivalent of () => 3
 ```
 
-#### _Type-Agnostic Equals_
+#### _Equals_
 ```
-true == true      // true
-true == 1         // true
-true == "a"       // true
-true == [1]       // true
-true == { a: 1 }  // true
-1 == true         // true
-1 == 1            // true
-1 == "a"          // false
-1 == [1]          // false
-1 == { a: 1 }     // false
-```
+true == true          // true
+true == 1             // false - different types are false
+1 == 1                // true
+"a" == "a"            // true
+[1] == [1]            // false (by reference)
+{ a: 1 } == { a: 1 }  // false (by reference)
 
-#### _Type-Aware Equals_
 ```
-true === true // true
-true === 1    // false
-true === "a"  // false
-```
+### _Comparison Operators_
+If operands are same type, primitives are compared by value, and arrays/structs by size. Otherwise, operands are compared by type in the following hierarchy:
+
+`boolean < number < string < array/struct < function`
 
 #### _Less Than_
 ```
-1 < "a"       // true   (compared as numbers)
-1 < () => 5   // undefined
-"a" < 1       // false  (compared as strings)
+false < true                // true (compare by value)
+1 < "a"                     // true (compare by type)
+[1] < { a: 1, b: 2, c: 3 }  // true (compare by size)
+5 < () => 1                 // true (compare by type)
 ```
 #### _Greater Than_
+```
+false > true                // false (compare by value)
+1 > "a"                     // false (compare by type)
+[1] > { a: 1, b: 2, c: 3 }  // false (compare by size)
+5 > () => 1                 // false (compare by type)
+```
 #### _Less Than or Equal_
+```
+false <= true               // true (compare by value)
+1 <= "a"                    // true (compare by type)
+[1] <= { a: 1, b: 2, c: 3 } // true (compare by size)
+5 <= () => 1                // true (compare by type)
+```
 #### _Greater Than or Equal_
+```
+false >= true               // false (compare by value)
+1 >= "a"                    // false (compare by type)
+[1] >= { a: 1, b: 2, c: 3 } // false (compare by size)
+5 >= () => 1                // false (compare by type)
+```
 
+### _Boolean Operators_
 
 #### _And_
 ```
 x = true & true;  // true
 x = true & 1;     // true
 x = true & "a";   // true
+x = true & [];    // false
 ```
 
 #### _Or_
@@ -537,9 +682,10 @@ x = true & "a";   // true
 x = false | true;  // true
 x = false | 1;     // true
 x = false | "a";   // true
+x = false | [];    // false
 ```
 
-### _"As Number" Operators_
+### _Numeric Operators_
 ```
 x = 4 - 2;    // 2
 x = 4 / 2;    // 2
@@ -547,17 +693,15 @@ x = 4 / 0;    // infinity
 x = 4 * 2;    // 8
 x = 4 ^ 2;    // 16
 x = 7 % 2;    // 1
-
-x = 1 + true; // 2
-x = true + 1; // 2
 ```
 
-### _Destructor_
+### _Destructor Operator_
 ```
 a = [1, 2, 3];
-b = [0, ...a];
-
-// b = [0, 1, 2, 3];
+b = [0, ...a];  // 0, 1, 2, 3
+c = ...a;       // 1, 2, 3
+d = ...5;       // [true, false, true]
+e = ..."abc";   // ["a", "b", "c"]
 ```
 The destruct operator can also be returned:
 ```
@@ -569,22 +713,28 @@ fn = (..., error) => {
 a, b, c = fn(1, 2, 3, "ERROR");
 ```
 
-### _Default_
+### _Default Operator_
 If `b` is `undefined`, set `a` to `c`, else set `a` to `b`.
 ```
 a = b ?? c;
 ```
 
-### _Ternary_
+### _Ternary Operator_
 If `b` is truthy, set `a` to c, else set `a` to `d`.
 ```
 a = b ? c : d;
 ```
 
+### _Operator Precendence_
+All operators have left to right precedence so that parentheses are required to make the order explicit:
+```
+a = 1 + 2 * 3;    // 9
+a = 1 + (2 * 3);  // 7
+```
 <h2 id="input-output"><div align="right"><a href="#sindarin">🔝</a></div><i>Input / Output</i></h2>
 
 ```
-import { console.log };
+import { log };
 
 log("Hi");
 ```

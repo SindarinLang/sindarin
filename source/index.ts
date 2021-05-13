@@ -3,6 +3,7 @@ import { fileExists } from "file-exists-safe";
 import { readFile } from "read-file-safe";
 import { lex } from "./lex";
 import { parse } from "./parse";
+import { translate } from "./translate";
 
 async function resolvePath(path: string) {
   const file = extname(path) === "si" ? relative(process.cwd(), path) : join(relative(process.cwd(), path), "index.si");
@@ -25,7 +26,7 @@ if(process.argv.length < 3) {
       const contents = await readFile(path) as string;
       const tokens = lex(contents);
       const ast = parse(tokens);
-      console.log(JSON.stringify(ast, null, 2));
+      translate(ast);
     }
   });
 }

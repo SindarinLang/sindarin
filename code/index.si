@@ -1,7 +1,5 @@
-a = {
-  b: "ok",
-  c: {
-    nested: true
-  }
-};
+import { log };
 
+a = 1;
+
+log(a);

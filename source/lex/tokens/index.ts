@@ -16,7 +16,6 @@ export enum Tokens {
   infinity,
   number,
   string,
-  equals,
   eq,
   lte,
   gte,
@@ -51,7 +50,8 @@ export enum Tokens {
   dot,
   single_comment,
   multi_comment,
-  space
+  space,
+  mutable
 }
 
 export type Token = {
@@ -80,7 +80,6 @@ const identifiers: TokenMap = {
 };
 
 const triples: TokenMap = {
-  "===": Tokens.equals,
   "...": Tokens.destruct
 };
 
@@ -118,7 +117,8 @@ const singles: TokenMap = {
   "/": Tokens.divide,
   ".": Tokens.dot,
   "%": Tokens.modulus,
-  "!": Tokens.not
+  "!": Tokens.not,
+  "~": Tokens.mutable
 };
 
 export function getToken(file: string): ReturnValue {
