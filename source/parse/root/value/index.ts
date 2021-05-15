@@ -1,29 +1,30 @@
 import { Token, Tokens } from "../../../lex";
 import { ParseResult } from "../../";
-import { NumberNode, parseNumber, numberKind, NumberKind } from "./number";
-import { StringNode, parseString, stringKind, StringKind } from "./string";
-import { BooleanNode, parseBoolean, booleanKind, BooleanKind } from "./boolean";
-import { UndefinedNode, parseUndefined, undefinedKind, UndefinedKind } from "./undefined";
-import { ExpressionNode, parseExpression, expressionKind, ExpressionKind } from "./expression";
+import { NumberNode, parseNumber } from "./number";
+import { StringNode, parseString } from "./string";
+import { BooleanNode, parseBoolean } from "./boolean";
+import { UndefinedNode, parseUndefined } from "./undefined";
+import { ExpressionNode, parseExpression } from "./expression";
 import { isOperator } from "./expression/operator";
-import { GroupKind, groupKind, GroupNode, parseGroup } from "./group";
-import { IdentifierKind, identifierKind, IdentifierNode, parseIdentifier } from "./identifier";
-import { ArrayKind, arrayKind, ArrayNode, parseArray } from "./array";
-import { parseStruct, StructKind, structKind, StructNode } from "./struct";
-import { functionKind, FunctionKind, FunctionNode, parseFunction } from "./function";
+import { GroupNode, parseGroup } from "./group";
+import { IdentifierNode, parseIdentifier } from "./identifier";
+import { ArrayNode, parseArray } from "./array";
+import { parseStruct, StructNode } from "./struct";
+import { FunctionNode, parseFunction } from "./function";
 import { VoidNode } from "./void";
+import { Kinds } from "../../node";
 
 export type ValueKind =
-  | BooleanKind
-  | NumberKind
-  | StringKind
-  | UndefinedKind
-  | ExpressionKind
-  | GroupKind
-  | IdentifierKind
-  | ArrayKind
-  | StructKind
-  | FunctionKind;
+  | Kinds.boolean
+  | Kinds.number
+  | Kinds.string
+  | Kinds.undefined
+  | Kinds.expression
+  | Kinds.group
+  | Kinds.identifier
+  | Kinds.array
+  | Kinds.struct
+  | Kinds.function;
 
 export type ValueNode =
   | BooleanNode
@@ -44,39 +45,39 @@ export type ValueNode =
 
 function getValueKind(tokens: Token[]): ValueKind {
   if(tokens[0].type === Tokens.open_paren) {
-    return groupKind;
+    return Kinds.group;
   } else if(tokens[0].type === Tokens.open_square) {
-    return arrayKind;
+    return Kinds.array;
   } else if(tokens[0].type === Tokens.open_curly) {
-    return structKind;
+    return Kinds.struct;
   } else if(tokens[1] && isOperator(tokens[1].type)) {
-    return expressionKind;
+    return Kinds.expression;
   } else if(tokens[0].type === Tokens.number || tokens[0].type === Tokens.infinity) {
-    return numberKind;
+    return Kinds.number;
   } else if(tokens[0].type === Tokens.string) {
-    return stringKind;
+    return Kinds.string;
   } else if(tokens[0].type === Tokens.true || tokens[0].type === Tokens.false) {
-    return booleanKind;
+    return Kinds.boolean;
   } else if(tokens[0].type === Tokens.undefined) {
-    return undefinedKind;
+    return Kinds.undefined;
   } else if(tokens[0].type === Tokens.identifier) {
-    return identifierKind;
+    return Kinds.identifier;
   } else {
     throw new Error("syntax error");
   }
 }
 
 const valueParsers = {
-  [booleanKind]: parseBoolean,
-  [numberKind]: parseNumber,
-  [stringKind]: parseString,
-  [undefinedKind]: parseUndefined,
-  [expressionKind]: parseExpression,
-  [groupKind]: parseGroup,
-  [identifierKind]: parseIdentifier,
-  [arrayKind]: parseArray,
-  [structKind]: parseStruct,
-  [functionKind]: parseFunction
+  [Kinds.boolean]: parseBoolean,
+  [Kinds.number]: parseNumber,
+  [Kinds.string]: parseString,
+  [Kinds.undefined]: parseUndefined,
+  [Kinds.expression]: parseExpression,
+  [Kinds.group]: parseGroup,
+  [Kinds.identifier]: parseIdentifier,
+  [Kinds.array]: parseArray,
+  [Kinds.struct]: parseStruct,
+  [Kinds.function]: parseFunction
 };
 
 export function parseValue(tokens: Token[]): ParseResult<ValueNode> {

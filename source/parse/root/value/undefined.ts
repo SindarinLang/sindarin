@@ -1,12 +1,9 @@
 import { Token } from "../../../lex";
 import { ParseResult, ASTNode } from "../..";
-
-export const undefinedKind = "undefined";
-
-export type UndefinedKind = typeof undefinedKind;
+import { Kinds } from "../../node";
 
 export interface UndefinedNode extends ASTNode {
-  kind: UndefinedKind;
+  kind: Kinds.undefined;
   value: undefined;
 }
 
@@ -14,7 +11,7 @@ export function parseUndefined(tokens: Token[]): ParseResult<UndefinedNode> {
   return {
     tokens: tokens.slice(1),
     node: {
-      kind: undefinedKind,
+      kind: Kinds.undefined,
       value: undefined
     }
   };

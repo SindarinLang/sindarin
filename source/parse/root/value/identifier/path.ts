@@ -1,12 +1,8 @@
 import { Token, Tokens } from "../../../../lex";
-import { ParseResult, ASTNode } from "../../../";
-
-export const pathKind = "path";
-
-export type PathKind = typeof pathKind;
+import { ParseResult, ASTNode, Kinds } from "../../../";
 
 export interface PathNode extends ASTNode {
-  kind: PathKind;
+  kind: Kinds.path;
   value: string;
   path?: PathNode;
 }
@@ -16,7 +12,7 @@ export function parsePath(tokens: Token[]): ParseResult<PathNode> {
     const result: ParseResult<PathNode> = {
       tokens: tokens.slice(2),
       node: {
-        kind: pathKind,
+        kind: Kinds.path,
         value: tokens[1].value
       }
     };
@@ -30,7 +26,7 @@ export function parsePath(tokens: Token[]): ParseResult<PathNode> {
     return {
       tokens: tokens.slice(1),
       node: {
-        kind: pathKind,
+        kind: Kinds.path,
         value: tokens[0].value
       }
     };

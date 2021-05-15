@@ -1,13 +1,10 @@
 import { Token, Tokens } from "../../../lex";
 import { ParseResult, ASTNode } from "../../";
 import { parseValue, ValueNode } from ".";
-
-export const structKind = "struct";
-
-export type StructKind = typeof structKind;
+import { Kinds } from "../../node";
 
 export interface StructNode extends ASTNode {
-  kind: StructKind;
+  kind: Kinds.struct;
   value: {
     [key: string]: ValueNode;
   };
@@ -17,7 +14,7 @@ export function parseStruct(tokens: Token[]): ParseResult<StructNode> {
   const result: ParseResult<StructNode> = {
     tokens: tokens.slice(1),
     node: {
-      kind: structKind,
+      kind: Kinds.struct,
       value: {}
     }
   };

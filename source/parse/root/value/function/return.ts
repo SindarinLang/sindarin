@@ -1,11 +1,7 @@
-import { ASTNode } from "../../..";
+import { ASTNode, Kinds } from "../../..";
 import { ArgumentsNode } from "../identifier/arguments";
 
-export const returnKind = "return";
-
-export type ReturnKind = typeof returnKind;
-
 export interface ReturnNode extends ASTNode {
-  kind: ReturnKind;
+  kind: Kinds.return;
   value: ArgumentsNode; // TODO: end arguments on ';' ')' or '}'
 }

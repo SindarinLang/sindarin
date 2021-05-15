@@ -1,12 +1,9 @@
 import { ParseResult } from "../";
 import { Token } from "../../lex";
-
-const invalidKind = "invalid";
-
-export type InvalidKind = typeof invalidKind;
+import { Kinds } from "../node";
 
 export type InvalidNode = {
-  kind: InvalidKind;
+  kind: Kinds.invalid;
   value: string;
 };
 
@@ -14,7 +11,7 @@ export function parseInvalid(tokens: Token[]): ParseResult<InvalidNode> {
   return {
     tokens: tokens.slice(1),
     node: {
-      kind: invalidKind,
+      kind: Kinds.invalid,
       value: tokens[0].value
     }
   };

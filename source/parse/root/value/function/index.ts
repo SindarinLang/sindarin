@@ -3,13 +3,10 @@ import { ASTNode, ParseResult } from "../../../";
 import { ParametersNode } from "./parameters";
 import { ReturnNode } from "./return";
 import { Token } from "../../../../lex";
-
-export const functionKind = "function";
-
-export type FunctionKind = typeof functionKind;
+import { Kinds } from "../../../node";
 
 export interface FunctionNode extends ASTNode {
-  kind: FunctionKind;
+  kind: Kinds.function;
   parameters: ParametersNode;
   body: AssignNode[];
   return: ReturnNode;
@@ -19,7 +16,7 @@ export function parseFunction(tokens: Token[]): ParseResult<FunctionNode> {
   return {
     tokens,
     node: {
-      kind: functionKind
+      kind: Kinds.function
     }
   };
 }

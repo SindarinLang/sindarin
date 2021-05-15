@@ -743,7 +743,7 @@ log("Hi");
 
 ### _Install on macOS:_
 ```
-brew install cmake llvm
+brew install cmake llvm@11
 ```
 
 ### _Install on Ubuntu:_

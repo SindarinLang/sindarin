@@ -2,13 +2,10 @@ import { Token, Tokens } from "../../../lex";
 import { ParseResult, ASTNode } from "../../";
 import { ValueNode, parseValue } from "../value";
 import { TypeNode } from "./type";
-
-export const assignKind = "assign";
-
-export type AssignKind = typeof assignKind;
+import { Kinds } from "../../node";
 
 export interface AssignNode extends ASTNode {
-  kind: AssignKind;
+  kind: Kinds.assign;
   identifier: string;
   type: TypeNode;
   value: ValueNode;
@@ -23,7 +20,7 @@ export function parseAssign(tokens: Token[]): ParseResult<AssignNode> {
     return {
       tokens: result.tokens.slice(1),
       node: {
-        kind: assignKind,
+        kind: Kinds.assign,
         identifier: tokens[0].value,
         type: {
           kind: "type"

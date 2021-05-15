@@ -1,6 +1,7 @@
 import { parseValue, ValueNode } from "../..";
 import { ASTNode, ParseResult } from "../../../../";
 import { Token, Tokens } from "../../../../../lex";
+import { Kinds } from "../../../../node";
 
 export type OperationToken =
   | Tokens.destruct
@@ -54,7 +55,7 @@ export const operatorKind = "operator";
 export type OperatorKind = typeof operatorKind;
 
 export interface OperatorNode extends ASTNode {
-  kind: OperatorKind;
+  kind: Kinds.operator;
   operation: OperationToken;
   value: ValueNode;
 }
@@ -65,7 +66,7 @@ export function parseOperator(tokens: Token[]): ParseResult<OperatorNode> {
     return {
       tokens: result.tokens,
       node: {
-        kind: operatorKind,
+        kind: Kinds.operator,
         operation: tokens[0].type,
         value: result.node
       }

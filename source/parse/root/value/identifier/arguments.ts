@@ -2,13 +2,10 @@ import { Token, Tokens } from "../../../../lex";
 import { ParseResult, ASTNode } from "../../../";
 import { parseValue, ValueNode } from "..";
 import { parseVoid } from "../void";
-
-export const argumentsKind = "arguments";
-
-export type ArgumentsKind = typeof argumentsKind;
+import { Kinds } from "../../../node";
 
 export interface ArgumentsNode extends ASTNode {
-  kind: ArgumentsKind;
+  kind: Kinds.arguments;
   value: ValueNode[];
 }
 
@@ -16,7 +13,7 @@ export function parseArguments(tokens: Token[]): ParseResult<ArgumentsNode> {
   const result: ParseResult<ArgumentsNode> = {
     tokens: tokens.slice(1),
     node: {
-      kind: argumentsKind,
+      kind: Kinds.arguments,
       value: []
     }
   };

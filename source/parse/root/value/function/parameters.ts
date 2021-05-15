@@ -1,11 +1,8 @@
 import { ASTNode } from "../../..";
+import { Kinds } from "../../../node";
 import { IdentifierNode } from "../identifier";
 
-export const parametersKind = "parameters";
-
-export type ParametersKind = typeof parametersKind;
-
 export interface ParametersNode extends ASTNode {
-  kind: ParametersKind;
+  kind: Kinds.parameter;
   value: IdentifierNode[];
 }

@@ -9,12 +9,8 @@ import {
 } from "./modules";
 import { AssignNode, parseAssign } from "./assign";
 import { parseInvalid, InvalidNode } from "./invalid";
-import { ASTNode } from "..";
+import { ASTNode, Kinds } from "../node";
 import { IdentifierNode, parseIdentifier } from "./value/identifier";
-
-const rootKind = "root";
-
-export type RootKind = typeof rootKind;
 
 export type TopLevelNode =
   | ImportNode
@@ -24,7 +20,7 @@ export type TopLevelNode =
   | InvalidNode;
 
 export interface RootNode extends ASTNode {
-  kind: RootKind;
+  kind: Kinds.root;
   nodes: TopLevelNode[];
 }
 
@@ -48,7 +44,7 @@ export function parseRoot(tokens: Token[]): ParseResult<RootNode> {
   const result: ParseResult<RootNode> = {
     tokens,
     node: {
-      kind: rootKind,
+      kind: Kinds.root,
       nodes: []
     }
   };

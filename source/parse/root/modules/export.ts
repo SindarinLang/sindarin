@@ -2,13 +2,10 @@ import { Token } from "../../../lex";
 import { ASTNode, ParseResult } from "../../";
 import { ModuleNode, parseModules } from ".";
 import { FromNode } from "./from";
-
-const exportKind = "export";
-
-export type ExportKind = typeof exportKind;
+import { Kinds } from "../../node";
 
 export interface ExportNode extends ASTNode {
-  kind: ExportKind;
+  kind: Kinds.export;
   module: ModuleNode;
   from?: FromNode;
 }
@@ -18,7 +15,7 @@ export function parseExport(tokens: Token[], from?: FromNode): ParseResult<Expor
   return {
     tokens: result.tokens,
     node: {
-      kind: exportKind,
+      kind: Kinds.export,
       from,
       module: result.node
     }

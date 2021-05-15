@@ -1,14 +1,10 @@
 import { Token, Tokens } from "../../../../lex";
-import { ParseResult, ASTNode } from "../../../";
+import { ParseResult, ASTNode, Kinds } from "../../../";
 import { ArgumentsNode, parseArguments } from "./arguments";
 import { parsePath, PathNode } from "./path";
 
-export const identifierKind = "identifier";
-
-export type IdentifierKind = typeof identifierKind;
-
 export interface IdentifierNode extends ASTNode {
-  kind: IdentifierKind;
+  kind: Kinds.identifier;
   value: string;
   call?: ArgumentsNode;
   path?: PathNode;
@@ -20,7 +16,7 @@ export function parseIdentifier(tokens: Token[]): ParseResult<IdentifierNode> {
   const result: ParseResult<IdentifierNode> = {
     tokens: tokens.slice(1),
     node: {
-      kind: identifierKind,
+      kind: Kinds.identifier,
       value: tokens[0].value,
       call: undefined,
       path: undefined

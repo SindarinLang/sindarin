@@ -1,9 +1,10 @@
 import { Token, Tokens } from "../../../lex";
-import { parseFrom, FromNode, FromKind } from "./from";
-import { parseImport, ImportNode, ImportKind, importKind } from "./import";
-import { parseExport, ExportNode, ExportKind } from "./export";
+import { parseFrom, FromNode } from "./from";
+import { parseImport, ImportNode } from "./import";
+import { parseExport, ExportNode } from "./export";
 import { parseCurlyCSV } from "../../utils";
 import { ASTNode, ParseResult } from "../../";
+import { Kinds } from "../../node";
 
 type Modules = {
   [name: string]: ModuleNode;
@@ -14,7 +15,7 @@ export const moduleKind = "module";
 export type ModuleKind = typeof moduleKind;
 
 export interface ModuleNode extends ASTNode {
-  kind: ModuleKind;
+  kind: Kinds.module;
   self: boolean; // always false at top level (no default)
   wildcard: boolean;
   modules?: Modules;
@@ -22,7 +23,7 @@ export interface ModuleNode extends ASTNode {
 
 function moduleNode(self = false, wildcard = false, modules?: Modules): ModuleNode {
   return {
-    kind: "module",
+    kind: Kinds.module,
     self,
     wildcard,
     modules
@@ -106,9 +107,5 @@ export {
   ExportNode,
   parseFrom,
   parseImport,
-  parseExport,
-  FromKind,
-  ImportKind,
-  ExportKind,
-  importKind
+  parseExport
 };

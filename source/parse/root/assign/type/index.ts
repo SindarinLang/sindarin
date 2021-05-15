@@ -1,9 +1,6 @@
 import { ASTNode } from "../../..";
-
-const typeKind = "type";
-
-export type TypeKind = typeof typeKind;
+import { Kinds } from "../../../node";
 
 export interface TypeNode extends ASTNode {
-  kind: TypeKind;
+  kind: Kinds.type;
 }

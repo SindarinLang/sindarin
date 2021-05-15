@@ -1,13 +1,9 @@
 import { Token, Tokens } from "../../../lex";
-import { ParseResult, ASTNode } from "../../";
+import { ParseResult, ASTNode, Kinds } from "../../";
 import { parseValue, ValueNode } from ".";
 
-export const arrayKind = "array";
-
-export type ArrayKind = typeof arrayKind;
-
 export interface ArrayNode extends ASTNode {
-  kind: ArrayKind;
+  kind: Kinds.array;
   value: ValueNode[];
 }
 
@@ -15,7 +11,7 @@ export function parseArray(tokens: Token[]): ParseResult<ArrayNode> {
   const result: ParseResult<ArrayNode> = {
     tokens: tokens.slice(1),
     node: {
-      kind: arrayKind,
+      kind: Kinds.array,
       value: []
     }
   };

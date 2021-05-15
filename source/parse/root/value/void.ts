@@ -1,19 +1,16 @@
 import { Token } from "../../../lex";
 import { ParseResult, ASTNode } from "../..";
-
-export const voidKind = "void";
-
-export type VoidKind = typeof voidKind;
+import { Kinds } from "../../node";
 
 export interface VoidNode extends ASTNode {
-  kind: VoidKind;
+  kind: Kinds.void;
 }
 
 export function parseVoid(tokens: Token[]): ParseResult<VoidNode> {
   return {
     tokens: tokens.slice(1),
     node: {
-      kind: voidKind
+      kind: Kinds.void
     }
   };
 }

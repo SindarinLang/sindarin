@@ -1,13 +1,9 @@
 import { Token, Tokens } from "../../../lex";
-import { ParseResult, ASTNode } from "../..";
+import { ParseResult, ASTNode, Kinds } from "../..";
 import { parseValue, ValueNode } from ".";
 
-export const groupKind = "group";
-
-export type GroupKind = typeof groupKind;
-
 export interface GroupNode extends ASTNode {
-  kind: typeof groupKind;
+  kind: Kinds.group;
   value: ValueNode;
 }
 
@@ -17,7 +13,7 @@ export function parseGroup(tokens: Token[]): ParseResult<GroupNode> {
     return {
       tokens: result.tokens.slice(1),
       node: {
-        kind: groupKind,
+        kind: Kinds.group,
         value: result.node
       }
     };

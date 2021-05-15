@@ -1,48 +1,6 @@
-import { parseRoot, RootKind, RootNode } from "./root";
+import { parseRoot, RootNode } from "./root";
 import { Token, Tokens } from "../lex";
-import { assignKind, AssignKind, ValueKind } from "./root/assign";
-import { InvalidKind } from "./root/invalid";
-import { ExportKind, FromKind, importKind, ImportKind, moduleKind, ModuleKind } from "./root/modules";
-import { VoidKind } from "./root/value/void";
-import { ParametersKind } from "./root/value/function/parameters";
-import { ReturnKind } from "./root/value/function/return";
-import { OperatorKind } from "./root/value/expression/operator";
-import { argumentsKind, ArgumentsKind } from "./root/value/identifier/arguments";
-import { pathKind, PathKind } from "./root/value/identifier/path";
-import { TypeKind } from "./root/assign/type";
-import { identifierKind } from "./root/value/identifier";
-import { numberKind } from "./root/value/number";
-
-export const nodeKinds = {
-  PathKind: pathKind,
-  AssignKind: assignKind,
-  ImportKind: importKind,
-  ModuleKind: moduleKind,
-  IdentifierKind: identifierKind,
-  ArgumentsKind: argumentsKind,
-  NumberKind: numberKind
-};
-
-export type ASTNodeKind =
-  | ModuleKind
-  | ImportKind
-  | ExportKind
-  | FromKind
-  | AssignKind
-  | ValueKind
-  | InvalidKind
-  | RootKind
-  | VoidKind
-  | ParametersKind
-  | ReturnKind
-  | OperatorKind
-  | ArgumentsKind
-  | PathKind
-  | TypeKind;
-
-export type ASTNode = {
-  kind: ASTNodeKind;
-};
+import { ASTNode } from "./node";
 
 export type ParseResult<T = ASTNode> = {
   node: T;
@@ -63,3 +21,8 @@ export function parse(tokens: Token[]) {
 }
 
 export type AST = RootNode;
+
+export {
+  Kinds,
+  ASTNode
+} from "./node";

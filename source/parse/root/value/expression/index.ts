@@ -2,13 +2,10 @@ import { ValueNode, parseValue } from "..";
 import { ASTNode, ParseResult } from "../../..";
 import { OperatorNode, parseOperator } from "./operator";
 import { Token } from "../../../../lex";
-
-export const expressionKind = "expression";
-
-export type ExpressionKind = typeof expressionKind;
+import { Kinds } from "../../../node";
 
 export interface ExpressionNode extends ASTNode {
-  kind: ExpressionKind;
+  kind: Kinds.expression;
   value: ValueNode;
   operator: OperatorNode;
 }
@@ -18,7 +15,7 @@ export function parseExpression(tokens: Token[]): ParseResult<ExpressionNode> {
   return {
     tokens: result.tokens,
     node: {
-      kind: expressionKind,
+      kind: Kinds.expression,
       value: parseValue([tokens[0]]).node,
       operator: result.node
     }
