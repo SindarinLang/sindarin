@@ -1,6 +1,8 @@
 import { AssignNode } from "./root/assign";
 import { ImportNode } from "./root/modules";
+import { ExpressionNode } from "./root/value/expression";
 import { IdentifierNode } from "./root/value/identifier";
+import { FloatNode, IntegerNode } from "./root/value/number";
 
 export enum Kinds {
   root,
@@ -10,7 +12,8 @@ export enum Kinds {
   module,
   assign,
   type,
-  number,
+  integer,
+  float,
   string,
   boolean,
   undefined,
@@ -43,4 +46,16 @@ export function isAssignNode(node: ASTNode): node is AssignNode {
 
 export function isIdentifier(node: ASTNode): node is IdentifierNode {
   return node.kind === Kinds.identifier;
+}
+
+export function isFloat(node: ASTNode): node is FloatNode {
+  return node.kind === Kinds.float;
+}
+
+export function isInteger(node: ASTNode): node is IntegerNode {
+  return node.kind === Kinds.integer;
+}
+
+export function isExpression(node: ASTNode): node is ExpressionNode {
+  return node.kind === Kinds.expression;
 }

@@ -1,6 +1,6 @@
 import { Token, Tokens } from "../../../lex";
 import { ParseResult } from "../../";
-import { NumberNode, parseNumber } from "./number";
+import { IntegerNode, FloatNode, parseFloatValue, parseIntegerValue } from "./number";
 import { StringNode, parseString } from "./string";
 import { BooleanNode, parseBoolean } from "./boolean";
 import { UndefinedNode, parseUndefined } from "./undefined";
@@ -16,7 +16,8 @@ import { Kinds } from "../../node";
 
 export type ValueKind =
   | Kinds.boolean
-  | Kinds.number
+  | Kinds.integer
+  | Kinds.float
   | Kinds.string
   | Kinds.undefined
   | Kinds.expression
@@ -28,7 +29,8 @@ export type ValueKind =
 
 export type ValueNode =
   | BooleanNode
-  | NumberNode
+  | IntegerNode
+  | FloatNode
   | StringNode
   | UndefinedNode
   | ExpressionNode
@@ -52,8 +54,10 @@ function getValueKind(tokens: Token[]): ValueKind {
     return Kinds.struct;
   } else if(tokens[1] && isOperator(tokens[1].type)) {
     return Kinds.expression;
-  } else if(tokens[0].type === Tokens.number || tokens[0].type === Tokens.infinity) {
-    return Kinds.number;
+  } else if(tokens[0].type === Tokens.integer) {
+    return Kinds.integer;
+  } else if(tokens[0].type === Tokens.float || tokens[0].type === Tokens.infinity) {
+    return Kinds.float;
   } else if(tokens[0].type === Tokens.string) {
     return Kinds.string;
   } else if(tokens[0].type === Tokens.true || tokens[0].type === Tokens.false) {
@@ -69,7 +73,8 @@ function getValueKind(tokens: Token[]): ValueKind {
 
 const valueParsers = {
   [Kinds.boolean]: parseBoolean,
-  [Kinds.number]: parseNumber,
+  [Kinds.integer]: parseIntegerValue,
+  [Kinds.float]: parseFloatValue,
   [Kinds.string]: parseString,
   [Kinds.undefined]: parseUndefined,
   [Kinds.expression]: parseExpression,

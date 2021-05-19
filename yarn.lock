@@ -1986,6 +1986,11 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+alpha-stringify@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/alpha-stringify/-/alpha-stringify-1.0.0.tgz#57c21d8d197cc602f0a65a7566c163ae2fb7bdee"
+  integrity sha512-29zNrKPcDkyenCM8b0LOwhGQ/7OI9xl99rn22yZWfRQYEgJVqaZon7XB6OnibytNlffZm+RPp494yVzJ27R3QA==
+
 ansi-align@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
@@ -6167,6 +6172,13 @@ md5@^2.3.0:
     charenc "0.0.2"
     crypt "0.0.2"
     is-buffer "~1.1.6"
+
+mem-fn@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mem-fn/-/mem-fn-1.0.1.tgz#7cdeae05929cdb6a85bc2a99dd3a941456e353ec"
+  integrity sha512-MIaBFRyzURE5a8t5zwEmiweE5orTz06pUFOeGmxM+7GGglKvaomNKupoN4Wzf2JsY6cd6X4rIf4m7N9IyZHGag==
+  dependencies:
+    alpha-stringify "^1.0.0"
 
 memory-stream@0:
   version "0.0.3"

@@ -14,7 +14,8 @@ export enum Tokens {
   false,
   undefined,
   infinity,
-  number,
+  integer,
+  float,
   string,
   eq,
   lte,
@@ -140,7 +141,11 @@ export function getToken(file: string): ReturnValue {
       );
     });
   } else if(isDigit(letter)) {
-    return search(file, isNotDecimal, Tokens.number);
+    const result = search(file, isNotDecimal, Tokens.integer);
+    if(result.token.value.includes(".")) {
+      result.token.type = Tokens.float;
+    }
+    return result;
   } else if(letter === "/" && file.length > 1 && file[1] === "/") {
     return search(file.slice(2), isNewline, Tokens.single_comment);
   } else if(letter === "/" && file.length > 1 && file[1] === "*") {

@@ -20,11 +20,12 @@
   "scripts": {
     "build": "bob build",
     "build-cpp": "node-gyp configure && node-gyp build && cp build/Release/addon.node addons",
-    "compile": "node ./build/index.js"
+    "compile": "node ./build/index.js code && clang ./code/*.ll -o ./code/index.out"
   },
   "dependencies": {
     "file-exists-safe": "^1.1.0",
     "llvm-bindings": "^0.1.7",
+    "mem-fn": "^1.0.1",
     "node-addon-api": "^3.1.0",
     "read-dir-safe": "^1.0.1",
     "read-file-safe": "^1.0.10"
