@@ -1,0 +1,19 @@
+{
+  "extends": "@bconnorwhite/bob",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDirs": [
+      "source",
+      "types"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ]
+  },
+  "include": [
+    "source",
+    "types",
+    "addons" 
+  ]
+}
