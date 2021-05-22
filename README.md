@@ -8,7 +8,7 @@
 
 <h2 id="installation"><div align="right"><a href="#sindarin">🔝</a></div><i>Installation</i></h2>
 
-> Coming Soon™️
+> Coming Soon&trade;
 
 <h2 id="contents"><div align="right"><a href="#sindarin">🔝</a></div><i>Contents</i></h2>
 
