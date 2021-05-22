@@ -20,7 +20,8 @@
   "scripts": {
     "build": "bob build",
     "build-cpp": "node-gyp configure && node-gyp build && cp build/Release/addon.node addons",
-    "compile": "node ./build/index.js code && clang ./code/*.ll -o ./code/index.out"
+    "compile": "node ./build/index.js code && clang ./code/*.ll -o ./code/index.out",
+    "start": "yarn build && yarn compile && ./code/index.out"
   },
   "dependencies": {
     "file-exists-safe": "^1.1.0",

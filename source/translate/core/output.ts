@@ -1,6 +1,8 @@
 import llvm from "llvm-bindings";
 import mem from "mem-fn";
-import { getFunctionType, LLVMFile, primitives, Primitive } from "../file";
+import { LLVMFile } from "../file";
+import { getFunctionType } from "../file/function";
+import { Primitive, primitives } from "../primitive";
 import { ValueOf } from "../utils";
 
 function fileMem(fn: (file: LLVMFile) => any) {
@@ -108,6 +110,7 @@ function matchOverride(argumentTypes: Primitive[], exporter: LLVMFile, importer:
   }
 }
 
+// TODO: just write this as a .ll
 export function output(exporter: LLVMFile, importer: LLVMFile) {
   return (argumentTypes: Primitive[]) => {
     return matchOverride(argumentTypes, exporter, importer);

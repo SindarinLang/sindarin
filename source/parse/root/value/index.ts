@@ -4,9 +4,8 @@ import { IntegerNode, FloatNode, parseFloatValue, parseIntegerValue } from "./nu
 import { StringNode, parseString } from "./string";
 import { BooleanNode, parseBoolean } from "./boolean";
 import { UndefinedNode, parseUndefined } from "./undefined";
-import { ExpressionNode, parseExpression } from "./expression";
-import { isOperator } from "./expression/operator";
-import { GroupNode, parseGroup } from "./group";
+import { isOperator, OperatorNode, parseOperator } from "./operator";
+import { parseGroup } from "./group";
 import { IdentifierNode, parseIdentifier } from "./identifier";
 import { ArrayNode, parseArray } from "./array";
 import { parseStruct, StructNode } from "./struct";
@@ -20,7 +19,6 @@ export type ValueKind =
   | Kinds.float
   | Kinds.string
   | Kinds.undefined
-  | Kinds.expression
   | Kinds.group
   | Kinds.identifier
   | Kinds.array
@@ -33,8 +31,7 @@ export type ValueNode =
   | FloatNode
   | StringNode
   | UndefinedNode
-  | ExpressionNode
-  | GroupNode
+  | OperatorNode
   | IdentifierNode
   | ArrayNode
   | StructNode
@@ -52,8 +49,6 @@ function getValueKind(tokens: Token[]): ValueKind {
     return Kinds.array;
   } else if(tokens[0].type === Tokens.open_curly) {
     return Kinds.struct;
-  } else if(tokens[1] && isOperator(tokens[1].type)) {
-    return Kinds.expression;
   } else if(tokens[0].type === Tokens.integer) {
     return Kinds.integer;
   } else if(tokens[0].type === Tokens.float || tokens[0].type === Tokens.infinity) {
@@ -71,13 +66,14 @@ function getValueKind(tokens: Token[]): ValueKind {
   }
 }
 
-const valueParsers = {
+const valueParsers: {
+  [key in ValueKind]: (tokens: Token[]) => ParseResult<ValueNode>
+} = {
   [Kinds.boolean]: parseBoolean,
   [Kinds.integer]: parseIntegerValue,
   [Kinds.float]: parseFloatValue,
   [Kinds.string]: parseString,
   [Kinds.undefined]: parseUndefined,
-  [Kinds.expression]: parseExpression,
   [Kinds.group]: parseGroup,
   [Kinds.identifier]: parseIdentifier,
   [Kinds.array]: parseArray,
@@ -88,4 +84,20 @@ const valueParsers = {
 export function parseValue(tokens: Token[]): ParseResult<ValueNode> {
   const kind = getValueKind(tokens);
   return valueParsers[kind](tokens);
+}
+
+function isEnd(tokens: Token[]) {
+  return tokens[0].type === Tokens.semi || tokens[0].type === Tokens.close_paren || tokens[0].type === Tokens.close_square;
+}
+
+export function parseExpression(tokens: Token[]): ParseResult<ValueNode> {
+  let result = parseValue(tokens);
+  while(!isEnd(result.tokens)) {
+    if(isOperator(result.tokens[0].type)) {
+      result = parseOperator(result.node, result.tokens);
+    } else {
+      throw new Error("Syntax error");
+    }
+  }
+  return result;
 }

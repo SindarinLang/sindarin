@@ -1,6 +1,6 @@
 import { Token, Tokens } from "../../../lex";
 import { ParseResult, ASTNode, Kinds } from "../../";
-import { parseValue, ValueNode } from ".";
+import { parseExpression, ValueNode } from ".";
 
 export interface ArrayNode extends ASTNode {
   kind: Kinds.array;
@@ -16,7 +16,7 @@ export function parseArray(tokens: Token[]): ParseResult<ArrayNode> {
     }
   };
   while(result.tokens[0].type !== Tokens.close_square) {
-    const valueResult = parseValue(result.tokens);
+    const valueResult = parseExpression(result.tokens);
     result.tokens = valueResult.tokens;
     result.node.value.push(valueResult.node);
     if(result.tokens[0].type === Tokens.comma) {

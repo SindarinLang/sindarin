@@ -1,6 +1,6 @@
 import { Token, Tokens } from "../../../lex";
 import { ParseResult, ASTNode } from "../../";
-import { ValueNode, parseValue } from "../value";
+import { ValueNode, parseExpression } from "../value";
 import { TypeNode } from "./type";
 import { Kinds } from "../../node";
 
@@ -15,7 +15,7 @@ export function parseAssign(tokens: Token[]): ParseResult<AssignNode> {
   // TODO: parse multiple identifiers, ex: a, b =
   // TODO: parse destructured identifiers: ex: { a, b } = and [a, b] =
   // TODO: parse types
-  const result = parseValue(tokens.slice(2));
+  const result = parseExpression(tokens.slice(2));
   if(result.tokens[0].type === Tokens.semi) {
     return {
       tokens: result.tokens.slice(1),

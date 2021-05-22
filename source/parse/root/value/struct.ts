@@ -1,6 +1,6 @@
 import { Token, Tokens } from "../../../lex";
 import { ParseResult, ASTNode } from "../../";
-import { parseValue, ValueNode } from ".";
+import { parseExpression, ValueNode } from ".";
 import { Kinds } from "../../node";
 
 export interface StructNode extends ASTNode {
@@ -21,7 +21,7 @@ export function parseStruct(tokens: Token[]): ParseResult<StructNode> {
   while(result.tokens[0].type !== Tokens.close_curly) {
     if(result.tokens[0].type === Tokens.identifier && result.tokens[1]?.type === Tokens.colon) {
       const key = result.tokens[0].value;
-      const valueResult = parseValue(result.tokens.slice(2));
+      const valueResult = parseExpression(result.tokens.slice(2));
       result.tokens = valueResult.tokens;
       result.node.value[key] = valueResult.node;
     } else {

@@ -1,6 +1,6 @@
 import { Token, Tokens } from "../../../../lex";
 import { ParseResult, ASTNode } from "../../../";
-import { parseValue, ValueNode } from "..";
+import { parseExpression, ValueNode } from "..";
 import { parseVoid } from "../void";
 import { Kinds } from "../../../node";
 
@@ -23,7 +23,7 @@ export function parseArguments(tokens: Token[]): ParseResult<ArgumentsNode> {
       result.tokens = voidResult.tokens;
       result.node.value.push(voidResult.node);
     } else {
-      const valueResult = parseValue(result.tokens);
+      const valueResult = parseExpression(result.tokens);
       result.tokens = valueResult.tokens;
       result.node.value.push(valueResult.node);
       if(result.tokens[0]?.type === Tokens.comma) {

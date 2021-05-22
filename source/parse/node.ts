@@ -1,8 +1,8 @@
 import { AssignNode } from "./root/assign";
 import { ImportNode } from "./root/modules";
-import { ExpressionNode } from "./root/value/expression";
 import { IdentifierNode } from "./root/value/identifier";
 import { FloatNode, IntegerNode } from "./root/value/number";
+import { OperatorNode } from "./root/value/operator";
 
 export enum Kinds {
   root,
@@ -17,7 +17,6 @@ export enum Kinds {
   string,
   boolean,
   undefined,
-  expression,
   operator,
   group,
   identifier,
@@ -35,6 +34,8 @@ export enum Kinds {
 export type ASTNode = {
   kind: Kinds;
 };
+
+export type NumericNode = IntegerNode | FloatNode;
 
 export function isImportNode(node: ASTNode): node is ImportNode {
   return node.kind === Kinds.import;
@@ -56,6 +57,10 @@ export function isInteger(node: ASTNode): node is IntegerNode {
   return node.kind === Kinds.integer;
 }
 
-export function isExpression(node: ASTNode): node is ExpressionNode {
-  return node.kind === Kinds.expression;
+export function isOperator(node: ASTNode): node is OperatorNode {
+  return node.kind === Kinds.operator;
+}
+
+export function isNumeric(node: ASTNode): node is NumericNode {
+  return isInteger(node) || isFloat(node);
 }
