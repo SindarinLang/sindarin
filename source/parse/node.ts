@@ -1,5 +1,6 @@
 import { AssignNode } from "./root/assign";
 import { ImportNode } from "./root/modules";
+import { BooleanNode } from "./root/value/boolean";
 import { IdentifierNode } from "./root/value/identifier";
 import { FloatNode, IntegerNode } from "./root/value/number";
 import { OperatorNode } from "./root/value/operator";
@@ -55,6 +56,10 @@ export function isFloat(node: ASTNode): node is FloatNode {
 
 export function isInteger(node: ASTNode): node is IntegerNode {
   return node.kind === Kinds.integer;
+}
+
+export function isBoolean(node: ASTNode): node is BooleanNode {
+  return node.kind === Kinds.boolean;
 }
 
 export function isOperator(node: ASTNode): node is OperatorNode {

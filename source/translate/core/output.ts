@@ -17,6 +17,14 @@ const formats = {
   string: "s"
 };
 
+function getTrue(file: LLVMFile) {
+  return file.builder.CreateGlobalString("true");
+}
+
+function getFalse(file: LLVMFile) {
+  return file.builder.CreateGlobalString("false");
+}
+
 function getFormat(format: ValueOf<typeof formats>, file: LLVMFile) {
   return file.builder.CreateGlobalString(`%${format}\n`, `printf_format_${format}`, 0, file.mod);
 }
@@ -29,10 +37,55 @@ const getFormatF = fileMem((file: LLVMFile) => {
   return getFormat(formats.float, file);
 });
 
+const getFormatS = fileMem((file: LLVMFile) => {
+  return getFormat(formats.string, file);
+});
+
 const getPrintF = fileMem((file: LLVMFile) => {
   const type = getFunctionType(primitives.int32, [primitives.int8Ptr], true);
   return file.createFunction(type, "printf");
 });
+
+function getOutputI1(exporter: LLVMFile, importer: LLVMFile) {
+  const format = getFormatS(exporter);
+  const printf = getPrintF(exporter);
+  // fn
+  const type = getFunctionType(primitives.int32, [primitives.int1]);
+  const name = "_output_i32";
+  const fn = exporter.createFunction(type, name);
+  // blocks
+  const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
+  const trueBlock = llvm.BasicBlock.Create(exporter.context, "true", fn);
+  const falseBlock = llvm.BasicBlock.Create(exporter.context, "false", fn);
+  // entry block
+  exporter.builder.SetInsertionPoint(entryBlock);
+  exporter.builder.CreateCondBr(fn.getArg(0), trueBlock, falseBlock);
+  // true block
+  exporter.builder.SetInsertionPoint(trueBlock);
+  const trueResult = exporter.builder.CreateCall(printf, [exporter.builder.CreateGEP(
+    format,
+    [
+      exporter.builder.getInt32(0),
+      exporter.builder.getInt32(0)
+    ]
+  ), getTrue(exporter)]);
+  exporter.builder.CreateRet(trueResult);
+  // false block
+  exporter.builder.SetInsertionPoint(falseBlock);
+  const falseResult = exporter.builder.CreateCall(printf, [exporter.builder.CreateGEP(
+    format,
+    [
+      exporter.builder.getInt32(0),
+      exporter.builder.getInt32(0)
+    ]
+  ), getFalse(exporter)]);
+  exporter.builder.CreateRet(falseResult);
+  if(!llvm.verifyFunction(fn)) {
+    return importer.createFunction(type, name);
+  } else {
+    throw new Error("Function verification failed");
+  }
+}
 
 function getOutputI32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatD(exporter);
@@ -97,6 +150,9 @@ const overrides: {
 }, {
   argumentTypes: [primitives.float],
   fn: getOutputF32
+}, {
+  argumentTypes: [primitives.int1],
+  fn: getOutputI1
 }];
 
 function matchOverride(argumentTypes: Primitive[], exporter: LLVMFile, importer: LLVMFile) {
