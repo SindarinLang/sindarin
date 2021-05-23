@@ -1,6 +1,6 @@
 import llvm from "llvm-bindings";
-import { LLVMFile, SymbolValue } from "../../file";
-import { isInteger, isFloat, primitives } from "../../primitive";
+import { LLVMFile, SymbolValue } from "../file";
+import { isInteger, isFloat, primitives } from "../primitive";
 
 export function buildFloat(file: LLVMFile, value: number) {
   return {

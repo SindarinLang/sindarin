@@ -1,6 +1,6 @@
 import llvm from "llvm-bindings";
-import { LLVMFile, SymbolValue } from "../../file";
-import { isFloat, isInteger, isBoolean, primitives } from "../../primitive";
+import { LLVMFile, SymbolValue } from "../file";
+import { isFloat, isInteger, isBoolean, primitives } from "../primitive";
 import { buildFloat } from "./float";
 import { buildInteger } from "./integer";
 

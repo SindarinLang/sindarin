@@ -1,5 +1,5 @@
 import { buildValue } from ".";
-import { Tokens } from "../../../lex";
+import { Tokens } from "../../lex";
 import {
   BooleanOperationToken,
   ComparisonOperationToken,
@@ -10,10 +10,10 @@ import {
   isNumericOperation,
   NumericOperationToken,
   OperatorNode
-} from "../../../parse/root/value/operator";
-import { LLVMFile, SymbolValue } from "../../file";
-import { primitives, isInteger, isNumeric, isBoolean } from "../../primitive";
-import { ConditionalKeys } from "../../utils";
+} from "../../parse/root/value/operator";
+import { LLVMFile, SymbolValue } from "../file";
+import { primitives, isInteger, isNumeric, isBoolean } from "../primitive";
+import { ConditionalKeys } from "../utils";
 import { castFloat } from "./float";
 import { castBoolean } from "./boolean";
 

@@ -8,7 +8,7 @@ import { buildFunction } from "./function";
 import { primitives } from "./primitive";
 import { buildCall } from "./call";
 import { buildReturn } from "./return";
-import { buildBoolean } from "./assign/value/boolean";
+import { buildBoolean } from "./value/boolean";
 
 export function translate(ast: AST) {
   console.log(JSON.stringify(ast, null, 2));

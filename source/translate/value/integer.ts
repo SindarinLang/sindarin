@@ -1,6 +1,6 @@
 import llvm from "llvm-bindings";
-import { LLVMFile } from "../../file";
-import { primitives } from "../../primitive";
+import { LLVMFile } from "../file";
+import { primitives } from "../primitive";
 
 export function buildInteger(file: LLVMFile, value: number) {
   return {
