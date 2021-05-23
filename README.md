@@ -713,6 +713,12 @@ fn = (..., error) => {
 a, b, c = fn(1, 2, 3, "ERROR");
 ```
 
+### _Conditional Operator_
+If `b` is falsy, a will be undefined:
+```\
+a = b ? c;
+```
+
 ### _Default Operator_
 If `b` is `undefined`, set `a` to `c`, else set `a` to `b`.
 ```
@@ -720,9 +726,9 @@ a = b ?? c;
 ```
 
 ### _Ternary Operator_
-If `b` is truthy, set `a` to c, else set `a` to `d`.
+`?` and `??` can be combined to create a ternary operator. If `b` is truthy, set `a` to c, else set `a` to `d`.
 ```
-a = b ? c : d;
+a = b ? c ?? d;
 ```
 
 ### _Operator Precendence_

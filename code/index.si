@@ -1,5 +1,5 @@
-import { output };
+import { output, random };
 
-a = 5 < 5.1;
+a = random();
 
-output(a);
+output(a > 10);

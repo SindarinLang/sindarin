@@ -156,7 +156,10 @@ function matchOverride(argumentTypes: Primitive[], exporter: LLVMFile, importer:
     return override.argumentTypes.find((type, index) => argumentTypes[index] !== type) === undefined;
   });
   if(match) {
-    return match.fn(exporter, importer);
+    return {
+      type: primitives.int32,
+      value: match.fn(exporter, importer)
+    };
   } else {
     throw new Error("Override not found");
   }

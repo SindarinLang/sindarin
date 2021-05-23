@@ -3,13 +3,15 @@ import { ModuleNode } from "../../parse/root/modules";
 import { getFile, LLVMFile } from "../file";
 import { Primitive } from "../primitive";
 import { output } from "./output";
+import { random } from "./random";
 
 type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => (argumentTypes: Primitive[]) => llvm.Function;
 
 const core: {
   [name: string]: LLVMFunctionBuilder;
 } = {
-  output
+  output,
+  random
 };
 
 export function getCore(moduleNode: ModuleNode, importer: LLVMFile) {

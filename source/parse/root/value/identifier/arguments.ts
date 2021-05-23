@@ -38,7 +38,7 @@ export function parseArguments(tokens: Token[]): ParseResult<ArgumentsNode> {
     }
   }
   return {
-    tokens: result.tokens.slice(result.tokens[1].type === Tokens.semi ? 2 : 1),
+    tokens: result.tokens.slice(1),
     node: result.node
   };
 }

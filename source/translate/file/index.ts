@@ -12,7 +12,10 @@ export type SymbolValue = {
 };
 
 type FunctionTable = {
-  [name: string]: (argumentTypes: Primitive[]) => llvm.Function;
+  [name: string]: (argumentTypes?: Primitive[]) => {
+    type: Primitive;
+    value: llvm.Function;
+  };
 };
 
 export type LLVMFile = {
@@ -21,7 +24,10 @@ export type LLVMFile = {
   mod: llvm.Module;
   name: string;
   exports: {
-    [name: string]: (argumentTypes: Primitive[]) => llvm.Function;
+    [name: string]: (argumentTypes?: Primitive[]) => {
+      type: Primitive;
+      value: llvm.Function;
+    };
   };
   symbolTable: SymbolTable;
   functionTable: FunctionTable;
