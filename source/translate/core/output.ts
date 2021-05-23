@@ -167,7 +167,7 @@ function matchOverride(argumentTypes: Primitive[], exporter: LLVMFile, importer:
 
 // TODO: just write this as a .ll
 export function output(exporter: LLVMFile, importer: LLVMFile) {
-  return (argumentTypes: Primitive[]) => {
+  return (argumentTypes: Primitive[] = []) => {
     return matchOverride(argumentTypes, exporter, importer);
   };
 }

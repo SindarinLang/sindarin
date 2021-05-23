@@ -5,7 +5,10 @@ import { Primitive } from "../primitive";
 import { output } from "./output";
 import { random } from "./random";
 
-type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => (argumentTypes: Primitive[]) => llvm.Function;
+type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => (argumentTypes?: Primitive[]) => {
+  type: Primitive;
+  value: llvm.Function;
+};
 
 const core: {
   [name: string]: LLVMFunctionBuilder;
