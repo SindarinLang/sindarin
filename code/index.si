@@ -2,4 +2,6 @@ import { output, random };
 
 a = random();
 
-output(a > 10);
+b = a < 10 ? 5;
+
+output(b);

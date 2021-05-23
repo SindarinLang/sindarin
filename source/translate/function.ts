@@ -8,8 +8,8 @@ export function buildFunction(name: string, returnType: Primitive, argumentTypes
   return (file: LLVMFile) => {
     return llvm.Function.Create(
       llvm.FunctionType.get(
-        getPrimitive(file.builder)(returnType),
-        argumentTypes.map((type) => getPrimitive(file.builder)(type)),
+        getPrimitive(file.context)(returnType),
+        argumentTypes.map((type) => getPrimitive(file.context)(type)),
         isVarArg
       ),
       llvm.Function.LinkageTypes.ExternalLinkage,

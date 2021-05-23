@@ -31,6 +31,7 @@ export type LLVMFile = {
   };
   symbolTable: SymbolTable;
   functionTable: FunctionTable;
+  functionStack: llvm.Function[];
   write: () => void;
   getPrimitive: (type: Primitive) => llvm.Type;
 };
@@ -47,13 +48,14 @@ export function getFile(name: string): LLVMFile {
     exports: {},
     symbolTable: {},
     functionTable: {},
+    functionStack: [],
     write: () => {
-      if(!llvm.verifyModule(mod)) {
-        return mod.print(join(process.cwd(), `code/${name}.ll`));
-      } else {
-        throw new Error("Module verification failed");
-      }
+      // if(!llvm.verifyModule(mod)) {
+      return mod.print(join(process.cwd(), `code/${name}.ll`));
+      // } else {
+      //   throw new Error("Module verification failed");
+      // }
     },
-    getPrimitive: getPrimitive(builder)
+    getPrimitive: getPrimitive(context)
   };
 }

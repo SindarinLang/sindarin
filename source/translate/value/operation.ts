@@ -16,6 +16,7 @@ import { primitives, isInteger, isNumeric, isBoolean } from "../primitive";
 import { ConditionalKeys } from "../utils";
 import { castFloat } from "./float";
 import { castBoolean } from "./boolean";
+import { buildConditional } from "./conditional";
 
 export function isBooleanExpression(left: SymbolValue, right: SymbolValue) {
   return isBoolean(left.type) && isBoolean(right.type);
@@ -120,6 +121,8 @@ export function buildOperation(file: LLVMFile, node: OperatorNode): SymbolValue 
         castFloat(file, right)
       )
     };
+  } else if(node.operation === Tokens.question) {
+    return buildConditional(file, node.left, node.right);
   } else {
     throw new Error("Unsupported expression");
   }

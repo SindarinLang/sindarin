@@ -15,6 +15,7 @@ export function translate(ast: AST) {
   const file = getFile("main");
   const files = [file];
   const main = buildFunction("main", primitives.int1)(file);
+  file.functionStack.push(main);
   const mainEntryBlock = llvm.BasicBlock.Create(file.context, "entry", main);
   file.builder.SetInsertionPoint(mainEntryBlock);
   ast.nodes.forEach((node) => {
