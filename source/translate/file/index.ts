@@ -1,6 +1,5 @@
 import { join } from "path";
 import llvm from "llvm-bindings";
-import { createFunctionFn, GetFunctionTypeFn } from "./function";
 import { getPrimitive, Primitive } from "../primitive";
 
 export type SymbolTable = {
@@ -12,6 +11,10 @@ export type SymbolValue = {
   value: llvm.Value;
 };
 
+type FunctionTable = {
+  [name: string]: (argumentTypes: Primitive[]) => llvm.Function;
+};
+
 export type LLVMFile = {
   context: llvm.LLVMContext;
   builder: llvm.IRBuilder;
@@ -21,9 +24,9 @@ export type LLVMFile = {
     [name: string]: (argumentTypes: Primitive[]) => llvm.Function;
   };
   symbolTable: SymbolTable;
+  functionTable: FunctionTable;
   write: () => void;
   getPrimitive: (type: Primitive) => llvm.Type;
-  createFunction: (getType: GetFunctionTypeFn, name: string) => llvm.Function;
 };
 
 export function getFile(name: string): LLVMFile {
@@ -37,6 +40,7 @@ export function getFile(name: string): LLVMFile {
     name,
     exports: {},
     symbolTable: {},
+    functionTable: {},
     write: () => {
       if(!llvm.verifyModule(mod)) {
         return mod.print(join(process.cwd(), `code/${name}.ll`));
@@ -44,7 +48,6 @@ export function getFile(name: string): LLVMFile {
         throw new Error("Module verification failed");
       }
     },
-    getPrimitive: getPrimitive(builder),
-    createFunction: createFunctionFn(builder, mod)
+    getPrimitive: getPrimitive(builder)
   };
 }

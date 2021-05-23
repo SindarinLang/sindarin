@@ -12,6 +12,10 @@ export interface IdentifierNode extends ASTNode {
   // TODO: backward?: IdentifierNode;
 }
 
+export interface CallNode extends IdentifierNode {
+  call: ArgumentsNode;
+}
+
 export function parseIdentifier(tokens: Token[]): ParseResult<IdentifierNode> {
   const result: ParseResult<IdentifierNode> = {
     tokens: tokens.slice(1),

@@ -1,7 +1,7 @@
 import llvm from "llvm-bindings";
 import mem from "mem-fn";
 import { LLVMFile } from "../file";
-import { getFunctionType } from "../file/function";
+import { buildFunction } from "../function";
 import { Primitive, primitives } from "../primitive";
 import { ValueOf } from "../utils";
 
@@ -42,17 +42,15 @@ const getFormatS = fileMem((file: LLVMFile) => {
 });
 
 const getPrintF = fileMem((file: LLVMFile) => {
-  const type = getFunctionType(primitives.int32, [primitives.int8Ptr], true);
-  return file.createFunction(type, "printf");
+  return buildFunction("printf", primitives.int32, [primitives.int8Ptr], true)(file);
 });
 
 function getOutputI1(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatS(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const type = getFunctionType(primitives.int32, [primitives.int1]);
-  const name = "_output_i32";
-  const fn = exporter.createFunction(type, name);
+  const template = buildFunction("_output_i1", primitives.int32, [primitives.int1]);
+  const fn = template(exporter);
   // blocks
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   const trueBlock = llvm.BasicBlock.Create(exporter.context, "true", fn);
@@ -81,7 +79,7 @@ function getOutputI1(exporter: LLVMFile, importer: LLVMFile) {
   ), getFalse(exporter)]);
   exporter.builder.CreateRet(falseResult);
   if(!llvm.verifyFunction(fn)) {
-    return importer.createFunction(type, name);
+    return template(importer);
   } else {
     throw new Error("Function verification failed");
   }
@@ -91,9 +89,8 @@ function getOutputI32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatD(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const type = getFunctionType(primitives.int32, [primitives.int32]);
-  const name = "_output_i32";
-  const fn = exporter.createFunction(type, name);
+  const template = buildFunction("_output_i32", primitives.int32, [primitives.int32]);
+  const fn = template(exporter);
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   exporter.builder.SetInsertionPoint(entryBlock);
@@ -107,7 +104,7 @@ function getOutputI32(exporter: LLVMFile, importer: LLVMFile) {
   ), fn.getArg(0)]);
   exporter.builder.CreateRet(result);
   if(!llvm.verifyFunction(fn)) {
-    return importer.createFunction(type, name);
+    return template(importer);
   } else {
     throw new Error("Function verification failed");
   }
@@ -117,9 +114,8 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatF(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const type = getFunctionType(primitives.int32, [primitives.float]);
-  const name = "_output_f32";
-  const fn = exporter.createFunction(type, name);
+  const template = buildFunction("_output_f32", primitives.int32, [primitives.float]);
+  const fn = template(exporter);
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   exporter.builder.SetInsertionPoint(entryBlock);
@@ -135,7 +131,7 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
   ), double]);
   exporter.builder.CreateRet(result);
   if(!llvm.verifyFunction(fn)) {
-    return importer.createFunction(type, name);
+    return template(importer);
   } else {
     throw new Error("Function verification failed");
   }

@@ -1,29 +1,19 @@
-import { isBoolean, isFloat, isInteger, isOperator } from "../../../parse/node";
+import { isBooleanNode, isFloatNode, isIntegerNode, isOperatorNode } from "../../../parse/node";
 import { ValueNode } from "../../../parse/root/value";
 import { LLVMFile, SymbolValue } from "../../file";
-import { primitives } from "../../primitive";
 import { buildOperation } from "./operation";
 import { buildFloat } from "./float";
 import { buildInteger } from "./integer";
 import { buildBoolean } from "./boolean";
 
 export function buildValue(file: LLVMFile, node: ValueNode): SymbolValue {
-  if(isInteger(node)) {
-    return {
-      type: primitives.int32,
-      value: buildInteger(file, node.value)
-    };
-  } else if(isFloat(node)) {
-    return {
-      type: primitives.float,
-      value: buildFloat(file, node.value)
-    };
-  } else if(isBoolean(node)) {
-    return {
-      type: primitives.int1,
-      value: buildBoolean(file, node.value)
-    };
-  } else if(isOperator(node)) {
+  if(isIntegerNode(node)) {
+    return buildInteger(file, node.value);
+  } else if(isFloatNode(node)) {
+    return buildFloat(file, node.value);
+  } else if(isBooleanNode(node)) {
+    return buildBoolean(file, node.value);
+  } else if(isOperatorNode(node)) {
     return buildOperation(file, node);
   } else {
     throw new Error("Unsupported value");

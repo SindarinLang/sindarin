@@ -13,6 +13,19 @@ export type NumericOperationToken = IntegerOperationToken
   | Tokens.divide;
   // | Tokens.carrot;
 
+export type BooleanOperationToken =
+  // | Tokens.not  // special b/c doesn't need left value
+  | Tokens.and
+  | Tokens.or;
+
+export type ComparisonOperationToken =
+  | Tokens.eq
+  | Tokens.lt
+  | Tokens.gt
+  | Tokens.lte
+  | Tokens.gte
+  | Tokens.neq;
+
 const integerOperations: IntegerOperationToken[] = [
   Tokens.add,
   Tokens.subtract,
@@ -24,6 +37,21 @@ const numericOperators: NumericOperationToken[] = [
   ...integerOperations,
   Tokens.divide
   // Tokens.carrot
+];
+
+const booleanOperations: BooleanOperationToken[] = [
+  // Tokens.not,
+  Tokens.and,
+  Tokens.or
+];
+
+const comparisonOperations: ComparisonOperationToken[] = [
+  Tokens.eq,
+  Tokens.lt,
+  Tokens.gt,
+  Tokens.lte,
+  Tokens.gte,
+  Tokens.neq
 ];
 
 export type OperationToken =
@@ -79,6 +107,14 @@ export function isIntegerOperation(token: OperationToken): token is IntegerOpera
 
 export function isNumericOperation(token: OperationToken): token is NumericOperationToken {
   return numericOperators.includes(token as NumericOperationToken);
+}
+
+export function isBooleanOperation(token: OperationToken): token is BooleanOperationToken {
+  return booleanOperations.includes(token as BooleanOperationToken);
+}
+
+export function isComparisonOperation(token: OperationToken): token is ComparisonOperationToken {
+  return comparisonOperations.includes(token as ComparisonOperationToken);
 }
 
 export const operatorKind = "operator";

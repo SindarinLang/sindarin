@@ -1,8 +1,10 @@
 import llvm from "llvm-bindings";
 import { ConditionalKeys, ValueOf } from "./utils";
 
+type PrimitiveKey = "int1" | "int32" | "float" | "int8Ptr";
+
 export const primitives: {
-  [key: string]: ConditionalKeys<llvm.IRBuilder, () => llvm.Type>;
+  [key in PrimitiveKey]: ConditionalKeys<llvm.IRBuilder, () => llvm.Type>;
 } = {
   int1: "getInt1Ty",
   int32: "getInt32Ty",
@@ -26,4 +28,8 @@ export function isFloat(primitive: Primitive) {
 
 export function isNumeric(primitive: Primitive) {
   return isInteger(primitive) || isFloat(primitive);
+}
+
+export function isBoolean(primitive: Primitive) {
+  return primitive === primitives.int1;
 }
