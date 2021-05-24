@@ -43,13 +43,17 @@
 
 <h2 id="philosophy"><div align="right"><a href="#sindarin">🔝</a></div><i>Philosophy</i></h2>
 
-- Minimize keywords, balance use of separators and operators
-- Functional
-- Compiled to native
-- Type-safety
-- Memory-safety
-- Copy-on-write
-- Don't throw, no try/catch
+- Syntax
+  - Minimize keywords - prefer functions when possible
+  - Operators should visually imply their function
+  - Separators should create "visual abstraction"
+- Features
+  - Functional
+  - Compiled
+  - Type-safe
+  - Memory-safe
+  - Copy-on-write
+  - Don't throw
 
 <h2 id="blow-my-mind-in-30-seconds"><div align="right"><a href="#sindarin">🔝</a></div><i>"Blow my mind in 30 seconds"</i></h2>
 
@@ -211,7 +215,7 @@ export add = (a: number, b: number) => {
   return a + b;
 };
 
-export struct = {
+export myStruct = {
   a: 1,
   b: {
     nested: 5
@@ -220,7 +224,7 @@ export struct = {
 ```
 In another module:
 ```
-from "module-1" import { x, add, struct.b };
+from "module-1" import { x, add, myStruct.b };
 
 // b.nested = 5
 ```
@@ -669,20 +673,46 @@ false >= true               // false (compare by value)
 
 ### _Boolean Operators_
 
+#### _Not_
+```
+x = !true;  // false
+x = !1;     // false
+x = !"a";   // false
+x = !false; // true
+x = !0;     // true
+```
+
 #### _And_
 ```
-x = true & true;  // true
-x = true & 1;     // true
-x = true & "a";   // true
-x = true & [];    // false
+x = true && true;  // true
+x = true && 1;     // true
+x = true && "a";   // true
+x = true && [];    // false
 ```
 
 #### _Or_
 ```
-x = false | true;  // true
-x = false | 1;     // true
-x = false | "a";   // true
-x = false | [];    // false
+x = false || true;  // true
+x = false || 1;     // true
+x = false || "a";   // true
+x = false || [];    // false
+```
+
+### _Bitwise Operators_
+
+#### _And_
+```
+x = 5 & 6;  // 4
+```
+
+#### _Or_
+```
+x = 5 | 2;  // 7
+```
+
+#### _XOr_
+```
+x = 5 !| 3; // 2
 ```
 
 ### _Numeric Operators_
@@ -714,19 +744,19 @@ a, b, c = fn(1, 2, 3, "ERROR");
 ```
 
 ### _Conditional Operator_
-If `b` is falsy, a will be undefined:
+If `b` is falsy, `a` will be `undefined`, else `a` will be set to `c`:
 ```\
 a = b ? c;
 ```
 
 ### _Default Operator_
-If `b` is `undefined`, set `a` to `c`, else set `a` to `b`.
+If `b` is `undefined`, `a` will be set to `c`, else `a` will be set to `b`:
 ```
 a = b ?? c;
 ```
 
 ### _Ternary Operator_
-`?` and `??` can be combined to create a ternary operator. If `b` is truthy, set `a` to c, else set `a` to `d`.
+`?` and `??` can be combined to mimic a ternary operator. If `b` is truthy, set `a` to c, else set `a` to `d`.
 ```
 a = b ? c ?? d;
 ```
@@ -749,10 +779,10 @@ log("Hi");
 
 ### _Install on macOS:_
 ```
-brew install cmake llvm@11
+brew install cmake llvm
 ```
 
 ### _Install on Ubuntu:_
 ```
-sudo apt-get install cmake llvm-11
+sudo apt-get install cmake llvm
 ```
