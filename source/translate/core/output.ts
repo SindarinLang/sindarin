@@ -99,10 +99,10 @@ function getOutputI32Ptr(exporter: LLVMFile, importer: LLVMFile) {
   exporter.builder.SetInsertionPoint(entryBlock);
   // result
   const pointer = exporter.builder.CreatePtrToInt(fn.getArg(0), exporter.builder.getInt32Ty());
-  const valid = exporter.builder.CreateICmpNE(pointer, llvm.Constant.getNullValue(exporter.builder.getInt32Ty()));
+  const isDefined = exporter.builder.CreateICmpNE(pointer, llvm.Constant.getNullValue(exporter.builder.getInt32Ty()));
   const trueBlock = llvm.BasicBlock.Create(exporter.context, "true", fn);
   const falseBlock = llvm.BasicBlock.Create(exporter.context, "false", fn);
-  exporter.builder.CreateCondBr(valid, trueBlock, falseBlock);
+  exporter.builder.CreateCondBr(isDefined, trueBlock, falseBlock);
   // true block
   exporter.builder.SetInsertionPoint(trueBlock);
   const value = exporter.builder.CreateLoad(exporter.builder.getInt32Ty(), fn.getArg(0));

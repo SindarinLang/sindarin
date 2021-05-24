@@ -1,20 +1,16 @@
 import llvm from "llvm-bindings";
-import { ValueNode } from "../../parse/root/value";
-import { LLVMFile } from "../file";
-import { buildValue } from ".";
-import { primitives } from "../primitive";
+import { LLVMFile, SymbolValue } from "../../file";
+import { primitives } from "../../primitive";
 
-export function buildConditional(file: LLVMFile, condition: ValueNode, node: ValueNode) {
+export function buildConditional(file: LLVMFile, left: SymbolValue, right: SymbolValue) {
   const trueBlock = llvm.BasicBlock.Create(file.context, undefined, file.functionStack[file.functionStack.length-1]);
   const falseBlock = llvm.BasicBlock.Create(file.context, undefined, file.functionStack[file.functionStack.length-1]);
   const thenBlock = llvm.BasicBlock.Create(file.context, undefined, file.functionStack[file.functionStack.length-1]);
-  const conditionValue = buildValue(file, condition);
-  file.builder.CreateCondBr(conditionValue.value, trueBlock, falseBlock);
+  file.builder.CreateCondBr(left.value, trueBlock, falseBlock);
   // true block
   file.builder.SetInsertionPoint(trueBlock);
-  const value = buildValue(file, node);
   const pointer = file.builder.CreateAlloca(file.builder.getInt32Ty());
-  file.builder.CreateStore(value.value, pointer);
+  file.builder.CreateStore(right.value, pointer);
   file.builder.CreateBr(thenBlock);
   // false block
   file.builder.SetInsertionPoint(falseBlock);

@@ -11,7 +11,7 @@ import { buildReturn } from "./return";
 import { buildBoolean } from "./value/boolean";
 
 export function translate(ast: AST) {
-  console.log(JSON.stringify(ast, null, 2));
+  // console.log(JSON.stringify(ast, null, 2));
   const file = getFile("main");
   const files = [file];
   const main = buildFunction("main", primitives.int1)(file);

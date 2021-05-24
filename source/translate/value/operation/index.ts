@@ -1,5 +1,5 @@
-import { buildValue } from ".";
-import { Tokens } from "../../lex";
+import { buildValue } from "..";
+import { Tokens } from "../../../lex";
 import {
   BooleanOperationToken,
   ComparisonOperationToken,
@@ -10,12 +10,12 @@ import {
   isNumericOperation,
   NumericOperationToken,
   OperatorNode
-} from "../../parse/root/value/operator";
-import { LLVMFile, SymbolValue } from "../file";
-import { primitives, isInteger, isNumeric, isBoolean } from "../primitive";
-import { ConditionalKeys } from "../utils";
-import { castFloat } from "./float";
-import { castBoolean } from "./boolean";
+} from "../../../parse/root/value/operator";
+import { LLVMFile, SymbolValue } from "../../file";
+import { primitives, isInteger, isNumeric, isBoolean } from "../../primitive";
+import { ConditionalKeys } from "../../utils";
+import { castFloat } from "../float";
+import { castBoolean } from "../boolean";
 import { buildConditional } from "./conditional";
 
 export function isBooleanExpression(left: SymbolValue, right: SymbolValue) {
@@ -122,7 +122,7 @@ export function buildOperation(file: LLVMFile, node: OperatorNode): SymbolValue 
       )
     };
   } else if(node.operation === Tokens.question) {
-    return buildConditional(file, node.left, node.right);
+    return buildConditional(file, left, right);
   } else {
     throw new Error("Unsupported expression");
   }
