@@ -1,7 +1,2 @@
-import { output, random };
+a = "test `quoted` {ok + { a = 1 }.a}";
 
-a = random();
-
-b = a < 10 ? 5 ?? 6;
-
-output(b);

@@ -14,7 +14,7 @@
 
 - [Philosophy](#philosophy)
 - ["Blow my mind in 30 seconds"](#blow-my-mind-in-30-seconds)  
-  - [Function Baking (currying, but better)](#function-baking-currying-but-better)
+  - [Partial Arguments](#partial-arguments)
   - [Argument Forwarding](#argument-forwarding)
   - [Multi-Return](#multi-return)
   - [Naked Functions](#naked-functions)
@@ -193,6 +193,8 @@ Or import directly:
 ```
 from "https://github.com/example/repo" import { otherThing };
 ```
+All imports must use the `.si` extension. If a directory is imported, `index.si` is assumed.
+
 Imports can also be deeply nested:
 ```
 from "other-library" import { thing.run };
@@ -402,6 +404,7 @@ types: { String } = {
   "String",
   "Array",
   "Struct",
+  "Tuple",
   "Function",
   "Undefined"
 };
@@ -411,6 +414,7 @@ type(1);          // types.Number
 type("string");   // types.String
 type([1, 2]);     // types.Array
 type({ a: 1 });   // types.Struct
+type((1, 2));     // types.Tuple
 type(() => 5);    // types.Function
 type(undefined);  // types.Undefined
 
@@ -439,6 +443,7 @@ import { number };
 
 number(true);       // 1
 number(1);          // 1
+number(1_000_000);  // 1000000
 number("1");        // 49
 number([1, 2]);     // undefined
 number({ a: 1 });   // undefined
@@ -708,11 +713,6 @@ x = 5 & 6;  // 4
 #### _Or_
 ```
 x = 5 | 2;  // 7
-```
-
-#### _XOr_
-```
-x = 5 !| 3; // 2
 ```
 
 ### _Numeric Operators_
