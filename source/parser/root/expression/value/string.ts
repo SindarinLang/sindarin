@@ -1,5 +1,5 @@
-import { Token } from "../../../lexer";
-import { ParseResult, ASTNode, Kinds } from "../..";
+import { Token } from "../../../../lexer";
+import { ParseResult, ASTNode, Kinds } from "../../../..";
 
 export interface StringNode extends ASTNode {
   kind: Kinds.string;

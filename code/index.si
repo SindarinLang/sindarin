@@ -1,2 +1,3 @@
-a = "test `quoted` {ok + { a = 1 }.a}";
+import { output };
 
+output(5);

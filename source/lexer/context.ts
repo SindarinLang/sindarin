@@ -23,7 +23,7 @@ export function nextContext(context: Context, kind: Tokens, raw: string, value?:
         raw,
         value,
         location: context.location
-      }),
+      } as Token),
       location: getLocation({
         path: context.location.path,
         line: context.location.line + newLines,

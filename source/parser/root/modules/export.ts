@@ -1,6 +1,6 @@
 import { isToken, Token, Tokens } from "../../../lexer";
 import { ASTNode, PotentialParseResult } from "../..";
-import { ModuleNode, parseModules } from ".";
+import { ModuleNode, parseModules } from "./module";
 import { FromNode } from "./from";
 import { Kinds } from "../../node";
 

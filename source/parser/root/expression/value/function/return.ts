@@ -1,5 +1,5 @@
 import { ASTNode, Kinds } from "../../..";
-import { ArgumentsNode } from "../identifier/arguments";
+import { ArgumentsNode } from "../value/identifier/arguments";
 
 export interface ReturnNode extends ASTNode {
   kind: Kinds.return;

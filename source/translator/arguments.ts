@@ -1,4 +1,4 @@
-import { ArgumentsNode } from "../parser/root/value/identifier/arguments";
+import { ArgumentsNode } from "../parser/root/expression/value/identifier/arguments";
 import { LLVMFile } from "./file";
 import { buildValue } from "./value";
 

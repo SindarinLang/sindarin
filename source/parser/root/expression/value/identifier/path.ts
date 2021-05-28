@@ -1,5 +1,5 @@
-import { Token, Tokens } from "../../../../lexer";
-import { ParseResult, ASTNode, Kinds } from "../../..";
+import { Token, Tokens } from "../../../../../lexer";
+import { ParseResult, ASTNode, Kinds } from "../../../../..";
 
 export interface PathNode extends ASTNode {
   kind: Kinds.path;

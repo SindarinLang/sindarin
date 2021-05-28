@@ -1,43 +1,35 @@
 import reduceFirst from "reduce-first";
-import { Token, Tokens } from "../../lexer";
+import { Token } from "../../lexer";
 import { ParseResult } from "..";
-import {
-  ImportNode,
-  ExportNode,
-  parseFrom,
-  parseImport,
-  parseExport
-} from "./modules";
 import { AssignNode, parseAssign } from "./assign";
 import { ASTNode, Kinds } from "../node";
-import { IdentifierNode, parseIdentifier } from "./value/identifier";
+import {
+  parseFrom,
+  parseImport,
+  parseExport,
+  ImportNode,
+  ExportNode
+} from "./modules";
+
 
 export type TopLevelNode =
   | ImportNode
   | ExportNode
   | AssignNode
-  | IdentifierNode;
+  | ExpressionNode;
 
 export interface RootNode extends ASTNode {
   kind: Kinds.root;
   nodes: TopLevelNode[];
 }
 
-export function parseTopLevel(tokens: Token[]): ParseResult<TopLevelNode> {
-  if(tokens[0].kind === Tokens.from) {
-    return parseFrom(tokens);
-  } else if(tokens[0].kind === Tokens.import) {
-    return parseImport(tokens);
-  } else if(tokens[0].kind === Tokens.export) {
-    return parseExport(tokens);
-  } else if(tokens[0].kind === Tokens.identifier && tokens[1].kind === Tokens.assign) {
-    return parseAssign(tokens);
-  } else if(tokens[0].kind === Tokens.identifier && tokens[1].kind === Tokens.open_round) {
-    return parseIdentifier(tokens);
-  } else {
-    throw new Error(`Invalid token ${tokens[0].location}`);
-  }
-}
+const parsers = [
+  parseFrom,
+  parseImport,
+  parseExport,
+  parseAssign,
+  parseExpression
+];
 
 export function parseRoot(tokens: Token[]): ParseResult<RootNode> {
   const result: ParseResult<RootNode> = {
@@ -47,15 +39,8 @@ export function parseRoot(tokens: Token[]): ParseResult<RootNode> {
       nodes: []
     }
   };
-  const topLevelParsers = [
-    parseFrom,
-    parseImport,
-    parseExport,
-    parseAssign,
-    parseIdentifier
-  ];
   while(result.tokens.length > 0) {
-    const nodeResult = reduceFirst(topLevelParsers, (parser) => {
+    const nodeResult = reduceFirst(parsers, (parser) => {
       return parser(result.tokens);
     });
     if(nodeResult) {

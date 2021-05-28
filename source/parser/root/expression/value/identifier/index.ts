@@ -1,5 +1,5 @@
-import { Token, Tokens } from "../../../../lexer";
-import { ParseResult, ASTNode, Kinds } from "../../..";
+import { Token, Tokens } from "../../../../../lexer";
+import { ParseResult, ASTNode, Kinds } from "../../../../..";
 import { ArgumentsNode, parseArguments } from "./arguments";
 import { parsePath, PathNode } from "./path";
 

@@ -1,8 +1,8 @@
-import { Token, Tokens } from "../../../../lexer";
-import { ParseResult, ASTNode } from "../../..";
-import { parseExpression, ValueNode } from "..";
-import { parseVoid } from "../void";
-import { Kinds } from "../../../node";
+import { Token, Tokens } from "../../../../../lexer";
+import { ParseResult, ASTNode } from "../../../../..";
+import { parseExpression, ValueNode } from "../../..";
+import { parseVoid } from "../../void";
+import { Kinds } from "../../../../node";
 
 export interface ArgumentsNode extends ASTNode {
   kind: Kinds.arguments;

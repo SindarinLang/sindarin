@@ -9,21 +9,20 @@ export type ParseResult<T = ASTNode> = {
 
 export type PotentialParseResult<T = ASTNode> = ParseResult<T> | undefined;
 
-export type Parser<T = ASTNode> = (tokens: Token[]) => ParseResult<T>;
+export type Parser<T = ASTNode> = (tokens: Token[]) => PotentialParseResult<T>;
+
+export type ParserNodes<T extends Array<(tokens: Token[]) => PotentialParseResult<ASTNode>>> = NonNullable<ReturnType<T[number]>>["node"];
 
 const tokenFilter: Tokens[] = [
   Tokens.single_line_comment,
-  Tokens.multi_line_comment
+  Tokens.multi_line_comment,
+  Tokens.space,
+  Tokens.newline
 ];
-
-export function parse(tokens: Token[]) {
-  const filteredTokens = tokens.filter((token) => !tokenFilter.includes(token.kind));
-  return parseRoot(filteredTokens).node;
-}
 
 export type AST = RootNode;
 
-export {
-  Kinds,
-  ASTNode
-} from "./node";
+export function parse(tokens: Token[]): AST {
+  const filteredTokens = tokens.filter((token) => !tokenFilter.includes(token.kind));
+  return parseRoot(filteredTokens).node;
+}

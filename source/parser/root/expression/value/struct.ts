@@ -1,7 +1,7 @@
-import { Token, Tokens } from "../../../lexer";
-import { ParseResult, ASTNode } from "../..";
-import { parseExpression, ValueNode } from ".";
-import { Kinds } from "../../node";
+import { Token, Tokens } from "../../../../lexer";
+import { ParseResult, ASTNode } from "../../../..";
+import { parseExpression, ValueNode } from "../..";
+import { Kinds } from "../../../node";
 
 export interface StructNode extends ASTNode {
   kind: Kinds.struct;

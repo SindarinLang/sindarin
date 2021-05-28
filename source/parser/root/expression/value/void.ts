@@ -1,6 +1,6 @@
-import { Token } from "../../../lexer";
-import { ParseResult, ASTNode } from "../..";
-import { Kinds } from "../../node";
+import { Token } from "../../../../lexer";
+import { ParseResult, ASTNode } from "../../..";
+import { Kinds } from "../../../node";
 
 export interface VoidNode extends ASTNode {
   kind: Kinds.void;
