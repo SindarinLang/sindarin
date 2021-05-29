@@ -1,5 +1,5 @@
 import { ParseResult } from "../..";
-import { haveTokens, Token, Tokens } from "../../../lexer";
+import { haveTokensIn, Token, Tokens } from "../../../lexer";
 import { ASTNode, Kinds } from "../../node";
 
 export interface VoidNode extends ASTNode {
@@ -7,7 +7,7 @@ export interface VoidNode extends ASTNode {
 }
 
 export function parseVoid(tokens: Token[]): ParseResult<VoidNode> {
-  if(haveTokens(tokens, Tokens.comma)) {
+  if(haveTokensIn(tokens, [Tokens.comma, Tokens.close_round])) {
     return {
       tokens,
       node: {

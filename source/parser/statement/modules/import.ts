@@ -1,4 +1,4 @@
-import { isToken, Token, Tokens } from "../../../lexer";
+import { haveTokens, Token, Tokens } from "../../../lexer";
 import { ASTNode, Kinds } from "../../node";
 import { ParseResult } from "../..";
 import { ModuleNode, parseModules } from "./module";
@@ -11,7 +11,7 @@ export interface ImportNode extends ASTNode {
 }
 
 export function parseImport(tokens: Token[], from?: FromNode): ParseResult<ImportNode> {
-  if(isToken(tokens[0], Tokens.import)) {
+  if(haveTokens(tokens, Tokens.import)) {
     const result = parseModules(tokens.slice(1));
     if(result) {
       return {

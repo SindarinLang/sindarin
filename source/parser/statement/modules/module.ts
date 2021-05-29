@@ -1,5 +1,4 @@
 import { haveTokens, Token, Tokens } from "../../../lexer";
-import { parseCurlyCSV } from "../../utils";
 import { ParseResult } from "../..";
 import { ASTNode, Kinds } from "../../node";
 
@@ -13,6 +12,35 @@ export interface ModuleNode extends ASTNode {
   wildcard: boolean;
   modules?: Modules;
 }
+
+type TokenGroupList = Token[][];
+
+function parseSV(tokens: Token[], separator: Tokens, end: Tokens) {
+  const list: TokenGroupList = [[]];
+  let pointer = 1; // skip opener
+  while(tokens[pointer].kind !== end) {
+    if(tokens[pointer].kind === separator) {
+      list.push([]);
+    } else {
+      list[list.length-1].push(tokens[pointer]);
+    }
+    pointer+=1;
+  }
+  return {
+    list,
+    tokens: tokens.slice(pointer)
+  };
+}
+
+function parseCSV(tokens: Token[], end: Tokens) {
+  return parseSV(tokens, Tokens.comma, end);
+}
+
+// { a, b }
+export function parseCurlyCSV(tokens: Token[]) {
+  return parseCSV(tokens, Tokens.close_curly);
+}
+
 
 function moduleNode(self = false, wildcard = false, modules?: Modules): ModuleNode {
   return {
@@ -77,10 +105,10 @@ export function parseModules(tokens: Token[]): ParseResult<ModuleNode> {
     const modules = result.list.reduce((retval, group) => {
       return integrateModulePath(retval, group);
     }, moduleNode());
-    if(haveTokens(result.tokens, Tokens.close_curly, Tokens.semi)) {
+    if(haveTokens(result.tokens, Tokens.close_curly)) {
       return {
         node: modules,
-        tokens: result.tokens.slice(2)
+        tokens: result.tokens.slice(1)
       };
     } else {
       throw new Error("syntax error");

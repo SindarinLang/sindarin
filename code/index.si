@@ -1,3 +1,7 @@
 import { output };
 
 output(5);
+
+a = () => {
+  return 5;
+};

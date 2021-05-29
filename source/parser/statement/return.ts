@@ -11,9 +11,9 @@ export interface ReturnNode extends ASTNode {
 export function parseReturn(tokens: Token[]): ParseResult<ReturnNode> {
   if(haveTokens(tokens, Tokens.return)) {
     const tupleResult = parseTuple(tokens.slice(1));
-    if(tupleResult && haveTokens(tupleResult.tokens, Tokens.semi)) {
+    if(tupleResult) {
       return {
-        tokens: tupleResult.tokens.slice(1),
+        tokens: tupleResult.tokens,
         node: {
           kind: Kinds.return,
           value: tupleResult.node

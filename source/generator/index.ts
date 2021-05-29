@@ -1,6 +1,5 @@
 import llvm from "llvm-bindings";
 import { AST } from "../parser";
-import { isAssignNode, isCallNode, isImportNode } from "../parser/node";
 import { getCore } from "./core";
 import { getFile } from "./file";
 import { buildAssign } from "./assign";
@@ -9,9 +8,9 @@ import { primitives } from "./primitive";
 import { buildCall } from "./call";
 import { buildReturn } from "./return";
 import { buildBoolean } from "./value/boolean";
+import { isNode, Kinds } from "../parser/node";
 
-export function translate(ast: AST) {
-  // console.log(JSON.stringify(ast, null, 2));
+export function generate(ast: AST) {
   const file = getFile("main");
   const files = [file];
   const main = buildFunction("main", primitives.int1)(file);
@@ -19,15 +18,15 @@ export function translate(ast: AST) {
   const mainEntryBlock = llvm.BasicBlock.Create(file.context, "entry", main);
   file.builder.SetInsertionPoint(mainEntryBlock);
   ast.nodes.forEach((node) => {
-    if(isImportNode(node) && node.from === undefined) {
+    if(isNode(node, Kinds.import) && node.from === undefined) {
       const core = getCore(node.module, file);
       Object.keys(node.module.modules ?? {}).forEach((key) => {
         file.functionTable[key] = core.exports[key];
       });
       files.push(core);
-    } else if(isAssignNode(node)) {
+    } else if(isNode(node, Kinds.assignment)) {
       buildAssign(file, node);
-    } else if(isCallNode(node)) {
+    } else if(isNode(node, Kinds.callOperation)) {
       buildCall(file, node);
     }
   });

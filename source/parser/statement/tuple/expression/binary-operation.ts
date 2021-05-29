@@ -67,8 +67,7 @@ export const operators = [
   ...numericOperators,
   ...comparisonOperators,
   ...conditionalOperators,
-  ...functionalOperators,
-  Tokens.dot
+  ...functionalOperators
 ];
 
 export function isBinaryOperation<T extends BinaryOperator>(operation: BinaryOperationNode, operator: T): operation is BinaryOperationNode<T> {

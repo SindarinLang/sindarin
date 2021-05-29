@@ -2,7 +2,7 @@ import { relative, join, extname } from "path";
 import { fileExists } from "file-exists-safe";
 import { lex } from "./lexer";
 import { parse } from "./parser";
-import { translate } from "./translator";
+// import { translate } from "./generator";
 
 async function resolvePath(path: string) {
   const file = extname(path) === "si" ? relative(process.cwd(), path) : join(relative(process.cwd(), path), "index.si");
@@ -22,8 +22,9 @@ if(process.argv.length < 3) {
     if(path === undefined) {
       console.error("Entry does not exist.");
     } else {
-      const tokens = lex(path);
-      // const ast = parse(tokens);
+      const tokens = await lex(path);
+      const ast = parse(tokens);
+      console.log(JSON.stringify(ast, null, 2));
       // translate(ast);
     }
   });

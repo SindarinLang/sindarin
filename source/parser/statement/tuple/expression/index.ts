@@ -17,6 +17,6 @@ export function parseExpression(tokens: Token[]): ParseResult<ExpressionNode> {
       return undefined;
     }
   } else {
-    throw new Error("Syntax error");
+    return undefined;
   }
 }

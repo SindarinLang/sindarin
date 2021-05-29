@@ -36,7 +36,7 @@ export function haveTokensIn<T extends Tokens[]>(tokens: Token[], ...kinds: T[])
   }, true));
 }
 
-export async function lex(path: string) {
+export async function lex(path: string): Promise<Token[]> {
   const file = await readFile(path) as string;
   let context: Context = {
     file,
@@ -50,9 +50,7 @@ export async function lex(path: string) {
   while(context.file.length > 0) {
     context = getToken(context);
   }
-  console.log(context.tokens);
-  return [];
-  // return context.tokens;
+  return context.tokens;
 }
 
 export {

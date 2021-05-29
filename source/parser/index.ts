@@ -1,6 +1,7 @@
-import { StatementNode, parseStatement } from "./statement";
+import { StatementNode, parseStatements } from "./statement";
 import { Token, Tokens } from "../lexer";
 import { ASTNode, Kinds } from "./node";
+import { ListNode } from "./list";
 
 export type ParseResult<T = ASTNode> = {
   node: T;
@@ -24,25 +25,17 @@ export type AST = RootNode;
 
 export interface RootNode extends ASTNode {
   kind: Kinds.root;
-  nodes: StatementNode[];
+  value: ListNode<StatementNode>;
 }
 
 export function parse(tokens: Token[]): AST {
-  const result: ParseResult<RootNode> = {
-    tokens: tokens.filter((token) => !tokenFilter.includes(token.kind)),
-    node: {
+  const statementsResult = parseStatements(tokens.filter((token) => !tokenFilter.includes(token.kind)));
+  if(statementsResult) {
+    return {
       kind: Kinds.root,
-      nodes: []
-    }
-  };
-  while(result.tokens.length > 0) {
-    const statementResult = parseStatement(result.tokens);
-    if(statementResult) {
-      result.tokens = statementResult.tokens;
-      result.node.nodes.push(statementResult.node);
-    } else {
-      throw new Error("Could not parse statement");
-    }
+      value: statementsResult.node
+    };
+  } else {
+    throw new Error("Syntax error");
   }
-  return result.node;
 }

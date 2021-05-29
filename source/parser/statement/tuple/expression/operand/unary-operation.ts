@@ -1,3 +1,4 @@
+import { ExpressionNode } from "..";
 import { ParseResult } from "../../../..";
 import { Tokens, Token, haveTokensIn } from "../../../../../lexer";
 import { ValueOf } from "../../../../../utils";
@@ -15,7 +16,7 @@ const operators = [
 export interface UnaryOperationNode<T extends UnaryOperator = UnaryOperator> extends ASTNode {
   kind: Kinds.unaryOperation;
   operator: T;
-  right: ValueOperationNode;
+  right: ValueOperationNode | ExpressionNode;
 }
 
 export function parseUnaryOperation(tokens: Token[]): ParseResult<UnaryOperationNode> {
