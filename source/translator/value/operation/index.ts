@@ -10,7 +10,7 @@ import {
   isNumericOperation,
   NumericOperationToken,
   OperatorNode
-} from "../../../parser/root/expression/operator";
+} from "../../../parser/statement/expression/binary-operation";
 import { LLVMFile, SymbolValue } from "../../file";
 import { primitives, isInteger, isNumeric, isBoolean } from "../../primitive";
 import { ConditionalKeys } from "../../utils";

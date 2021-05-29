@@ -1,5 +1,5 @@
 import { LLVMFile } from "./file";
-import { CallNode } from "../parser/root/expression/value/identifier";
+import { CallNode } from "../parser/statement/expression/value/identifier";
 import { buildArguments } from "./arguments";
 
 export function buildCall(file: LLVMFile, node: CallNode) {

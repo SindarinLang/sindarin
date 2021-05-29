@@ -1,5 +1,5 @@
 import llvm from "llvm-bindings";
-import { ModuleNode } from "../../parser/root/modules";
+import { ModuleNode } from "../../parser/statement/modules";
 import { getFile, LLVMFile } from "../file";
 import { Primitive } from "../primitive";
 import { output } from "./output";

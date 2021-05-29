@@ -1,4 +1,4 @@
-import { AssignNode } from "../parser/root/assign";
+import { AssignNode } from "../parser/statement/assign";
 import { LLVMFile } from "./file";
 import { buildValue } from "./value";
 

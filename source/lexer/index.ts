@@ -16,11 +16,23 @@ export function isToken<T extends Tokens>(token: Token, kind: T): token is Token
   return token.kind === kind;
 }
 
+export function isTokenIn<T extends Tokens>(token: Token, kind: T[]): token is Token<T> {
+  return (kind as string[]).includes(token.kind);
+}
+
 export function haveTokens<T extends Tokens[]>(tokens: Token[], ...kinds: T): tokens is NonNullable<{
   [Key in keyof T]: T[Key] extends Tokens ? Token<T[Key]> : never;
 }> {
   return Boolean(kinds.reduce((retval, kind, index) => {
     return retval && isToken(tokens[index], kind);
+  }, true));
+}
+
+export function haveTokensIn<T extends Tokens[]>(tokens: Token[], ...kinds: T[]): tokens is NonNullable<{
+  [Key in keyof T]: T[Key] extends Tokens ? Token<T[Key]> : never;
+}> {
+  return Boolean(kinds.reduce((retval, kind, index) => {
+    return retval && isTokenIn(tokens[index], kind);
   }, true));
 }
 

@@ -1,5 +1,5 @@
 import { isBooleanNode, isCallNode, isFloatNode, isIdentifierNode, isIntegerNode, isOperatorNode } from "../../parser/node";
-import { ValueNode } from "../../parser/root/expression";
+import { ValueNode } from "../../parser/statement/expression";
 import { LLVMFile, SymbolValue } from "../file";
 import { buildOperation } from "./operation";
 import { buildFloat } from "./float";
