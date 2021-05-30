@@ -5,7 +5,7 @@ import { ValueOf } from "../../../../../utils";
 import { ASTNode, Kinds } from "../../../../node";
 import { parseValueOperation, ValueOperationNode } from "./value-operation";
 
-type UnaryOperator = ValueOf<typeof operators>;
+export type UnaryOperator = ValueOf<typeof operators>;
 
 const operators = [
   Tokens.not,

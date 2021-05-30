@@ -12,12 +12,12 @@ export type BaseToken<T extends Tokens> = {
 
 export type Token<T extends Tokens = Tokens> = T extends ValueTokens ? ValueToken<T> : BaseToken<T>;
 
-export function isToken<T extends Tokens>(token: Token, kind: T): token is Token<T> {
-  return token.kind === kind;
+export function isToken<T extends Tokens>(token: Token | undefined, kind: T): token is Token<T> {
+  return token?.kind === kind;
 }
 
-export function isTokenIn<T extends Tokens>(token: Token, kind: T[]): token is Token<T> {
-  return (kind as string[]).includes(token.kind);
+export function isTokenIn<T extends Tokens>(token: Token | undefined, kind: T[]): token is Token<T> {
+  return token !== undefined && (kind as string[]).includes(token.kind);
 }
 
 export function haveTokens<T extends Tokens[]>(tokens: Token[], ...kinds: T): tokens is NonNullable<{

@@ -1,7 +1,5 @@
 import { output };
 
-output(5);
+a = false ? 5 ?? 3;
 
-a = () => {
-  return 5;
-};
+output(a);

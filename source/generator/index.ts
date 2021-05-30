@@ -5,10 +5,10 @@ import { getFile } from "./file";
 import { buildAssign } from "./assign";
 import { buildFunction } from "./function";
 import { primitives } from "./primitive";
-import { buildCall } from "./call";
 import { buildReturn } from "./return";
-import { buildBoolean } from "./value/boolean";
+import { getBoolean } from "./tuple/value/boolean";
 import { isNode, Kinds } from "../parser/node";
+import { buildTuple } from "./tuple";
 
 export function generate(ast: AST) {
   const file = getFile("main");
@@ -17,7 +17,7 @@ export function generate(ast: AST) {
   file.functionStack.push(main);
   const mainEntryBlock = llvm.BasicBlock.Create(file.context, "entry", main);
   file.builder.SetInsertionPoint(mainEntryBlock);
-  ast.nodes.forEach((node) => {
+  ast.value.value.forEach((node) => {
     if(isNode(node, Kinds.import) && node.from === undefined) {
       const core = getCore(node.module, file);
       Object.keys(node.module.modules ?? {}).forEach((key) => {
@@ -26,11 +26,13 @@ export function generate(ast: AST) {
       files.push(core);
     } else if(isNode(node, Kinds.assignment)) {
       buildAssign(file, node);
-    } else if(isNode(node, Kinds.callOperation)) {
-      buildCall(file, node);
+    } else if(isNode(node, Kinds.tuple)) {
+      buildTuple(file, node);
     }
+    // TODO: return, export
   });
-  buildReturn(file, buildBoolean(file, false).value);
+  buildReturn(file, getBoolean(file, false)); // TODO: only if no return
+  // TODO: split into separate step
   files.forEach((llvmFile) => {
     llvmFile.write();
   });

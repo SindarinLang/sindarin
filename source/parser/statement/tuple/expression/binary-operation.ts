@@ -6,19 +6,19 @@ import { OperandNode, parseOperand } from "./operand";
 
 type BinaryOperator = ValueOf<typeof operators>;
 
-type BitwiseOperator = ValueOf<typeof bitwiseOperators>;
+export type BitwiseOperator = ValueOf<typeof bitwiseOperators>;
 
-type LogicalOperator = ValueOf<typeof logicalOperators>;
+export type LogicalOperator = ValueOf<typeof logicalOperators>;
 
-type IntegerOperator = ValueOf<typeof integerOperators>;
+export type IntegerOperator = ValueOf<typeof integerOperators>;
 
-type NumericOperator = ValueOf<typeof numericOperators>;
+export type NumericOperator = ValueOf<typeof numericOperators>;
 
-type ComparisonOperator = ValueOf<typeof comparisonOperators>;
+export type ComparisonOperator = ValueOf<typeof comparisonOperators>;
 
-type ConditionalOperator = ValueOf<typeof conditionalOperators>;
+export type ConditionalOperator = ValueOf<typeof conditionalOperators>;
 
-type FunctionalOperator = ValueOf<typeof functionalOperators>;
+export type FunctionalOperator = ValueOf<typeof functionalOperators>;
 
 const bitwiseOperators = [
   Tokens.bitwise_and,

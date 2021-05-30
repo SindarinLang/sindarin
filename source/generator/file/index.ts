@@ -1,6 +1,6 @@
 import { join } from "path";
 import llvm from "llvm-bindings";
-import { getPrimitive, Primitive } from "../primitive";
+import { Primitive } from "../primitive";
 
 export type SymbolTable = {
   [name: string]: SymbolValue;
@@ -8,7 +8,7 @@ export type SymbolTable = {
 
 export type SymbolValue = {
   type: Primitive;
-  value: llvm.Value;
+  value: llvm.Value | llvm.CallInst;
 };
 
 type FunctionTable = {
@@ -33,7 +33,6 @@ export type LLVMFile = {
   functionTable: FunctionTable;
   functionStack: llvm.Function[];
   write: () => void;
-  getPrimitive: (type: Primitive) => llvm.Type;
 };
 
 export function getFile(name: string): LLVMFile {
@@ -55,7 +54,6 @@ export function getFile(name: string): LLVMFile {
       // } else {
       //   throw new Error("Module verification failed");
       // }
-    },
-    getPrimitive: getPrimitive(context)
+    }
   };
 }

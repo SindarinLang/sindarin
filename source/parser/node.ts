@@ -34,6 +34,6 @@ export type ASTNode<K extends Kinds = Kinds> = {
   kind: K;
 };
 
-export function isNode<K extends Kinds>(node: ASTNode, kind: K): node is ASTNode<K> {
-  return node.kind === kind;
+export function isNode<K extends Kinds>(node: ASTNode | undefined, kind: K): node is ASTNode<K> {
+  return node?.kind === kind;
 }

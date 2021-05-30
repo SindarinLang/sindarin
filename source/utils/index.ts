@@ -1,5 +1,5 @@
 
-export type ValueOf<T> = T[keyof T];
+export type ValueOf<T> = Extract<T[keyof T], string>;
 
 export type ConditionalKeys<Base, Condition> = NonNullable<{
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;

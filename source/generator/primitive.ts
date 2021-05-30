@@ -1,10 +1,11 @@
 import llvm from "llvm-bindings";
-import { ConditionalKeys, ValueOf } from "./utils";
+import { ConditionalKeys, ValueOf } from "../utils";
+import { LLVMFile } from "./file";
 
 type PrimitiveKey = "int1" | "int32" | "int32Ptr" | "float" | "int8Ptr";
 
 export const primitives: {
-  [key in PrimitiveKey]: ConditionalKeys<typeof llvm.Type, (context: llvm.LLVMContext) => llvm.Type>;
+  [key in PrimitiveKey]: ConditionalKeys<typeof llvm.Type, (file: LLVMFile) => llvm.Type>;
 } = {
   int1: "getInt1Ty",
   int32: "getInt32Ty",
@@ -15,9 +16,24 @@ export const primitives: {
 
 export type Primitive = ValueOf<typeof primitives>;
 
-export const getPrimitive = (context: llvm.LLVMContext) => {
-  return (type: Primitive) => llvm.Type[type](context);
+type Override = {
+  function: any;
+  signature: Primitive[][];
 };
+
+export type Overrides = Override[];
+
+export const getPrimitive = (file: LLVMFile, type: Primitive) => {
+  return llvm.Type[type](file.context);
+};
+
+export function matchSignature(overrides: Overrides, signature: Primitive[]) {
+  return overrides.find((override) => {
+    return override.signature.reduce((retval, arg, index) => {
+      return retval && arg.includes(signature[index]);
+    }, true as boolean);
+  })?.function ?? (() => undefined);
+}
 
 export function isInteger(primitive: Primitive) {
   return primitive === primitives.int32;

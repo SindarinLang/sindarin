@@ -3,7 +3,7 @@ import mem from "mem-fn";
 import { LLVMFile } from "../file";
 import { buildFunction } from "../function";
 import { Primitive, primitives } from "../primitive";
-import { ValueOf } from "../utils";
+import { ValueOf } from "../../utils";
 
 function fileMem(fn: (file: LLVMFile) => any) {
   return mem(fn, {
