@@ -1,14 +1,9 @@
-import llvm from "llvm-bindings";
 import { ModuleNode } from "../../parser/statement/modules/module";
-import { getFile, LLVMFile } from "../file";
-import { Primitive } from "../primitive";
+import { getFile, LLVMFile, SymbolFunction } from "../file";
 import { output } from "./output";
 import { random } from "./random";
 
-type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => (argumentTypes?: Primitive[]) => {
-  type: Primitive;
-  value: llvm.Function;
-};
+type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => SymbolFunction;
 
 const core: {
   [name: string]: LLVMFunctionBuilder;

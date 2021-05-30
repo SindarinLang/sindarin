@@ -23,6 +23,7 @@ if(process.argv.length < 3) {
       console.error("Entry does not exist.");
     } else {
       const tokens = await lex(path);
+      // console.log(JSON.stringify(tokens, null, 2));
       const ast = parse(tokens);
       // console.log(JSON.stringify(ast, null, 2));
       generate(ast);

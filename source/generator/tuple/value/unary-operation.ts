@@ -2,18 +2,19 @@ import { Tokens } from "../../../lexer";
 import { isNode, Kinds } from "../../../parser/node";
 import { UnaryOperator, UnaryOperationNode } from "../../../parser/statement/tuple/expression/operand/unary-operation";
 import { LLVMFile, SymbolValue } from "../../file";
-import { matchSignature, Overrides, primitives } from "../../primitive";
 import { getBoolean, castBoolean } from "./boolean";
 import { getFloat } from "./float";
 import { getInteger } from "./integer";
 import { buildValue } from "./";
+import { Types } from "../../primitive";
+import { matchSignature, Overrides } from "../../function";
 
 const notOverrides: Overrides = [{
   signature: [
-    [primitives.int1, primitives.int32, primitives.float]
+    [Types.Boolean, Types.Int32, Types.Float32]
   ],
   function: (file: LLVMFile, right: SymbolValue) => ({
-    type: primitives.int1,
+    type: Types.Boolean,
     value: file.builder.CreateICmpEQ(
       getBoolean(file, false),
       castBoolean(file, right)
@@ -23,10 +24,10 @@ const notOverrides: Overrides = [{
 
 const negativeOverrides: Overrides = [{
   signature: [
-    [primitives.int32]
+    [Types.Int32]
   ],
   function: (file: LLVMFile, right: SymbolValue) => ({
-    type: primitives.int32,
+    type: Types.Int32,
     value: file.builder.CreateMul(
       getInteger(file, -1),
       right.value
@@ -34,10 +35,10 @@ const negativeOverrides: Overrides = [{
   })
 }, {
   signature: [
-    [primitives.float]
+    [Types.Float32]
   ],
   function: (file: LLVMFile, right: SymbolValue) => ({
-    type: primitives.float,
+    type: Types.Float32,
     value: file.builder.CreateFMul(
       getFloat(file, -1),
       right.value

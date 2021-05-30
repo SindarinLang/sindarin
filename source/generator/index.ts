@@ -4,16 +4,16 @@ import { getCore } from "./core";
 import { getFile } from "./file";
 import { buildAssign } from "./assign";
 import { buildFunction } from "./function";
-import { primitives } from "./primitive";
 import { buildReturn } from "./return";
 import { getBoolean } from "./tuple/value/boolean";
 import { isNode, Kinds } from "../parser/node";
 import { buildTuple } from "./tuple";
+import { getPrimitive, Types } from "./primitive";
 
 export function generate(ast: AST) {
   const file = getFile("main");
   const files = [file];
-  const main = buildFunction("main", primitives.int1)(file);
+  const main = buildFunction("main", getPrimitive(Types.Boolean))(file);
   file.functionStack.push(main);
   const mainEntryBlock = llvm.BasicBlock.Create(file.context, "entry", main);
   file.builder.SetInsertionPoint(mainEntryBlock);

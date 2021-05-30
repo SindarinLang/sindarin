@@ -32,6 +32,6 @@ export function buildValue(file: LLVMFile, node: ExpressionNode | VoidNode) {
   if(builders[node.kind]) {
     return builders[node.kind](file, node);
   } else {
-    throw new Error("Unsupported value");
+    throw new Error(`Unsupported value for kind '${node.kind}'`);
   }
 }

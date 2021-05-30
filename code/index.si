@@ -1,5 +1,7 @@
-import { output };
+import { output, random };
 
-a = false ? 5 ?? 3;
+a = random();
+
+a = (a < 10) ? 5 ?? 3;
 
 output(a);

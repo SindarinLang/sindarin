@@ -6,16 +6,16 @@ export type SymbolTable = {
   [name: string]: SymbolValue;
 };
 
-export type SymbolValue = {
-  type: Primitive;
-  value: llvm.Value | llvm.CallInst;
-};
+export type SymbolFunction = (args?: Primitive[]) => SymbolValue<llvm.Function>;
+
+type SymbolValueValue = llvm.Value | llvm.CallInst | llvm.Function;
+
+export interface SymbolValue<T extends SymbolValueValue = SymbolValueValue> extends Primitive {
+  value: T;
+}
 
 type FunctionTable = {
-  [name: string]: (argumentTypes?: Primitive[]) => {
-    type: Primitive;
-    value: llvm.Function;
-  };
+  [name: string]: SymbolFunction;
 };
 
 export type LLVMFile = {
@@ -24,10 +24,7 @@ export type LLVMFile = {
   mod: llvm.Module;
   name: string;
   exports: {
-    [name: string]: (argumentTypes?: Primitive[]) => {
-      type: Primitive;
-      value: llvm.Function;
-    };
+    [name: string]: SymbolFunction;
   };
   symbolTable: SymbolTable;
   functionTable: FunctionTable;

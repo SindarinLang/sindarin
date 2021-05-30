@@ -13,9 +13,7 @@ export const ValueTokens = getEnum({
   ...StringTokens,
   identifier: true,
   type: true,
-  number: true,
-  single_line_comment: true,
-  multi_line_comment: true
+  number: true
 });
 
 type Matcher = {
@@ -36,27 +34,11 @@ const matchers: Matcher[] = [{
   kind: ValueTokens.number,
   open: isNumeric,
   while: isNumeric
-}, {
-  kind: ValueTokens.single_line_comment,
-  open: is("// "),
-  while: isNot("\n")
-}, {
-  kind: ValueTokens.multi_line_comment,
-  open: is("/*"),
-  while: isNot("*/")
 }];
 
 function isBetween(char: string, left: string, right: string) {
   const code = char.charCodeAt(0);
   return code >= left.charCodeAt(0) && code <= right.charCodeAt(0);
-}
-
-function isNot(match: string) {
-  return (file: string) => !is(match)(file);
-}
-
-function is(match: string) {
-  return (file: string) => file.startsWith(match);
 }
 
 function isUpper(char: string) {

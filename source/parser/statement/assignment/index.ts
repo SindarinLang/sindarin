@@ -22,7 +22,6 @@ export function parseAssign(tokens: Token[]): ParseResult<AssignmentNode> {
         }
       };
       if(haveTokens(declarationResult.tokens, Tokens.assign)) {
-        console.log("-");
         const tupleResult = parseTuple(declarationResult.tokens.slice(1));
         if(tupleResult) {
           result.tokens = tupleResult.tokens;

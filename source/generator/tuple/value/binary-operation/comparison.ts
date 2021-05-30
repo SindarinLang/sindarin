@@ -2,7 +2,8 @@ import { LLVMOperation } from ".";
 import { Tokens } from "../../../../lexer";
 import { ComparisonOperator, BinaryOperationNode, isComparisonOperation } from "../../../../parser/statement/tuple/expression/binary-operation";
 import { LLVMFile, SymbolValue } from "../../../file";
-import { matchSignature, Overrides, primitives } from "../../../primitive";
+import { matchSignature, Overrides } from "../../../function";
+import { Types } from "../../../primitive";
 import { castFloat } from "../float";
 
 const integerOperations: {
@@ -29,20 +30,20 @@ const floatOperations: {
 
 const overrides: Overrides = [{
   signature: [
-    [primitives.int32],
-    [primitives.int32]
+    [Types.Int32],
+    [Types.Int32]
   ],
-  function: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
-    type: primitives.int32,
+  fn: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
+    type: Types.Int32,
     value: file.builder[integerOperations[operator]](left.value, right.value)
   })
 }, {
   signature: [
-    [primitives.int32, primitives.float],
-    [primitives.int32, primitives.float]
+    [Types.Int32, Types.Float32],
+    [Types.Int32, Types.Float32]
   ],
-  function: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
-    type: primitives.float,
+  fn: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
+    type: Types.Float32,
     value: file.builder[floatOperations[operator]](
       castFloat(file, left),
       castFloat(file, right)
@@ -52,7 +53,7 @@ const overrides: Overrides = [{
 
 export function buildComparisonOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
   if(isComparisonOperation(node)) {
-    const override = matchSignature(overrides, [left.type, right.type]);
+    const override = matchSignature(overrides, [left, right]);
     return override(file, left, node.operator, right);
   } else {
     return undefined;

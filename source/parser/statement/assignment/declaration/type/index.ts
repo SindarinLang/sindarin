@@ -4,7 +4,7 @@ import { ASTNode, Kinds } from "../../../../node";
 
 export interface TypeNode extends ASTNode {
   kind: Kinds.type;
-  value: string; // Boolean, Float, Integer
+  value: string; // -> { type: Boolean, Float, Integer } or for function, { kind: FunctionType, args: Type[], return: Type[] }
 }
 
 // TODO: expansions -

@@ -8,7 +8,7 @@ export interface ListNode<T extends ASTNode> extends ASTNode {
   value: T[];
 }
 
-const endTokens = [
+const endTokens: Tokens[] = [
   Tokens.semi,
   Tokens.close_round,
   Tokens.close_square,
@@ -40,17 +40,18 @@ const getEmptyList = <T extends ASTNode>(tokens: Token[]): ParseResult<ListNode<
 export function parseList<T extends ASTNode>(
   tokens: Token[],
   parsers: Parser<T>[],
-  separator: Tokens
+  separator: Tokens,
+  hardStop = true
 ): ParseResult<ListNode<T>> {
-  if(tokens.length === 0) {
+  if(tokens.length === 0 || (haveTokensIn(tokens, endTokens) && hardStop)) {
     return getEmptyList(tokens);
   } else {
     const result = reduceFirst(parsers, (parser) => {
       return parser(tokens);
     });
     if(result) {
-      if(haveTokens(result.tokens, separator) && (!haveTokensIn(result.tokens, endTokens) || !haveTokensIn(result.tokens.slice(1), endTokens))) {
-        const nextResult = parseList(result.tokens.slice(1), parsers, separator);
+      if(haveTokens(result.tokens, separator)) {
+        const nextResult = parseList(result.tokens.slice(1), parsers, separator, endTokens.includes(separator));
         if(nextResult) {
           return {
             tokens: nextResult.tokens,
@@ -73,8 +74,6 @@ export function parseList<T extends ASTNode>(
       } else {
         return undefined;
       }
-    } else if(haveTokensIn(tokens, endTokens)) {
-      return getEmptyList(tokens);
     } else {
       return undefined;
     }

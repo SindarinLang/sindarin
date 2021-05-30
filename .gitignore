@@ -2,4 +2,5 @@ addons/addon.node
 build
 lib
 node_modules
+.DS_Store
 *.txt

@@ -1,19 +1,23 @@
 import reduceFirst from "reduce-first";
 import { Context, hasChanged } from "../context";
+import { CommentTokens, getCommentToken } from "./comment";
 import { getRawToken, RawTokens } from "./raw";
 import { getValueToken, ValueTokens } from "./value";
 
 export type Tokens =
+  | CommentTokens
   | RawTokens
   | ValueTokens;
 
 export const Tokens = {
-  ...ValueTokens,
-  ...RawTokens
+  ...CommentTokens,
+  ...RawTokens,
+  ...ValueTokens
 };
 
 export function getToken(context: Context): Context {
   const strategies = [
+    getCommentToken,
     getRawToken,
     getValueToken
   ];

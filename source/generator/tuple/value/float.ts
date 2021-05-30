@@ -1,25 +1,26 @@
 import llvm from "llvm-bindings";
 import { FloatNode } from "../../../parser/statement/tuple/expression/operand/value-operation/value/float";
 import { LLVMFile, SymbolValue } from "../../file";
-import { isInteger, isFloat, primitives } from "../../primitive";
+import { isInteger, isFloat, Types, getLLVMBaseType, castFromPointer } from "../../primitive";
 
 export function castFloat(file: LLVMFile, symbol: SymbolValue) {
-  if(isFloat(symbol.type)) {
+  if(isFloat(symbol)) {
     return symbol.value;
-  } else if(isInteger(symbol.type)) {
-    return file.builder.CreateSIToFP(symbol.value, file.builder.getFloatTy());
+  } else if(isInteger(symbol)) {
+    const value = castFromPointer(file, symbol).value;
+    return file.builder.CreateSIToFP(value, getLLVMBaseType(file, Types.Float32));
   } else {
     throw new Error("Unsupported cast to float");
   }
 }
 
 export function getFloat(file: LLVMFile, value: number) {
-  return llvm.ConstantFP.get(file.builder.getFloatTy(), value);
+  return llvm.ConstantFP.get(getLLVMBaseType(file, Types.Float32), value);
 }
 
 export function buildFloat(file: LLVMFile, node: FloatNode) {
   return {
-    type: primitives.float,
+    type: Types.Float32,
     value: getFloat(file, node.value)
   };
 }

@@ -1,33 +1,18 @@
-import llvm from "llvm-bindings";
 import { Tokens } from "../../../../lexer";
 import { BinaryOperationNode } from "../../../../parser/statement/tuple/expression/binary-operation";
 import { LLVMFile, SymbolValue } from "../../../file";
-import { primitives } from "../../../primitive";
+import { castToPointer } from "../../../primitive";
+import { getNull } from "../null";
 
-// TODO: use CreateSelect
 export function buildDefaultOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
   if(node.operator === Tokens.default) {
-    const pointer = file.builder.CreatePtrToInt(left.value, file.builder.getInt32Ty());
-    const isDefined = file.builder.CreateICmpNE(pointer, llvm.Constant.getNullValue(file.builder.getInt32Ty()));
-    const trueBlock = llvm.BasicBlock.Create(file.context, undefined, file.functionStack[file.functionStack.length-1]);
-    const falseBlock = llvm.BasicBlock.Create(file.context, undefined, file.functionStack[file.functionStack.length-1]);
-    const thenBlock = llvm.BasicBlock.Create(file.context, undefined, file.functionStack[file.functionStack.length-1]);
-    file.builder.CreateCondBr(isDefined, trueBlock, falseBlock);
-    // true block
-    file.builder.SetInsertionPoint(trueBlock);
-    const value = file.builder.CreateLoad(llvm.Type.getInt32Ty(file.context), left.value);
-    file.builder.CreateBr(thenBlock);
-    // false block
-    file.builder.SetInsertionPoint(falseBlock);
-    file.builder.CreateBr(thenBlock);
-    // then block
-    file.builder.SetInsertionPoint(thenBlock);
-    const phi = file.builder.CreatePHI(llvm.Type.getInt32Ty(file.context), 1);
-    phi.addIncoming(value, trueBlock);
-    phi.addIncoming(right.value, falseBlock);
+    const leftPointer = castToPointer(file, left).value;
+    const isDefined = file.builder.CreateICmpNE(leftPointer, getNull(file, right.type));
+    const rightPointer = castToPointer(file, right).value;
     return {
-      type: primitives.int32,
-      value: phi
+      type: right.type,
+      isPointer: true,
+      value: file.builder.CreateSelect(isDefined, leftPointer, rightPointer)
     };
   } else {
     return undefined;
