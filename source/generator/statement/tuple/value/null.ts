@@ -1,7 +1,7 @@
 import llvm from "llvm-bindings";
-import { NullNode } from "../../../parser/statement/tuple/expression/operand/value-operation/value/null";
-import { LLVMFile, SymbolValue } from "../../file";
-import { getLLVMPointerType, Types } from "../../primitive";
+import { NullNode } from "../../../../parser/statement/tuple/expression/operand/value-operation/value/null";
+import { LLVMFile, SymbolValue } from "../../../file";
+import { getLLVMPointerType, Types } from "../../../primitive";
 
 export function castNull(file: LLVMFile, symbol: SymbolValue) {
   const type = getLLVMPointerType(file, symbol.type);

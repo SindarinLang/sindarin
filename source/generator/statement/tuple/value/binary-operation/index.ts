@@ -5,13 +5,13 @@ import { buildComparisonOperation } from "./comparison";
 import { buildIntegerOperation } from "./integer";
 import { buildFloatOperation } from "./float";
 import reduceFirst from "reduce-first";
-import { BinaryOperationNode } from "../../../../parser/statement/tuple/expression/binary-operation";
-import { ConditionalKeys } from "../../../../utils";
-import { LLVMFile, SymbolValue } from "../../../file";
+import { BinaryOperationNode } from "../../../../../parser/statement/tuple/expression/binary-operation";
+import { ConditionalKeys } from "../../../../../utils";
+import { LLVMFile, SymbolValue } from "../../../../file";
 import { buildValue } from "..";
 import { buildConditionalOperation } from "./conditional";
 import { buildDefaultOperation } from "./default";
-import { Types, Primitive, getLLVMType } from "../../../primitive";
+import { Types, Primitive, getLLVMType } from "../../../../primitive";
 
 type OperationOverride<T = any> = {
   fn: T;

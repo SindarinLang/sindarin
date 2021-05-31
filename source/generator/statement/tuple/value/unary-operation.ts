@@ -1,13 +1,13 @@
-import { Tokens } from "../../../lexer";
-import { isNode, Kinds } from "../../../parser/node";
-import { UnaryOperator, UnaryOperationNode } from "../../../parser/statement/tuple/expression/operand/unary-operation";
-import { LLVMFile, SymbolValue } from "../../file";
+import { Tokens } from "../../../../lexer";
+import { isNode, Kinds } from "../../../../parser/node";
+import { UnaryOperator, UnaryOperationNode } from "../../../../parser/statement/tuple/expression/operand/unary-operation";
+import { LLVMFile, SymbolValue } from "../../../file";
 import { getBoolean, castBoolean } from "./boolean";
 import { getFloat } from "./float";
 import { getInteger } from "./integer";
-import { buildValue } from "./";
+import { buildValue } from ".";
 import { OperationOverrides, matchSignature } from "./binary-operation";
-import { Types } from "../../primitive";
+import { Types } from "../../../primitive";
 
 const notOverrides: OperationOverrides = [{
   signature: [

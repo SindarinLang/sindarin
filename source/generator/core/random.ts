@@ -1,24 +1,23 @@
 import llvm from "llvm-bindings";
 import { LLVMFile, SymbolFunction } from "../file";
-import { buildFunction } from "../function";
 import { getPrimitive, Types } from "../primitive";
+import { getFunction } from "../statement/tuple/value/function";
 
 export function random(exporter: LLVMFile, importer: LLVMFile): SymbolFunction {
-  const returnType = getPrimitive(Types.Int32);
-  const rand = buildFunction("rand", returnType)(exporter);
-  const template = buildFunction("_random", returnType);
-  const fn = template(exporter);
+  const type = {
+    returnType: getPrimitive(Types.Int32),
+    argumentTypes: []
+  };
+  const rand = getFunction(exporter, type, "rand");
+  const fn = getFunction(exporter, type, "_rand");
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   exporter.builder.SetInsertionPoint(entryBlock);
   const result = exporter.builder.CreateCall(rand, []);
   exporter.builder.CreateRet(result);
   if(!llvm.verifyFunction(fn)) {
     return [{
-      value: template(importer),
-      type: {
-        argumentTypes: [],
-        returnType
-      }
+      value: getFunction(importer, type, "_rand"),
+      type
     }];
   } else {
     throw new Error("Function verification failed");

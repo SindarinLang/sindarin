@@ -1,9 +1,9 @@
 import llvm from "llvm-bindings";
 import mem from "mem-fn";
 import { LLVMFile, SymbolFunction } from "../file";
-import { buildFunction } from "../function";
 import { ValueOf } from "../../utils";
 import { getPrimitive, Types } from "../primitive";
+import { getFunction } from "../statement/tuple/value/function";
 
 function fileMem(fn: (file: LLVMFile) => any) {
   return mem(fn, {
@@ -42,15 +42,22 @@ const getFormatS = fileMem((file: LLVMFile) => {
 });
 
 const getPrintF = fileMem((file: LLVMFile) => {
-  return buildFunction("printf", getPrimitive(Types.Int32), [getPrimitive(Types.UInt8, true)], true)(file);
+  return getFunction(file, {
+    returnType: getPrimitive(Types.Int32),
+    argumentTypes: [getPrimitive(Types.UInt8, true)],
+    isVarArg: true
+  }, "printf");
 });
 
 function getOutputI1(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatS(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const template = buildFunction("_output_i1", getPrimitive(Types.Int32), [getPrimitive(Types.Boolean)]);
-  const fn = template(exporter);
+  const type = {
+    returnType: getPrimitive(Types.Int32),
+    argumentTypes: [getPrimitive(Types.Boolean)]
+  };
+  const fn = getFunction(exporter, type, "_output_i1");
   // blocks
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   const trueBlock = llvm.BasicBlock.Create(exporter.context, "true", fn);
@@ -79,7 +86,10 @@ function getOutputI1(exporter: LLVMFile, importer: LLVMFile) {
   ), getFalse(exporter)]);
   exporter.builder.CreateRet(falseResult);
   if(!llvm.verifyFunction(fn)) {
-    return template(importer);
+    return {
+      value: getFunction(importer, type, "_output_i1"),
+      type
+    };
   } else {
     throw new Error("Function verification failed");
   }
@@ -89,8 +99,11 @@ function getOutputI32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatD(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const template = buildFunction("_output_i32", getPrimitive(Types.Int32), [getPrimitive(Types.Int32)]);
-  const fn = template(exporter);
+  const type = {
+    returnType: getPrimitive(Types.Int32),
+    argumentTypes: [getPrimitive(Types.Int32)]
+  };
+  const fn = getFunction(exporter, type, "_output_i32");
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   exporter.builder.SetInsertionPoint(entryBlock);
@@ -104,7 +117,10 @@ function getOutputI32(exporter: LLVMFile, importer: LLVMFile) {
   ), fn.getArg(0)]);
   exporter.builder.CreateRet(result);
   if(!llvm.verifyFunction(fn)) {
-    return template(importer);
+    return {
+      value: getFunction(importer, type, "_output_i32"),
+      type
+    };
   } else {
     throw new Error("Function verification failed");
   }
@@ -114,8 +130,11 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatF(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const template = buildFunction("_output_f32", getPrimitive(Types.Int32), [getPrimitive(Types.Float32)]);
-  const fn = template(exporter);
+  const type = {
+    returnType: getPrimitive(Types.Int32),
+    argumentTypes: [getPrimitive(Types.Float32)]
+  };
+  const fn = getFunction(exporter, type, "_output_f32");
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
   exporter.builder.SetInsertionPoint(entryBlock);
@@ -131,36 +150,19 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
   ), double]);
   exporter.builder.CreateRet(result);
   if(!llvm.verifyFunction(fn)) {
-    return template(importer);
+    return {
+      value: getFunction(importer, type, "_output_f32"),
+      type
+    };
   } else {
     throw new Error("Function verification failed");
   }
 }
 
 export function output(exporter: LLVMFile, importer: LLVMFile): SymbolFunction {
-  return [{
-    value: getOutputI1(exporter, importer),
-    type: {
-      argumentTypes: [
-        getPrimitive(Types.Boolean)
-      ],
-      returnType: getPrimitive(Types.Int32)
-    }
-  }, {
-    value: getOutputI32(exporter, importer),
-    type: {
-      argumentTypes: [
-        getPrimitive(Types.Int32)
-      ],
-      returnType: getPrimitive(Types.Int32)
-    }
-  }, {
-    value: getOutputF32(exporter, importer),
-    type: {
-      argumentTypes: [
-        getPrimitive(Types.Float32)
-      ],
-      returnType: getPrimitive(Types.Int32)
-    }
-  }];
+  return [
+    getOutputI1(exporter, importer),
+    getOutputI32(exporter, importer),
+    getOutputF32(exporter, importer)
+  ];
 }

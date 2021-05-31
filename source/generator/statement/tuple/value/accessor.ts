@@ -1,7 +1,7 @@
-import { isNode, Kinds } from "../../../parser/node";
-import { AccessorNode } from "../../../parser/statement/tuple/expression/operand/value-operation/accessor";
-import { LLVMFile } from "../../file";
-import { Types } from "../../primitive";
+import { isNode, Kinds } from "../../../../parser/node";
+import { AccessorNode } from "../../../../parser/statement/tuple/expression/operand/value-operation/accessor";
+import { LLVMFile } from "../../../file";
+import { Types } from "../../../primitive";
 import { getFloat } from "./float";
 
 export function buildAccessor(file: LLVMFile, node: AccessorNode) {

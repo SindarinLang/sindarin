@@ -1,7 +1,11 @@
 import { output, random };
 
-a = random();
+a = () => {
+  return 2;
+};
 
-a = (a < 10) ? 5 ?? 4;
+b = a();
 
-output(a);
+c = (b < 10) ? 5 ?? 4;
+
+output(c);

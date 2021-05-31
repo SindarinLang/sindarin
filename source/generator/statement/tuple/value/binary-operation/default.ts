@@ -1,7 +1,7 @@
-import { Tokens } from "../../../../lexer";
-import { BinaryOperationNode } from "../../../../parser/statement/tuple/expression/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../file";
-import { castToPointer } from "../../../primitive";
+import { Tokens } from "../../../../../lexer";
+import { BinaryOperationNode } from "../../../../../parser/statement/tuple/expression/binary-operation";
+import { LLVMFile, SymbolValue } from "../../../../file";
+import { castToPointer } from "../../../../primitive";
 import { getNull } from "../null";
 
 export function buildDefaultOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {

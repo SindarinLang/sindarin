@@ -14,6 +14,7 @@ export const Types = getEnum({
 export type FunctionType = {
   argumentTypes: Primitive[];
   returnType: Primitive;
+  isVarArg?: boolean;
 };
 
 export type Primitive = {
@@ -80,11 +81,11 @@ export function getLLVMSignature(file: LLVMFile, argumentTypes: Primitive[]) {
   return argumentTypes.map((type) => getLLVMType(file, type));
 }
 
-function getFunctionType(file: LLVMFile, type: FunctionType, isVarArg = false) {
+export function getLLVMFunctionType(file: LLVMFile, type: FunctionType) {
   return llvm.FunctionType.get(
     getLLVMType(file, type.returnType),
     getLLVMSignature(file, type.argumentTypes),
-    isVarArg
+    type.isVarArg ?? false
   );
 }
 
@@ -92,7 +93,7 @@ export function getLLVMType(file: LLVMFile, primitive: PrimitivePointer): llvm.P
 export function getLLVMType(file: LLVMFile, primitive: Primitive): llvm.Type;
 export function getLLVMType(file: LLVMFile, primitive: Primitive): llvm.Type {
   if(typeof primitive.type !== "string") {
-    return getFunctionType(file, primitive.type);
+    return getLLVMFunctionType(file, primitive.type);
   } else if(primitive.isPointer) {
     return llvm.Type[llvmTypes[primitive.type].pointer](file.context);
   } else {

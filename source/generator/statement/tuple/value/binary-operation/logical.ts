@@ -1,8 +1,8 @@
 import { LLVMOperation, matchSignature, OperationOverrides } from ".";
-import { Tokens } from "../../../../lexer";
-import { LogicalOperator, BinaryOperationNode, isLogicalOperation } from "../../../../parser/statement/tuple/expression/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../file";
-import { Types } from "../../../primitive";
+import { Tokens } from "../../../../../lexer";
+import { LogicalOperator, BinaryOperationNode, isLogicalOperation } from "../../../../../parser/statement/tuple/expression/binary-operation";
+import { LLVMFile, SymbolValue } from "../../../../file";
+import { Types } from "../../../../primitive";
 import { castBoolean } from "../boolean";
 
 const overrides: OperationOverrides = [{

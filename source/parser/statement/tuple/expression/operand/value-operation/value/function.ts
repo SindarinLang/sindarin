@@ -40,9 +40,9 @@ export function parseFunction(tokens: Token[]): ParseResult<FunctionNode> {
   }
   if(haveTokens(result.tokens, Tokens.open_curly)) {
     const bodyResult = parseStatements(result.tokens.slice(1));
-    if(bodyResult) {
+    if(bodyResult && haveTokens(bodyResult.tokens, Tokens.close_curly)) {
       result.node.body = bodyResult.node;
-      result.tokens = bodyResult.tokens;
+      result.tokens = bodyResult.tokens.slice(1);
       return result;
     } else {
       return undefined;

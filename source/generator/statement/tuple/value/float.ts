@@ -1,7 +1,7 @@
 import llvm from "llvm-bindings";
-import { FloatNode } from "../../../parser/statement/tuple/expression/operand/value-operation/value/float";
-import { LLVMFile, SymbolValue } from "../../file";
-import { isInteger, isFloat, Types, getLLVMBaseType, castFromPointer } from "../../primitive";
+import { FloatNode } from "../../../../parser/statement/tuple/expression/operand/value-operation/value/float";
+import { LLVMFile, SymbolValue } from "../../../file";
+import { isInteger, isFloat, Types, getLLVMBaseType, castFromPointer } from "../../../primitive";
 
 export function castFloat(file: LLVMFile, symbol: SymbolValue) {
   if(isFloat(symbol)) {

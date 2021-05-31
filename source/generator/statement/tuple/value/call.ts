@@ -1,8 +1,8 @@
 import { buildTuple } from "..";
-import { isNode, Kinds } from "../../../parser/node";
-import { CallNode } from "../../../parser/statement/tuple/expression/operand/value-operation/call";
-import { LLVMFile, SymbolFunction, SymbolValue } from "../../file";
-import { Primitive, isValue, isFunction, castFromPointer } from "../../primitive";
+import { isNode, Kinds } from "../../../../parser/node";
+import { CallNode } from "../../../../parser/statement/tuple/expression/operand/value-operation/call";
+import { LLVMFile, SymbolFunction, SymbolValue } from "../../../file";
+import { Primitive, isValue, isFunction, castFromPointer } from "../../../primitive";
 
 function matchPrimitives(a: Primitive, b: Primitive) {
   return a.type === b.type && a.isPointer === b.isPointer;

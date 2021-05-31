@@ -1,8 +1,8 @@
 import { LLVMOperation, matchSignature, OperationOverrides } from ".";
-import { Tokens } from "../../../../lexer";
-import { BitwiseOperator, BinaryOperationNode, isBitwiseOperation } from "../../../../parser/statement/tuple/expression/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../file";
-import { Types } from "../../../primitive";
+import { Tokens } from "../../../../../lexer";
+import { BitwiseOperator, BinaryOperationNode, isBitwiseOperation } from "../../../../../parser/statement/tuple/expression/binary-operation";
+import { LLVMFile, SymbolValue } from "../../../../file";
+import { Types } from "../../../../primitive";
 
 const overrides: OperationOverrides = [{
   fn: buildBooleanBitwiseOperation,

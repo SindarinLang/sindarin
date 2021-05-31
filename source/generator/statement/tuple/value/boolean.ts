@@ -1,7 +1,7 @@
 import llvm from "llvm-bindings";
-import { BooleanNode } from "../../../parser/statement/tuple/expression/operand/value-operation/value/boolean";
-import { LLVMFile, SymbolValue } from "../../file";
-import { isFloat, isInteger, isBoolean, castFromPointer, Types, getLLVMBaseType } from "../../primitive";
+import { BooleanNode } from "../../../../parser/statement/tuple/expression/operand/value-operation/value/boolean";
+import { LLVMFile, SymbolValue } from "../../../file";
+import { isFloat, isInteger, isBoolean, castFromPointer, Types, getLLVMBaseType } from "../../../primitive";
 import { getFloat } from "./float";
 import { getInteger } from "./integer";
 

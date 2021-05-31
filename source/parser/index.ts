@@ -31,10 +31,14 @@ export interface RootNode extends ASTNode {
 export function parse(tokens: Token[]): AST {
   const statementsResult = parseStatements(tokens.filter((token) => !tokenFilter.includes(token.kind)));
   if(statementsResult) {
-    return {
-      kind: Kinds.root,
-      value: statementsResult.node
-    };
+    if(statementsResult.tokens.length > 0) {
+      throw new Error("Syntax error");
+    } else {
+      return {
+        kind: Kinds.root,
+        value: statementsResult.node
+      };
+    }
   } else {
     throw new Error("Syntax error");
   }
