@@ -6,7 +6,8 @@ export type GetFunctionTypeFn = (builder: llvm.IRBuilder) => llvm.FunctionType;
 
 type Override<T = any> = {
   fn: T;
-  signature: Types[][];
+  argumentTypes: Types[][];
+  returnType: Types;
 };
 
 export type Overrides<T = any> = Override<T>[];
@@ -21,7 +22,7 @@ export function getLLVMSignature(file: LLVMFile, argumentTypes: Primitive[]) {
 
 export function matchSignature<T = any>(overrides: Overrides<T>, signature: Primitive[]) {
   return overrides.find((override) => {
-    return override.signature.reduce((retval, arg, index) => {
+    return override.argumentTypes.reduce((retval, arg, index) => {
       return retval && arg.includes(signature[index].type);
     }, true as boolean);
   })?.fn ?? (() => undefined);

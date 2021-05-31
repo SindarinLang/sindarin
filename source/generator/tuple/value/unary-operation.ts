@@ -6,14 +6,14 @@ import { getBoolean, castBoolean } from "./boolean";
 import { getFloat } from "./float";
 import { getInteger } from "./integer";
 import { buildValue } from "./";
+import { OperationOverrides, matchSignature } from "./binary-operation";
 import { Types } from "../../primitive";
-import { matchSignature, Overrides } from "../../function";
 
-const notOverrides: Overrides = [{
+const notOverrides: OperationOverrides = [{
   signature: [
     [Types.Boolean, Types.Int32, Types.Float32]
   ],
-  function: (file: LLVMFile, right: SymbolValue) => ({
+  fn: (file: LLVMFile, right: SymbolValue) => ({
     type: Types.Boolean,
     value: file.builder.CreateICmpEQ(
       getBoolean(file, false),
@@ -22,11 +22,11 @@ const notOverrides: Overrides = [{
   })
 }];
 
-const negativeOverrides: Overrides = [{
+const negativeOverrides: OperationOverrides = [{
   signature: [
     [Types.Int32]
   ],
-  function: (file: LLVMFile, right: SymbolValue) => ({
+  fn: (file: LLVMFile, right: SymbolValue) => ({
     type: Types.Int32,
     value: file.builder.CreateMul(
       getInteger(file, -1),
@@ -37,7 +37,7 @@ const negativeOverrides: Overrides = [{
   signature: [
     [Types.Float32]
   ],
-  function: (file: LLVMFile, right: SymbolValue) => ({
+  fn: (file: LLVMFile, right: SymbolValue) => ({
     type: Types.Float32,
     value: file.builder.CreateFMul(
       getFloat(file, -1),
@@ -47,7 +47,7 @@ const negativeOverrides: Overrides = [{
 }];
 
 const operators: {
-  [key in UnaryOperator]: Overrides;
+  [key in UnaryOperator]: OperationOverrides;
 } = {
   [Tokens.not]: notOverrides,
   [Tokens.subtract]: negativeOverrides,
@@ -57,7 +57,7 @@ const operators: {
 export function buildUnaryOperation(file: LLVMFile, node: UnaryOperationNode) {
   const right = buildValue(file, node.right);
   if(isNode(node, Kinds.unaryOperation)) {
-    const override = matchSignature(operators[node.operator], [right.type]);
+    const override = matchSignature(operators[node.operator], [right]);
     return override(file, right);
   } else {
     return undefined;

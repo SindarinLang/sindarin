@@ -1,13 +1,20 @@
 import llvm, { LLVMContext } from "llvm-bindings";
-import { ConditionalKeys } from "../../utils";
-import { LLVMFile, SymbolValue } from "../file";
+import { ConditionalKeys, getEnum, ValueOf } from "../../utils";
+import { LLVMFile, SymbolFunction, SymbolValue } from "../file";
 
-export enum Types {
-  Boolean = "Boolean",
-  Int32 = "Int32",
-  UInt8 = "UInt8",
-  Float32 = "Float32"
-}
+export type Types = ValueOf<typeof Types>;
+
+export const Types = getEnum({
+  Boolean: true,
+  Int32: true,
+  UInt8: true,
+  Float32: true
+});
+
+export type FunctionType = {
+  argumentTypes: Primitive[];
+  returnType: Primitive;
+};
 
 export type Primitive = {
   type: Types;
@@ -69,10 +76,24 @@ export function getLLVMPointerType(file: LLVMFile, type: Types) {
   });
 }
 
+export function getLLVMSignature(file: LLVMFile, argumentTypes: Primitive[]) {
+  return argumentTypes.map((type) => getLLVMType(file, type));
+}
+
+function getFunctionType(file: LLVMFile, type: FunctionType, isVarArg = false) {
+  return llvm.FunctionType.get(
+    getLLVMType(file, type.returnType),
+    getLLVMSignature(file, type.argumentTypes),
+    isVarArg
+  );
+}
+
 export function getLLVMType(file: LLVMFile, primitive: PrimitivePointer): llvm.PointerType;
 export function getLLVMType(file: LLVMFile, primitive: Primitive): llvm.Type;
 export function getLLVMType(file: LLVMFile, primitive: Primitive): llvm.Type {
-  if(primitive.isPointer) {
+  if(typeof primitive.type !== "string") {
+    return getFunctionType(file, primitive.type);
+  } else if(primitive.isPointer) {
     return llvm.Type[llvmTypes[primitive.type].pointer](file.context);
   } else {
     return llvm.Type[llvmTypes[primitive.type].base](file.context);
@@ -94,14 +115,18 @@ export function castToPointer(file: LLVMFile, symbol: SymbolValue): SymbolValue 
 }
 
 export function castFromPointer(file: LLVMFile, symbol: SymbolValue): SymbolValue {
-  if(symbol.isPointer) {
-    return {
-      type: symbol.type,
-      isPointer: false,
-      value: file.builder.CreateLoad(getLLVMBaseType(file, symbol.type), symbol.value)
-    };
+  if(typeof symbol.type === "string") {
+    if(symbol.isPointer) {
+      return {
+        type: symbol.type,
+        isPointer: false,
+        value: file.builder.CreateLoad(getLLVMBaseType(file, symbol.type), symbol.value)
+      };
+    } else {
+      return symbol;
+    }
   } else {
-    return symbol;
+    throw new Error("not implemented");
   }
 }
 
@@ -115,4 +140,12 @@ export function isInteger(symbol: SymbolValue) {
 
 export function isFloat(symbol: SymbolValue) {
   return symbol.type === Types.Float32;
+}
+
+export function isFunction(symbol: SymbolValue | SymbolFunction): symbol is SymbolFunction {
+  return Array.isArray(symbol);
+}
+
+export function isValue(symbol: SymbolValue | SymbolFunction): symbol is SymbolValue {
+  return !isFunction(symbol);
 }

@@ -1,5 +1,7 @@
 import { Kinds } from "../../../parser/node";
-import { LLVMFile, SymbolValue } from "../../file";
+import { ExpressionNode } from "../../../parser/statement/tuple/expression";
+import { VoidNode } from "../../../parser/statement/tuple/void";
+import { LLVMFile, SymbolFunction, SymbolValue } from "../../file";
 import { buildFloat } from "./float";
 import { buildInteger } from "./integer";
 import { buildBoolean } from "./boolean";
@@ -9,10 +11,8 @@ import { buildCall } from "./call";
 import { buildAccessor } from "./accessor";
 import { buildBinaryOperation } from "./binary-operation";
 import { buildUnaryOperation } from "./unary-operation";
-import { ExpressionNode } from "../../../parser/statement/tuple/expression";
-import { VoidNode } from "../../../parser/statement/tuple/void";
 
-export type ValueBuilder = (file: LLVMFile, node: any) => SymbolValue;
+export type ValueBuilder = (file: LLVMFile, node: any) => SymbolValue | SymbolFunction;
 
 export const builders: {
   [key: string]: ValueBuilder;
@@ -26,6 +26,7 @@ export const builders: {
   [Kinds.unaryOperation]: buildUnaryOperation,
   [Kinds.call]: buildCall,
   [Kinds.accessor]: buildAccessor
+  // [Kinds.function]: buildFunction
 };
 
 export function buildValue(file: LLVMFile, node: ExpressionNode | VoidNode) {

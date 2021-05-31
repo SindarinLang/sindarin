@@ -2,6 +2,6 @@ import { output, random };
 
 a = random();
 
-a = (a < 10) ? 5 ?? 3;
+a = (a < 10) ? 5 ?? 4;
 
 output(a);

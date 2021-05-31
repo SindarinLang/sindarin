@@ -1,11 +1,10 @@
-import { LLVMOperation } from ".";
+import { LLVMOperation, matchSignature, OperationOverrides } from ".";
 import { Tokens } from "../../../../lexer";
 import { IntegerOperator, BinaryOperationNode, isIntegerOperation } from "../../../../parser/statement/tuple/expression/binary-operation";
 import { LLVMFile, SymbolValue } from "../../../file";
-import { matchSignature, Overrides } from "../../../function";
 import { Types } from "../../../primitive";
 
-const overrides: Overrides = [{
+const overrides: OperationOverrides = [{
   signature: [
     [Types.Int32],
     [Types.Int32]

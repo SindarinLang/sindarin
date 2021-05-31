@@ -1,9 +1,9 @@
 import llvm from "llvm-bindings";
 import mem from "mem-fn";
-import { LLVMFile } from "../file";
-import { buildFunction, matchSignature, Overrides } from "../function";
-import { getPrimitive, Primitive, Types } from "../primitive";
+import { LLVMFile, SymbolFunction } from "../file";
+import { buildFunction } from "../function";
 import { ValueOf } from "../../utils";
+import { getPrimitive, Types } from "../primitive";
 
 function fileMem(fn: (file: LLVMFile) => any) {
   return mem(fn, {
@@ -137,35 +137,30 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
   }
 }
 
-const overrides: Overrides<
-  (exporter: LLVMFile, importer: LLVMFile) => llvm.Function
-> = [{
-  signature: [
-    [Types.Int32]
-  ],
-  fn: getOutputI32
-}, {
-  signature: [
-    [Types.Float32]
-  ],
-  fn: getOutputF32
-}, {
-  signature: [
-    [Types.Boolean]
-  ],
-  fn: getOutputI1
-}];
-
-export function output(exporter: LLVMFile, importer: LLVMFile) {
-  return (args: Primitive[] = []) => {
-    const value = matchSignature(overrides, args)(exporter, importer);
-    if(value !== undefined) {
-      return {
-        type: Types.Int32,
-        value
-      };
-    } else {
-      throw new Error("No matching signature");
+export function output(exporter: LLVMFile, importer: LLVMFile): SymbolFunction {
+  return [{
+    value: getOutputI1(exporter, importer),
+    type: {
+      argumentTypes: [
+        getPrimitive(Types.Boolean)
+      ],
+      returnType: getPrimitive(Types.Int32)
     }
-  };
+  }, {
+    value: getOutputI32(exporter, importer),
+    type: {
+      argumentTypes: [
+        getPrimitive(Types.Int32)
+      ],
+      returnType: getPrimitive(Types.Int32)
+    }
+  }, {
+    value: getOutputF32(exporter, importer),
+    type: {
+      argumentTypes: [
+        getPrimitive(Types.Float32)
+      ],
+      returnType: getPrimitive(Types.Int32)
+    }
+  }];
 }

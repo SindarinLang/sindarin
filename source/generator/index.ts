@@ -21,7 +21,7 @@ export function generate(ast: AST) {
     if(isNode(node, Kinds.import) && node.from === undefined) {
       const core = getCore(node.module, file);
       Object.keys(node.module.modules ?? {}).forEach((key) => {
-        file.functionTable[key] = core.exports[key];
+        file.symbolTable[key] = core.exports[key];
       });
       files.push(core);
     } else if(isNode(node, Kinds.assignment)) {

@@ -1,21 +1,22 @@
 import { join } from "path";
 import llvm from "llvm-bindings";
-import { Primitive } from "../primitive";
+import { FunctionType, Primitive } from "../primitive";
 
-export type SymbolTable = {
-  [name: string]: SymbolValue;
+export type FunctionOverride = {
+  type: FunctionType;
+  value: llvm.Function;
 };
 
-export type SymbolFunction = (args?: Primitive[]) => SymbolValue<llvm.Function>;
+export type SymbolFunction = FunctionOverride[];
 
-type SymbolValueValue = llvm.Value | llvm.CallInst | llvm.Function;
+export type LLVMValue = llvm.Value | llvm.CallInst;
 
-export interface SymbolValue<T extends SymbolValueValue = SymbolValueValue> extends Primitive {
+export interface SymbolValue<T extends LLVMValue = LLVMValue> extends Primitive {
   value: T;
 }
 
-type FunctionTable = {
-  [name: string]: SymbolFunction;
+export type SymbolTable = {
+  [name: string]: SymbolValue | SymbolFunction;
 };
 
 export type LLVMFile = {
@@ -23,11 +24,8 @@ export type LLVMFile = {
   builder: llvm.IRBuilder;
   mod: llvm.Module;
   name: string;
-  exports: {
-    [name: string]: SymbolFunction;
-  };
   symbolTable: SymbolTable;
-  functionTable: FunctionTable;
+  exports: SymbolTable;
   functionStack: llvm.Function[];
   write: () => void;
 };
@@ -41,9 +39,8 @@ export function getFile(name: string): LLVMFile {
     builder,
     mod,
     name,
-    exports: {},
     symbolTable: {},
-    functionTable: {},
+    exports: {},
     functionStack: [],
     write: () => {
       // if(!llvm.verifyModule(mod)) {
