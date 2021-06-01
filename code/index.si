@@ -1,7 +1,7 @@
 import { output, random };
 
 a = () => {
-  return 2;
+  return 7;
 };
 
 b = a();

@@ -1,5 +1,5 @@
-addons/addon.node
 build
+coverage
 lib
 node_modules
 .DS_Store

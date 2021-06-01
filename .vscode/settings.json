@@ -72,6 +72,10 @@
     "scoped_allocator": "cpp",
     "span": "cpp",
     "variant": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "string.h": "c",
+    "stdlib.h": "c",
+    "math.h": "c",
+    "time.h": "c"
   }
 }

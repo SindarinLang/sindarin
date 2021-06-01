@@ -2889,6 +2889,14 @@ commander-version@^1.1.0:
     "@bconnorwhite/module" "^2.0.2"
     commander "^6.1.0"
 
+commander-version@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/commander-version/-/commander-version-2.0.0.tgz#861c74259b7e973ca8218c5e1252c5ba39d66e45"
+  integrity sha512-wM1J1YZ37sLuv9Nki2A+55SMqnTtfFSuNnSeYHKGTLTBnBmzFuoIxAT1X7ZUFV3cBwcXoTddPMWKIEluNVWFwA==
+  dependencies:
+    "@bconnorwhite/module" "^2.0.2"
+    commander "^7.2.0"
+
 commander@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-4.1.1.tgz#9fd602bd936294e9e9ef46a3f4d6964044b18068"
@@ -2898,6 +2906,11 @@ commander@^6.1.0:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
+
+commander@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
+  integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
 
 commitizen@^4.0.3, commitizen@^4.2.1:
   version "4.2.4"

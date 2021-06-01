@@ -1,0 +1,3 @@
+import { output };
+
+output(true);

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "An elegant language, for a more civilized age.",
   "repository": "https://github.com/bconnorwhite/sindarin.git",
-  "private": false,
+  "private": true,
   "license": "MIT",
   "author": {
     "name": "Connor White",
@@ -12,18 +12,18 @@
   },
   "keywords": [],
   "files": [
-    "addons",
     "build"
   ],
   "main": "./build/index.js",
-  "gypfile": true,
   "scripts": {
     "build": "bob build",
-    "build-cpp": "node-gyp configure && node-gyp build && cp build/Release/addon.node addons",
-    "compile": "node ./build/index.js code && clang ./code/*.ll -O3 -o ./code/index.out",
-    "start": "yarn build && yarn compile && ./code/index.out"
+    "compile": "sindarin compile code && clang ./code/*.ll -O3 -o ./code/index.out",
+    "sindarin": "node ./build/index.js",
+    "start": "yarn build && yarn compile && ./code/index.out",
+    "test": "bob test"
   },
   "dependencies": {
+    "commander-version": "^2.0.0",
     "file-exists-safe": "^1.1.0",
     "llvm-bindings": "^0.2.0",
     "mem-fn": "^1.0.1",
