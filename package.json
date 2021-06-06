@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "commander-version": "^2.0.0",
-    "file-exists-safe": "^1.1.0",
+    "is-promise": "^4.0.0",
     "llvm-bindings": "^0.2.0",
     "mem-fn": "^1.0.1",
     "node-addon-api": "^3.2.0",
@@ -34,6 +34,8 @@
   },
   "devDependencies": {
     "@bconnorwhite/bob": "^2.9.4",
+    "@types/mock-fs": "^4.13.0",
+    "mock-fs": "^5.0.0",
     "node-gyp": "^8.0.0"
   },
   "eslintConfig": {

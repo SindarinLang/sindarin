@@ -1,11 +1,16 @@
 import { createCommand } from "commander-version";
-import { runPhases } from "./phase";
+import { runPhases } from "./phases";
+import { ResolveOptions } from "./phases/resolver";
 
-export type Options = {
+export type CLIOptions = {
   verbose?: boolean;
 };
 
-export function compileAction(entry: string, options: Options) {
+export type Options = CLIOptions & {
+  resolver?: ResolveOptions;
+};
+
+export function compileAction(entry: string, options: CLIOptions) {
   runPhases(entry, options);
 }
 

@@ -1,6 +1,15 @@
 
 export type ValueOf<T> = Extract<T[keyof T], string>;
 
+export type ItemsOf<T> = T[Extract<keyof T, number>];
+
+export type PromiseOrValue<T> = Promise<T> | T;
+
+export type PromiseValue<PromiseType, Otherwise = PromiseType> =
+  PromiseType extends PromiseOrValue<infer Value> ?
+  { 0: PromiseValue<Value>; 1: Value }[PromiseType extends Promise<unknown> ? 0 : 1] :
+  Otherwise;
+
 export type ConditionalKeys<Base, Condition> = NonNullable<{
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
 }[keyof Base]>;
