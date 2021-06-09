@@ -1,6 +1,6 @@
 import { test, expect } from "@jest/globals";
 import { join } from "path";
-import { resolve } from "../../source/compile/phases/resolver";
+import { resolve } from "../../source/phases";
 
 test("exact", () => {
   const result = resolve("/absolute/exact.si");

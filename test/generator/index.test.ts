@@ -1,7 +1,5 @@
 import { test, expect } from "@jest/globals";
-import { scan } from "../../source/compile/phases/scanner";
-import { parse } from "../../source/compile/phases/parser";
-import { generate } from "../../source/compile/phases/generator";
+import { scan, parse, generate } from "../../source/phases";
 
 test("basic", () => {
   const tokens = scan({

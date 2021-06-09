@@ -1,6 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "@jest/globals";
 import mock, { restore } from "mock-fs";
-import { read } from "../../source/compile/phases/reader";
+import { read } from "../../source/phases";
 
 beforeAll(() => {
   mock({

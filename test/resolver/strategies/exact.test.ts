@@ -1,5 +1,5 @@
 import { test, expect } from "@jest/globals";
-import { resolveExact } from "../../../source/compile/phases/resolver/strategies/exact";
+import { resolveExact } from "../../../source/phases/resolver/strategies/exact";
 
 test("exact", () => {
   const result = resolveExact("/absolute/exact.si");

@@ -1,5 +1,5 @@
 import { test, expect } from "@jest/globals";
-import { scan } from "../../source/compile/phases/scanner";
+import { scan } from "../../source/phases/scanner";
 
 test("basic", () => {
   const result = scan({

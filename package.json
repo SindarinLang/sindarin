@@ -18,6 +18,7 @@
   "scripts": {
     "build": "bob build",
     "compile": "sindarin compile code && clang ./code/*.ll -O3 -o ./code/index.out",
+    "sind": "yarn sindarin",
     "sindarin": "node ./build/index.js",
     "start": "yarn build && yarn compile && ./code/index.out",
     "test": "bob test"
@@ -28,9 +29,10 @@
     "llvm-bindings": "^0.2.0",
     "mem-fn": "^1.0.1",
     "node-addon-api": "^3.2.0",
-    "read-dir-safe": "^1.0.1",
     "read-file-safe": "^1.0.10",
-    "reduce-first": "^1.0.1"
+    "reduce-first": "^1.0.1",
+    "remove-file-safe": "^2.0.0",
+    "tmp-promise": "^3.0.2"
   },
   "devDependencies": {
     "@bconnorwhite/bob": "^2.9.4",

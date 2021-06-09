@@ -1,0 +1,21 @@
+import { output };
+
+// Boolean
+output(true <= false);  // false
+output(false <= true);  // true
+output(true <= true);   // true
+
+// Int
+output(1 <= 2);         // true
+output(2 <= 1);         // false
+output(1 <= 1);         // true
+
+// Float
+output(1.23 <= 2.34);   // true
+output(2.34 <= 1.23);   // false
+output(1.23 <= 1.23);   // true
+
+// Mixed
+output(1 <= 1.23);      // true
+output(1.23 <= 1);      // false
+output(1 <= 1.0);       // true

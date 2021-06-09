@@ -48,12 +48,12 @@
   - Operators should visually imply their function
   - Separators should create "visual abstraction"
 - Features
-  - Functional
+  - Function Oriented
   - Compiled
   - Type-safe
   - Memory-safe
   - Copy-on-write
-  - Don't throw
+  - Exceptionless
 
 <h2 id="blow-my-mind-in-30-seconds"><div align="right"><a href="#sindarin">🔝</a></div><i>"Blow my mind in 30 seconds"</i></h2>
 
@@ -231,8 +231,8 @@ from "module-1" import { x, add, myStruct.b };
 // b.nested = 5
 ```
 
-#### _Example sindarin.json:_
-Dependencies can be defined in sindarin.json:
+#### _Example index.json:_
+Dependencies can be defined in index.json:
 ```json
 {
   "name": "my-package-name",
@@ -246,7 +246,7 @@ Dependencies can be defined in sindarin.json:
 ```
 
 ### _Assignment_
-Variables can be assigned without a keyword, and are immuatable by default. Variables also should be camelcase:
+Variables can be assigned without a keyword. Variables also should be camelcase:
 ```
 x = true;
 y = 5;
@@ -270,6 +270,7 @@ x = {
 y = "b";
 
 // x.a == 1
+// x."a" == 1
 // x.1 == "c"
 // x.y == undefined
 // x[y] == "ok
@@ -298,29 +299,6 @@ x = {
 // x.TALL == "TALL"
 // x["SHORT"] == "SHORT"
 ```
-#### _Mutable Assignment_
-Mutable variables can be created with the `~` operator:
-```
-a ~ 5;
-a ~ a + 1;
-
-// a == 6
-```
-If they are reassigned with `=`, they will remain mutable:
-```
-a ~ 5;
-a = a + 1;
-a = a + 1;
-
-// a == 7
-```
-Variables initialized without a value are also mutable:
-```
-a;
-if(true, a ~ 1);
-
-// a == 1
-```
 
 ### _Types_
 Types should be capitalized and created with `=`, but applied with `:`:
@@ -343,8 +321,8 @@ a: Person = {
 Type assignment inside a struct:
 ```
 b = {
-  name: string = "Obi-Wan",
-  age: number ~ 57            // Mutable field
+  name: String = "Obi-Wan",
+  age: Number = 57
 };
 ```
 
@@ -401,22 +379,24 @@ import { type, types, String };
 types: { String } = {
   "Boolean",
   "Number",
+  "Rune",
   "String",
   "Array",
   "Struct",
   "Tuple",
   "Function",
-  "Undefined"
+  "Null"
 };
 
 type(true);       // types.Boolean
 type(1);          // types.Number
+type('a');        // types.Rune
 type("string");   // types.String
 type([1, 2]);     // types.Array
 type({ a: 1 });   // types.Struct
 type((1, 2));     // types.Tuple
 type(() => 5);    // types.Function
-type(undefined);  // types.Undefined
+type(null);       // types.Null
 
 ```
 
@@ -430,11 +410,11 @@ boolean(0);         // false
 boolean("");        // false
 boolean("string");  // true
 boolean([1, 2]);    // true
-boolean([]);        // false
+boolean([]);        // true
 boolean({ a: 1 });  // true
-boolean({});        // false
+boolean({});        // true
 boolean(() => 5);   // true
-boolean(undefined); // false
+boolean(null);      // false
 ```
 
 #### _number_
@@ -445,49 +425,67 @@ number(true);       // 1
 number(1);          // 1
 number(1_000_000);  // 1000000
 number("1");        // 49
-number([1, 2]);     // undefined
-number({ a: 1 });   // undefined
-number(() => 1);    // undefined
-number(undefined);  // undefined
+number([1, 2]);     // null
+number({ a: 1 });   // null
+number(() => 1);    // null
+number(null);       // null
+```
+
+#### _rune_
+```
+import { rune };
+
+rune('a');          // 'a'
+rune(49);           // '1'
 ```
 
 #### _string_
 ```
 import { string };
 
-string(true);       // "true"
-string(1);          // "1"
-string([1, 2]);     // "[1,2]"
-string("abc");      // '"abc"'
-string({ a: 1 });   // '{"a":1}'
-string(() => 1);    // some unique identifier for the function, memory address?
-string(undefined);  // "undefined"
-string(1, 2);       // "1,2"
+string(true);         // "true"
+string('a');          // '"a"'
+string([49, 50]);     // "[49,50]"
+string("abc");        // '"abc"'
+string({ a: 1 });     // '{"a":1}'
+string(null);         // "null"
+```
+
+#### _asString_
+```
+import { asString };
+
+asString([49, 50]);   // "12"
+asString('a');        // "a"
+asString("abc");      // "abc"
+asString(null);       // ""
 ```
 
 #### _parse_
-(inverse `string`)
+(inverse `json`)
 ```
 import { parse };
 
 parse("true");    // true
 parse("1");       // 1
 parse("1.2");     // 1.2
-parse("ok");      // undefined
+parse("ok");      // null
 parse('"ok"');    // "ok"
 parse("[1]");     // [1]
 parse('{"a":1}'); // { a: 1 }
 ```
+
 #### _array_
 ```
 import { array };
 
+array();                        // []
 array(true);                    // [true]
 array(1);                       // [1]
 array([1, 2]);                  // [[1, 2]]
 array({ 0: 1, 1: "b", a: 3 });  // [{ 0: 1, 1: "b", a: 3 }]
 array(() => 5);                 // [() => 5]
-array(undefined);               // []
+array(null);                    // []
 array(1, 2);                    // [1, 2]
 ```
 
@@ -500,7 +498,7 @@ asArray(1);                       // [1]
 asArray([1, 2]);                  // [1, 2]
 asArray({ 0: 1, 1: "b", a: 3 });  // [1, "b", ["a", 3]]
 asArray(() => 5);                 // [() => 5]
-asArray(undefined);               // []
+asArray(null);                    // []
 asArray(1, 2);                    // [1, 2]
 ```
 
@@ -526,7 +524,7 @@ asStruct(1);                  // { 0: 1 }
 asStruct([1, "b", ["a", 3]]); // { 0: 1, 1: "b", a: 3 }
 asStruct({ a: 1 });           // { a: 1 }
 asStruct(() => 5);            // { 0: () => 5 }
-asStruct(undefined);          // {}
+asStruct(null);               // {}
 asStruct(1, 2);               // { 0: 1, 1: 2 }
 ```
 
@@ -541,7 +539,7 @@ destruct("abc");          // ["a", "b", "c"]
 destruct([1, 2]);         // 1, 2
 destruct({ 0: 1, a: 2 }); // 1, ["a", 2]
 destruct(() => 5);        // () => 5
-destruct(undefined);      // undefined
+destruct(null);           // null
 destruct([1, 2], [3, 4]); // 1, 2, 3, 4
 ```
 
@@ -555,7 +553,7 @@ function("string");   // () => string;
 function([1, 2]);     // () => [1, 2];
 function({ a: 1 });   // () => { a: 1 };
 function(() => 5);    // () => () => 5;
-function(undefined);  // () => undefined;
+function(null);       // () => null;
 ```
 
 #### _call_

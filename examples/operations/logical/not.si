@@ -1,0 +1,13 @@
+import { output };
+
+// Boolean
+output(!true);   // false
+output(!false);  // true
+
+// Int
+output(!6);      // false
+output(!0);      // true
+
+// Float
+output(!1.23);   // false
+output(!0.0);    // true

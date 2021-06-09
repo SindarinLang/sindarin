@@ -30,3 +30,12 @@ export function getEnum<T extends Record<string, any>>(object: T) {
     [Key in keyof T]: Key;
   });
 }
+
+export function createAction(
+  fn: (...args: Array<any>) => any | Promise<any>,
+  transformArgs: (...args: any[]) => Array<any> = (...args) => args
+) {
+  return async (...args: any[]) => {
+    return Promise.resolve(fn(...transformArgs(...args))).then(() => undefined);
+  };
+}
