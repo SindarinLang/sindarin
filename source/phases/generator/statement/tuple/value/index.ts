@@ -13,9 +13,9 @@ import { buildTuple } from "..";
 
 export type ValueBuilder = (file: LLVMFile, node: any) => SymbolValue | SymbolFunction;
 
-export const builders: {
+export const getBuilders: () => {
   [key: string]: ValueBuilder;
-} = {
+} = () => ({
   [Kinds.boolean]: buildBoolean,
   [Kinds.number]: buildInteger,
   [Kinds.null]: buildNull,
@@ -25,9 +25,10 @@ export const builders: {
   [Kinds.call]: buildCall,
   [Kinds.accessor]: buildAccessor,
   [Kinds.function]: buildFunction
-};
+});
 
 export function buildValue(file: LLVMFile, node: TupletNode): SymbolValue | SymbolFunction {
+  const builders = getBuilders();
   if(builders[node.kind]) {
     return builders[node.kind](file, node);
   } else if(isNode(node, Kinds.tuple)) {

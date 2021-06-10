@@ -1,0 +1,10 @@
+import { output };
+
+a = () => {
+  return 5;
+};
+
+b = a();
+
+output(b);  // 5
+
