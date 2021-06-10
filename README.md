@@ -768,9 +768,9 @@ a = 1 + (2 * 3);  // 7
 <h2 id="input-output"><div align="right"><a href="#sindarin">🔝</a></div><i>Input / Output</i></h2>
 
 ```
-import { log };
+import { output };
 
-log("Hi");
+output("Hi");
 ```
 
 <h2 id="development-setup"><div align="right"><a href="#sindarin">🔝</a></div><i>Development Setup</i></h2>
