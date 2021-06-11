@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "commander-version": "^2.0.0",
+    "grapheme-splitter": "^1.0.4",
     "is-promise": "^4.0.0",
     "llvm-bindings": "^0.2.0",
     "mem-fn": "^1.0.1",

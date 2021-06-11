@@ -5,11 +5,15 @@ import { FileLocation, ReadValue } from "../../reader";
 import { CommentTokens, getCommentToken } from "./comment";
 import { getRawToken, RawTokens } from "./raw";
 import { getValueToken, ValueTokens } from "./value";
+import { getOpenQuoteToken, StringTokens } from "./string";
+import { getRuneToken, RuneTokens } from "./rune";
 
 export type Tokens =
   | CommentTokens
   | RawTokens
-  | ValueTokens;
+  | ValueTokens
+  | StringTokens
+  | RuneTokens;
 
 export type Token<T extends Tokens = Tokens> = {
   kind: T;
@@ -21,7 +25,9 @@ export type Token<T extends Tokens = Tokens> = {
 export const Tokens = {
   ...CommentTokens,
   ...RawTokens,
-  ...ValueTokens
+  ...ValueTokens,
+  ...StringTokens,
+  ...RuneTokens
 };
 
 export function isToken<T extends Tokens>(token: Token | undefined, kind: T): token is Token<T> {
@@ -52,7 +58,9 @@ export function getToken(context: ReadValue): Result<ScanPhase> {
   const strategies = [
     getCommentToken,
     getRawToken,
-    getValueToken
+    getValueToken,
+    getOpenQuoteToken,
+    getRuneToken
   ];
   const errorResult: Result<ScanPhase> = {
     context,

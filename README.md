@@ -407,6 +407,9 @@ import { boolean };
 boolean(true);      // true
 boolean(1);         // true
 boolean(0);         // false
+boolean(1.23);      // true
+boolean(0.0);       // false
+boolean('a');       // true
 boolean("");        // false
 boolean("string");  // true
 boolean([1, 2]);    // true
@@ -421,14 +424,34 @@ boolean(null);      // false
 ```
 import { number };
 
+number(false);      // 0
 number(true);       // 1
 number(1);          // 1
-number(1_000_000);  // 1000000
-number("1");        // 49
-number([1, 2]);     // null
-number({ a: 1 });   // null
-number(() => 1);    // null
+number(1.23);       // 1.23
+number('a');        // 97
 number(null);       // null
+```
+
+#### _float_
+```
+import { float, float32, float64 };
+
+float(1);   // 1.0 (as Float)
+float32(1); // 1.0 (as Float32)
+float64(1); // 1.0 (as Float64)
+```
+
+#### _int_
+```
+import { int, uint, uint8, uint16, uint32, int32, int64 };
+
+int(1);     // 1 (as Int)
+uint(1);    // 1 (as UInt)
+uint8(1);   // 1 (as UInt8)
+uint16(1);  // 1 (as UInt16)
+uint32(1);  // 1 (as UInt32)
+int32(1);   // 1 (as Int32)
+int64(1);   // 1 (as Int64)
 ```
 
 #### _rune_
@@ -444,10 +467,12 @@ rune(49);           // '1'
 import { string };
 
 string(true);         // "true"
-string('a');          // '"a"'
+string(1);            // "1"
+string(1.23);         // "1.23"
+string('a');          // "`a`"
+string("abc");        // "`abc`"
 string([49, 50]);     // "[49,50]"
-string("abc");        // '"abc"'
-string({ a: 1 });     // '{"a":1}'
+string({ a: 1 });     // "{`a`:1}"
 string(null);         // "null"
 ```
 
@@ -455,24 +480,56 @@ string(null);         // "null"
 ```
 import { asString };
 
-asString([49, 50]);   // "12"
+asString(true);       // "true"
+asString(1);          // "1"
+asString(1.23);       // "1.23"
 asString('a');        // "a"
 asString("abc");      // "abc"
+asString([49, 50]);   // "12"
+asString({ a: 1 });   // "{`a`:1}"
 asString(null);       // ""
 ```
 
-#### _parse_
-(inverse `json`)
+#### _parseBoolean_
 ```
-import { parse };
+import { parseBoolean };
 
-parse("true");    // true
-parse("1");       // 1
-parse("1.2");     // 1.2
-parse("ok");      // null
-parse('"ok"');    // "ok"
-parse("[1]");     // [1]
-parse('{"a":1}'); // { a: 1 }
+parseBoolean("false");  // false
+```
+
+#### _parseInt_
+```
+import { parseInt };
+
+parseNumber("43");  // 43
+```
+
+#### _parseFloat_
+```
+import { parseFloat };
+
+parseFloat("1.23"); // 1.23
+```
+
+#### _parseString_
+```
+import { parseString };
+
+parseString("`abc`"); // "abc"
+```
+
+#### _parseArray_
+```
+import { parseArray };
+
+parseArray("[1,2]");  // [1,2]
+```
+
+#### _parseStruct_
+```
+import { parseStruct };
+
+parseStruct("{`a`:1}"); // { a: 1 }
 ```
 
 #### _array_
@@ -485,7 +542,7 @@ array(1);                       // [1]
 array([1, 2]);                  // [[1, 2]]
 array({ 0: 1, 1: "b", a: 3 });  // [{ 0: 1, 1: "b", a: 3 }]
 array(() => 5);                 // [() => 5]
-array(null);                    // []
+array(null);                    // null
 array(1, 2);                    // [1, 2]
 ```
 
@@ -493,12 +550,13 @@ array(1, 2);                    // [1, 2]
 ```
 import { asArray };
 
+asArray();                        // []
 asArray(true);                    // [true]
 asArray(1);                       // [1]
 asArray([1, 2]);                  // [1, 2]
 asArray({ 0: 1, 1: "b", a: 3 });  // [1, "b", ["a", 3]]
 asArray(() => 5);                 // [() => 5]
-asArray(null);                    // []
+asArray(null);                    // null
 asArray(1, 2);                    // [1, 2]
 ```
 

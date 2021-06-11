@@ -1,9 +1,10 @@
-import { getToken } from "..";
-import { getScanError, ScanPhase } from "../..";
-import { Result } from "../../..";
-import { getEnum } from "../../../../utils";
-import { ReadValue } from "../../../reader";
-import { mergeResults, getResult } from "../../result";
+import { getToken } from ".";
+import { getScanError, ScanPhase } from "..";
+import { Result } from "../..";
+import { getEnum } from "../../../utils";
+import { ReadValue } from "../../reader";
+import { getEscapeCharacter } from "../escape-sequences";
+import { mergeResults, getResult } from "../result";
 
 export type StringTokens = keyof typeof StringTokens;
 
@@ -19,23 +20,10 @@ export const StringTokens = getEnum({
   string: true
 });
 
-const escapes = {
-  "\\n": "\n",
-  "\\t": "\t",
-  "`": "\"",
-  "\\\"": "\"",
-  "\\`": "`",
-  "\\{": "{",
-  "\\\\": "\\"
-};
-
 function getStringChar(file: string) {
-  const match = (Object.keys(escapes) as (keyof typeof escapes)[]).find((key) => file.startsWith(key));
-  if(match) {
-    return {
-      raw: file.substring(0, match.length),
-      value: escapes[match]
-    };
+  const escapeCharacter = getEscapeCharacter(file);
+  if(escapeCharacter) {
+    return escapeCharacter;
   } else {
     return {
       raw: file[0],

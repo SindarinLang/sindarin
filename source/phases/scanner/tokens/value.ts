@@ -1,14 +1,12 @@
-import { ScanPhase, Tokens } from "../..";
-import { getEnum } from "../../../../utils";
-import { StringTokens } from "./string";
-import { TokenMatchers, getMatch } from "../utils";
-import { ReadValue } from "../../../reader";
-import { Result } from "../../..";
+import { getEnum } from "../../../utils";
+import { Result } from "../..";
+import { ReadValue } from "../../reader";
+import { ScanPhase, Tokens } from "..";
+import { TokenMatchers, getMatch } from "../result";
 
 export type ValueTokens = keyof typeof ValueTokens;
 
 export const ValueTokens = getEnum({
-  ...StringTokens,
   identifier: true,
   type: true,
   number: true

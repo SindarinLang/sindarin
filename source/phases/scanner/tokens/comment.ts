@@ -2,7 +2,7 @@ import { ScanPhase } from "..";
 import { Result } from "../..";
 import { getEnum } from "../../../utils";
 import { ReadValue } from "../../reader";
-import { TokenMatchers, getMatch } from "./utils";
+import { TokenMatchers, getMatch } from "../result";
 
 export type CommentTokens = keyof typeof CommentTokens;
 
