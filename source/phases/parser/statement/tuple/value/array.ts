@@ -14,7 +14,7 @@ export const parseArray: ParsePhase<ArrayNode> = (tokens: Token[]) => {
   if(haveTokens(tokens, Tokens.open_square)) {
     const listResult = parseCommaList<ExpressionNode>(tokens.slice(1), [parseExpression]);
     if(listResult.value && haveTokens(listResult.context, Tokens.close_square)) {
-      return getResult(listResult.context, {
+      return getResult(listResult.context.slice(1), {
         kind: Kinds.array,
         value: listResult.value.value
       });
