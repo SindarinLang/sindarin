@@ -1,6 +1,6 @@
 import { output };
 
-a = (value: Int32) => {
+a = (value: Int32): Int32 => {
   return value;
 };
 

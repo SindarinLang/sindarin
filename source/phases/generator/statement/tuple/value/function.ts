@@ -1,6 +1,6 @@
 import llvm from "llvm-bindings";
 import { buildStatement } from "../..";
-import { RootNode, FunctionNode, ParametersNode, isNode, Kinds } from "../../../../parser";
+import { RootNode, FunctionNode, ParametersNode, isNode, Kinds, TypeNode } from "../../../../parser";
 import { LLVMFile, SymbolFunction, SymbolTable } from "../../../file";
 import { getLLVMFunctionType, FunctionType, Types, getPrimitive, Primitive } from "../../../primitive";
 import { getReturn } from "../../return";
@@ -19,21 +19,25 @@ export function getFunction(file: LLVMFile, type: FunctionType, name?: string) {
   return fn;
 }
 
+function typeToPrimitive(node?: TypeNode): Primitive {
+  if(node) {
+    const type = Types[node.value as Types];
+    if(type) {
+      return {
+        type
+      };
+    } else {
+      throw new Error("Unsupported parameter type");
+    }
+  } else {
+    throw new Error("Missing type");
+  }
+}
+
 function getParameters(node: ParametersNode): Primitive[] {
   return node.value.map((parameterNode) => {
     if(isNode(parameterNode, Kinds.assignment)) {
-      if(parameterNode.declaration.type) {
-        const type = Types[parameterNode.declaration.type.value as Types];
-        if(type) {
-          return {
-            type
-          };
-        } else {
-          throw new Error("Unsupported parameter type");
-        }
-      } else {
-        throw new Error("Missing parameter type");
-      }
+      return typeToPrimitive(parameterNode.declaration.type);
     } else {
       throw new Error("Unsupported parameter");
     }
@@ -43,20 +47,12 @@ function getParameters(node: ParametersNode): Primitive[] {
 function getArguments(node: ParametersNode, fn: llvm.Function): SymbolTable {
   return node.value.reduce((table, parameterNode, index) => {
     if(isNode(parameterNode, Kinds.assignment)) {
-      if(parameterNode.declaration.type) {
-        const type = Types[parameterNode.declaration.type.value as Types];
-        if(type) {
-          table[parameterNode.declaration.identifier.value] = {
-            type,
-            value: fn.getArg(index)
-          };
-          return table;
-        } else {
-          throw new Error("Unsupported parameter type");
-        }
-      } else {
-        throw new Error("Missing parameter type");
-      }
+      const primitive = typeToPrimitive(parameterNode.declaration.type);
+      table[parameterNode.declaration.identifier.value] = {
+        type: primitive.type,
+        value: fn.getArg(index)
+      };
+      return table;
     } else {
       throw new Error("Unsupported argument");
     }
@@ -67,7 +63,7 @@ export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): Sy
   // Create Function
   const type: FunctionType = {
     argumentTypes: isNode(node, Kinds.root) ? [] : getParameters(node.parameters),
-    returnType: isNode(node, Kinds.root) ? getPrimitive(Types.Boolean) : getPrimitive(Types.Int32)
+    returnType: isNode(node, Kinds.root) ? getPrimitive(Types.Boolean) : typeToPrimitive(node.type)
   };
   const fn = getFunction(file, type, isNode(node, Kinds.root) ? "main": undefined);
   // Push Scope
