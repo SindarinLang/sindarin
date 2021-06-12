@@ -1,6 +1,12 @@
+import { ParametersNode } from "./parameters";
+import { SpreadNode } from "./spread";
+import { AssignmentNode } from "./statement/assignment";
+import { DeclarationNode } from "./statement/assignment/declaration";
+import { TypeNode } from "./statement/assignment/declaration/type";
 import { ExpressionNode, TupletNode } from "./statement/tuple";
 import { BinaryOperationNode } from "./statement/tuple/binary-operation";
 import { UnaryOperationNode } from "./statement/tuple/unary-operation";
+import { FunctionNode } from "./statement/tuple/value/function";
 import { NullNode } from "./statement/tuple/value/null";
 import { NumberNode } from "./statement/tuple/value/number";
 import { AccessorNode } from "./statement/tuple/value/operation/accessor";
@@ -54,5 +60,11 @@ export {
   AccessorNode,
   BinaryOperationNode,
   UnaryOperationNode,
-  CallNode
+  CallNode,
+  ParametersNode,
+  AssignmentNode,
+  DeclarationNode,
+  TypeNode,
+  FunctionNode,
+  SpreadNode
 };

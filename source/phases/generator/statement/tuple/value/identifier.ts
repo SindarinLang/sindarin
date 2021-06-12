@@ -1,6 +1,6 @@
 import { IdentifierNode } from "../../../../parser/statement/tuple/value/identifier";
-import { LLVMFile } from "../../../file";
+import { getSymbol, LLVMFile } from "../../../file";
 
 export function buildIdentifier(file: LLVMFile, node: IdentifierNode) {
-  return file.symbolTable[node.value];
+  return getSymbol(file, node.value);
 }

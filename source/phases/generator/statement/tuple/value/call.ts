@@ -1,6 +1,6 @@
 import { buildTuple } from "..";
 import { isNode, Kinds, CallNode } from "../../../../parser";
-import { LLVMFile, SymbolFunction, SymbolValue } from "../../../file";
+import { getSymbol, LLVMFile, SymbolFunction, SymbolValue } from "../../../file";
 import { Primitive, isValue, isFunction, castFromPointer } from "../../../primitive";
 
 function matchPrimitives(a: Primitive, b: Primitive) {
@@ -19,8 +19,8 @@ function matchSignature(overrides: SymbolFunction, signature: (SymbolValue | Sym
 export function buildCall(file: LLVMFile, node: CallNode) {
   const args = buildTuple(file, node.arguments);
   if(isNode(node.left, Kinds.identifier)) {
-    const overrides = file.symbolTable[node.left.value];
-    if(isFunction(overrides)) {
+    const overrides = getSymbol(file, node.left.value);
+    if(overrides && isFunction(overrides)) {
       const refs = args.map((arg) => {
         if(isValue(arg)) {
           return castFromPointer(file, arg);

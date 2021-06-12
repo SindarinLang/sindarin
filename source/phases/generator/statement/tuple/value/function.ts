@@ -1,10 +1,8 @@
 import llvm from "llvm-bindings";
 import { buildStatement } from "../..";
-import { RootNode } from "../../../../parser";
-import { isNode, Kinds } from "../../../../parser/node";
-import { FunctionNode } from "../../../../parser/statement/tuple/value/function";
-import { LLVMFile, SymbolFunction } from "../../../file";
-import { getLLVMFunctionType, FunctionType, Types, getPrimitive } from "../../../primitive";
+import { RootNode, FunctionNode, ParametersNode, isNode, Kinds } from "../../../../parser";
+import { LLVMFile, SymbolFunction, SymbolTable } from "../../../file";
+import { getLLVMFunctionType, FunctionType, Types, getPrimitive, Primitive } from "../../../primitive";
 import { getReturn } from "../../return";
 import { getBoolean } from "./boolean";
 
@@ -21,15 +19,65 @@ export function getFunction(file: LLVMFile, type: FunctionType, name?: string) {
   return fn;
 }
 
+function getParameters(node: ParametersNode): Primitive[] {
+  return node.value.map((parameterNode) => {
+    if(isNode(parameterNode, Kinds.assignment)) {
+      if(parameterNode.declaration.type) {
+        const type = Types[parameterNode.declaration.type.value as Types];
+        if(type) {
+          return {
+            type
+          };
+        } else {
+          throw new Error("Unsupported parameter type");
+        }
+      } else {
+        throw new Error("Missing parameter type");
+      }
+    } else {
+      throw new Error("Unsupported parameter");
+    }
+  });
+}
+
+function getArguments(node: ParametersNode, fn: llvm.Function): SymbolTable {
+  return node.value.reduce((table, parameterNode, index) => {
+    if(isNode(parameterNode, Kinds.assignment)) {
+      if(parameterNode.declaration.type) {
+        const type = Types[parameterNode.declaration.type.value as Types];
+        if(type) {
+          table[parameterNode.declaration.identifier.value] = {
+            type,
+            value: fn.getArg(index)
+          };
+          return table;
+        } else {
+          throw new Error("Unsupported parameter type");
+        }
+      } else {
+        throw new Error("Missing parameter type");
+      }
+    } else {
+      throw new Error("Unsupported argument");
+    }
+  }, {} as SymbolTable);
+}
+
 export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): SymbolFunction {
+  // Create Function
   const type: FunctionType = {
-    argumentTypes: [],
+    argumentTypes: isNode(node, Kinds.root) ? [] : getParameters(node.parameters),
     returnType: isNode(node, Kinds.root) ? getPrimitive(Types.Boolean) : getPrimitive(Types.Int32)
   };
   const fn = getFunction(file, type, isNode(node, Kinds.root) ? "main": undefined);
+  // Push Scope
   const entry = llvm.BasicBlock.Create(file.context, "entry", fn);
-  file.blockStack.push(entry);
+  file.scopeStack.push({
+    block: entry,
+    symbolTable: isNode(node, Kinds.root) ? {} : getArguments(node.parameters, fn)
+  });
   file.builder.SetInsertionPoint(entry);
+  // Build Statements
   const statements = node.value;
   statements.forEach((statementNode) => {
     buildStatement(file, statementNode);
@@ -37,9 +85,10 @@ export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): Sy
   if(isNode(node, Kinds.root)) {
     getReturn(file, getBoolean(file, false));
   }
-  file.blockStack.pop();
-  if(file.blockStack.length > 0) {
-    file.builder.SetInsertionPoint(file.blockStack[file.blockStack.length-1]);
+  // Pop Scope
+  file.scopeStack.pop();
+  if(file.scopeStack.length > 0) {
+    file.builder.SetInsertionPoint(file.scopeStack[file.scopeStack.length-1].block);
   }
   return [{
     value: fn,

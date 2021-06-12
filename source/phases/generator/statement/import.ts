@@ -1,7 +1,7 @@
 import { isNode, Kinds } from "../../parser/node";
 import { StatementNode } from "../../parser/statement";
 import { getCore } from "../core";
-import { LLVMFile } from "../file";
+import { LLVMFile, setSymbol } from "../file";
 
 export function buildImport(file: LLVMFile, node: StatementNode) {
   if(isNode(node, Kinds.import) && node.from === undefined) {
@@ -10,7 +10,7 @@ export function buildImport(file: LLVMFile, node: StatementNode) {
     } else {
       const core = getCore(node.module, file);
       Object.keys(node.module.modules ?? {}).forEach((key) => {
-        file.symbolTable[key] = core.exports[key];
+        setSymbol(file, key, core.exports[key]);
       });
       file.imports.push(core);
     }
