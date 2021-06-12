@@ -11,6 +11,7 @@ import { parseIdentifier } from "./identifier";
 import { parseFunction } from "./function";
 import { parseValueOperation, ValueOperationNode } from "./operation";
 import { parseTuple, TupleNode } from "..";
+import { parseRune } from "./rune";
 
 export type ValueNode = ParserNodes<typeof valueParsers>;
 
@@ -23,6 +24,7 @@ const valueParsers = [
   parseBoolean,
   parseNumberValue,
   parseString,
+  parseRune,
   parseIdentifier,
   parseFunction
 ];

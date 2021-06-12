@@ -29,8 +29,9 @@ const tokenFilter: Tokens[] = [
   Tokens.newline
 ];
 
-export const getParseError = (kind: Kinds | string, location: FileLocation, message?: string) => {
-  return getError("Parse")(`Could not parse ${kind}${message ? ` - ${message} ` : ""} (${locationToString(location)})`);
+export const getParseError = (kind: Kinds | string, location?: FileLocation, message?: string) => {
+  const locationString = location ? ` (${locationToString(location)})` : ""
+  return getError("Parse")(`Could not parse ${kind}${message ? ` - ${message} ` : ""}${locationString}`);
 };
 
 export const parse: ParsePhase<RootNode> = (tokens: ScanValue) => {

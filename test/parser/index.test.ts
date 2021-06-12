@@ -42,3 +42,17 @@ test("array set max length", () => {
   expect(result.value?.kind).toBe("root");
   expect(result.value?.value[0].kind).toBe("tuple");
 });
+
+test("rune", () => {
+  const tokens = scan({
+    contents: "'a';",
+    location: {
+      path: "/test/file.si",
+      line: 1,
+      char: 0
+    }
+  });
+  const result = parse(tokens.value ?? []);
+  expect(result.value?.kind).toBe("root");
+  expect(result.value?.value[0].kind).toBe("tuple");
+});

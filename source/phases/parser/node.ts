@@ -40,7 +40,8 @@ export enum Kinds {
   assignment = "assignment",
   return = "return",
   spread = "spread",
-  list = "list"
+  list = "list",
+  rune = "rune"
 }
 
 export type ASTNode<K extends Kinds = Kinds> = {

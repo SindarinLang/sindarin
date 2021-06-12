@@ -2,5 +2,10 @@ import { IdentifierNode } from "../../../../parser/statement/tuple/value/identif
 import { getSymbol, LLVMFile } from "../../../file";
 
 export function buildIdentifier(file: LLVMFile, node: IdentifierNode) {
-  return getSymbol(file, node.value);
+  const identifier = getSymbol(file, node.value);
+  if(identifier) {
+    return identifier;
+  } else {
+    throw new Error("Undefined identifier");
+  }
 }

@@ -8,7 +8,7 @@ export function getErrorResult<T extends ASTNode>(context: Token[], kind: Kinds 
     context,
     value: undefined,
     errors: [
-      getParseError(kind, context[0].location, message)
+      getParseError(kind, context[0]?.location, message)
     ]
   };
 }

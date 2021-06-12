@@ -21,7 +21,8 @@
     "sind": "yarn sindarin",
     "sindarin": "node ./build/index.js",
     "start": "yarn build && yarn compile && ./code/index.out",
-    "test": "bob test"
+    "test": "yarn jest --config '{\"preset\":\"ts-jest\"}' --coverage --coverage-reporters lcov --coverage-reporters text --testPathPattern test",
+    "test-one": "yarn jest --config '{\"preset\":\"ts-jest\"}' --runTestsByPath"
   },
   "dependencies": {
     "commander-version": "^2.0.0",
