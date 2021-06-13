@@ -1,46 +1,60 @@
 import { Tokens } from "../../../../scanner";
-import { isNode, Kinds } from "../../../../parser/node";
-import { UnaryOperator, UnaryOperationNode } from "../../../../parser/statement/tuple/unary-operation";
-import { LLVMFile, SymbolValue } from "../../../file";
-import { getBoolean, castBoolean } from "./boolean";
-import { getFloat } from "./float";
-import { getInteger } from "./integer";
+import { UnaryOperationNode, UnaryOperator } from "../../../../parser";
+import { LLVMFile } from "../../../file";
 import { buildValue } from ".";
-import { OperationOverrides, matchSignature } from "./binary-operation";
-import { isValue, Types } from "../../../primitive";
+import { Primitives, SymbolValue, getBooleanValue, castToBoolean, getInt32Value, getFloat32Value, LLVMValue, getType } from "../../../types";
+import { ConditionalKeys } from "../../../../../utils";
+
+export type LLVMOperation = ConditionalKeys<llvm.IRBuilder, ((lhs: LLVMValue, rhs: LLVMValue, name?: string) => LLVMValue)>;
+
+type OperationOverride = {
+  fn: (right: SymbolValue) => (file: LLVMFile) => SymbolValue;
+  signature: Primitives[][];
+};
+
+export type OperationOverrides = OperationOverride[];
+
+export function matchSignature(overrides: OperationOverrides, signature: SymbolValue[][]) {
+  return overrides.find((override) => {
+    return override.signature.reduce((retval, arg, index) => {
+      // TODO: search over signature
+      return retval && arg.includes(signature[index][0].type.primitive);
+    }, true as boolean);
+  })?.fn(signature[0][0]);
+}
 
 const notOverrides: OperationOverrides = [{
   signature: [
-    [Types.Boolean, Types.Int32, Types.Float32]
+    [Primitives.Boolean, Primitives.Int32, Primitives.Float32]
   ],
-  fn: (file: LLVMFile, right: SymbolValue) => ({
-    type: Types.Boolean,
+  fn: (right: SymbolValue) => (file: LLVMFile) => ({
+    type: getType(Primitives.Boolean),
     value: file.builder.CreateICmpEQ(
-      getBoolean(file, false),
-      castBoolean(file, right)
+      getBooleanValue(file, false),
+      castToBoolean(file, right).value
     )
   })
 }];
 
 const negativeOverrides: OperationOverrides = [{
   signature: [
-    [Types.Int32]
+    [Primitives.Int32]
   ],
-  fn: (file: LLVMFile, right: SymbolValue) => ({
-    type: Types.Int32,
+  fn: (right: SymbolValue) => (file: LLVMFile) => ({
+    type: getType(Primitives.Int32),
     value: file.builder.CreateMul(
-      getInteger(file, -1),
+      getInt32Value(file, -1),
       right.value
     )
   })
 }, {
   signature: [
-    [Types.Float32]
+    [Primitives.Float32]
   ],
-  fn: (file: LLVMFile, right: SymbolValue) => ({
-    type: Types.Float32,
+  fn: (right: SymbolValue) => (file: LLVMFile) => ({
+    type: getType(Primitives.Float32),
     value: file.builder.CreateFMul(
-      getFloat(file, -1),
+      getFloat32Value(file, -1),
       right.value
     )
   })
@@ -54,12 +68,9 @@ const operators: {
   [Tokens.destruct]: []
 };
 
-export function buildUnaryOperation(file: LLVMFile, node: UnaryOperationNode) {
+export function buildUnaryOperation(file: LLVMFile, node: UnaryOperationNode): SymbolValue[] {
   const right = buildValue(file, node.right);
-  if(isNode(node, Kinds.unaryOperation) && isValue(right)) {
-    const override = matchSignature(operators[node.operator], [right]);
-    return override(file, right);
-  } else {
-    return undefined;
-  }
+  const override = matchSignature(operators[node.operator], [right]);
+  const result = override?.(file);
+  return result ? [result] : [];
 }

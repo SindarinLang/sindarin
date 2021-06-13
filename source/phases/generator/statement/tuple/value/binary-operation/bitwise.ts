@@ -1,22 +1,8 @@
-import { LLVMOperation, matchSignature, OperationOverrides } from ".";
 import { Tokens } from "../../../../../scanner";
-import { BitwiseOperator, BinaryOperationNode, isBitwiseOperation } from "../../../../../parser/statement/tuple/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../../file";
-import { Types } from "../../../../primitive";
-
-const overrides: OperationOverrides = [{
-  fn: buildBooleanBitwiseOperation,
-  signature: [
-    [Types.Boolean],
-    [Types.Boolean]
-  ]
-}, {
-  fn: buildIntegerBitwiseOperation,
-  signature: [
-    [Types.Int32],
-    [Types.Int32]
-  ]
-}];
+import { BitwiseOperator, BinaryOperationNode, isBitwiseOperation } from "../../../../../parser";
+import { LLVMFile } from "../../../../file";
+import { getType, Primitives, SymbolValue } from "../../../../types";
+import { LLVMOperation, matchSignature, OperationOverrides } from ".";
 
 const operations: {
   [key in BitwiseOperator]: LLVMOperation;
@@ -25,24 +11,30 @@ const operations: {
   [Tokens.bitwise_or]: "CreateOr"
 };
 
-function buildBooleanBitwiseOperation(file: LLVMFile, left: SymbolValue, operation: LLVMOperation, right: SymbolValue) {
-  return {
-    type: Types.Boolean,
-    value: file.builder[operation](left.value, right.value)
-  };
-}
+const overrides: OperationOverrides<BitwiseOperator> = [{
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: BitwiseOperator) => ({
+    type: getType(Primitives.Boolean),
+    value: file.builder[operations[operator]](left.value, right.value)
+  }),
+  signature: [
+    [Primitives.Boolean],
+    [Primitives.Boolean]
+  ]
+}, {
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: BitwiseOperator) => ({
+    type: getType(Primitives.Int32),
+    value: file.builder[operations[operator]](left.value, right.value)
+  }),
+  signature: [
+    [Primitives.Int32],
+    [Primitives.Int32]
+  ]
+}];
 
-function buildIntegerBitwiseOperation(file: LLVMFile, left: SymbolValue, operation: LLVMOperation, right: SymbolValue) {
-  return {
-    type: Types.Int32,
-    value: file.builder[operation](left.value, right.value)
-  };
-}
-
-export function buildBitwiseOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
+export function buildBitwiseOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]): SymbolValue | undefined {
   if(isBitwiseOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
-    return override(file, left, operations[node.operator], right);
+    return override?.(file, node.operator);
   } else {
     return undefined;
   }

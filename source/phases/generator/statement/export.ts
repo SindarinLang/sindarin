@@ -1,5 +1,4 @@
-import { isNode, Kinds } from "../../parser/node";
-import { StatementNode } from "../../parser/statement";
+import { isNode, Kinds, StatementNode } from "../../parser";
 import { LLVMFile } from "../file";
 
 export function buildExport(file: LLVMFile, node: StatementNode) {

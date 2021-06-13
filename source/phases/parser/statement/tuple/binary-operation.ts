@@ -2,10 +2,10 @@ import { getParseError, ParsePhase } from "../..";
 import { Tokens, Token, haveTokensIn } from "../../../scanner";
 import { ValueOf } from "../../../../utils";
 import { ASTNode, Kinds } from "../../node";
-import { getErrorResult, getResult, mergeError } from "../../result";
-import { ExpressionNode, parseExpression } from ".";
+import { getErrorResult, getResult, mergeError, getResultFrom } from "../../result";
+import { ExpressionNode, binaryOperandParsers, BinaryOperandNode } from ".";
 
-type BinaryOperator = ValueOf<typeof operators>;
+export type BinaryOperator = ValueOf<typeof operators>;
 
 export type BitwiseOperator = ValueOf<typeof bitwiseOperators>;
 
@@ -111,7 +111,7 @@ export interface PartialBinaryOperationNode<T extends BinaryOperator = BinaryOpe
   kind: Kinds.binaryOperation;
   left?: ExpressionNode;
   operator: T;
-  right: ExpressionNode;
+  right: BinaryOperandNode;
 }
 
 export interface BinaryOperationNode<T extends BinaryOperator = BinaryOperator> extends PartialBinaryOperationNode<T> {
@@ -120,7 +120,8 @@ export interface BinaryOperationNode<T extends BinaryOperator = BinaryOperator> 
 
 export const parseBinaryOperation: ParsePhase<PartialBinaryOperationNode> = (tokens: Token[]) => {
   if(haveTokensIn(tokens, operators)) {
-    const rightResult = parseExpression(tokens.slice(1));
+    const rightResult = getResultFrom<BinaryOperandNode>(tokens.slice(1), binaryOperandParsers)
+    // const rightResult = parseExpression(tokens.slice(1));
     if(rightResult.value) {
       return getResult(rightResult.context, {
         kind: Kinds.binaryOperation,

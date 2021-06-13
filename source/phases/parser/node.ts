@@ -1,16 +1,19 @@
 import { ParametersNode } from "./parameters";
 import { SpreadNode } from "./spread";
+import { StatementNode } from "./statement";
 import { AssignmentNode } from "./statement/assignment";
 import { DeclarationNode } from "./statement/assignment/declaration";
 import { TypeNode } from "./statement/assignment/declaration/type";
 import { ExpressionNode, TupletNode } from "./statement/tuple";
-import { BinaryOperationNode } from "./statement/tuple/binary-operation";
-import { UnaryOperationNode } from "./statement/tuple/unary-operation";
+import { BinaryOperationNode, BinaryOperator, BitwiseOperator, isBitwiseOperation, isLogicalOperation, LogicalOperator } from "./statement/tuple/binary-operation";
+import { UnaryOperationNode, UnaryOperator } from "./statement/tuple/unary-operation";
+import { BooleanNode } from "./statement/tuple/value/boolean";
 import { FunctionNode } from "./statement/tuple/value/function";
 import { NullNode } from "./statement/tuple/value/null";
 import { NumberNode } from "./statement/tuple/value/number";
 import { AccessorNode } from "./statement/tuple/value/operation/accessor";
 import { CallNode } from "./statement/tuple/value/operation/call";
+import { RuneNode } from "./statement/tuple/value/rune";
 import { VoidNode } from "./statement/tuple/void";
 
 export enum Kinds {
@@ -67,5 +70,14 @@ export {
   DeclarationNode,
   TypeNode,
   FunctionNode,
-  SpreadNode
+  SpreadNode,
+  RuneNode,
+  StatementNode,
+  UnaryOperator,
+  BooleanNode,
+  BitwiseOperator,
+  isBitwiseOperation,
+  BinaryOperator,
+  isLogicalOperation,
+  LogicalOperator
 };

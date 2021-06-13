@@ -1,11 +1,18 @@
 import llvm from "llvm-bindings";
-import { LLVMFile, SymbolFunction } from "../file";
-import { getPrimitive, Types } from "../primitive";
+import { LLVMFile } from "../file";
+import { FunctionType, Primitives, SymbolValue } from "../types";
 import { getFunction } from "../statement/tuple/value/function";
 
-export function random(exporter: LLVMFile, importer: LLVMFile): SymbolFunction {
-  const type = {
-    returnType: getPrimitive(Types.Int32),
+export function random(exporter: LLVMFile, importer: LLVMFile): SymbolValue[] {
+  const type: FunctionType = {
+    primitive: "Function",
+    isPointer: false,
+    isOptional: false,
+    returnType: {
+      primitive: Primitives.Int32,
+      isPointer: false,
+      isOptional: false
+    },
     argumentTypes: []
   };
   const rand = getFunction(exporter, type, "rand");

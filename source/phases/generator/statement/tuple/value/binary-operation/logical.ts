@@ -1,23 +1,8 @@
 import { LLVMOperation, matchSignature, OperationOverrides } from ".";
 import { Tokens } from "../../../../../scanner";
-import { LogicalOperator, BinaryOperationNode, isLogicalOperation } from "../../../../../parser/statement/tuple/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../../file";
-import { Types } from "../../../../primitive";
-import { castBoolean } from "../boolean";
-
-const overrides: OperationOverrides = [{
-  signature: [
-    [Types.Boolean, Types.Int32, Types.Float32],
-    [Types.Boolean, Types.Int32, Types.Float32]
-  ],
-  fn: (file: LLVMFile, left: SymbolValue, operation: LLVMOperation, right: SymbolValue) => ({
-    type: Types.Boolean,
-    value: file.builder[operation](
-      castBoolean(file, left),
-      castBoolean(file, right)
-    )
-  })
-}];
+import { LogicalOperator, BinaryOperationNode, isLogicalOperation } from "../../../../../parser";
+import { LLVMFile } from "../../../../file";
+import { castToBoolean, getType, Primitives, SymbolValue } from "../../../../types";
 
 const operations: {
   [key in LogicalOperator]: LLVMOperation;
@@ -26,10 +11,24 @@ const operations: {
   [Tokens.logical_or]: "CreateOr"
 };
 
-export function buildLogicalOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
+const overrides: OperationOverrides<LogicalOperator> = [{
+  signature: [
+    [Primitives.Boolean, Primitives.Int32, Primitives.Float32],
+    [Primitives.Boolean, Primitives.Int32, Primitives.Float32]
+  ],
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: LogicalOperator) => ({
+    type: getType(Primitives.Boolean),
+    value: file.builder[operations[operator]](
+      castToBoolean(file, left).value,
+      castToBoolean(file, right).value
+    )
+  })
+}];
+
+export function buildLogicalOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]) {
   if(isLogicalOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
-    return override(file, left, operations[node.operator], right);
+    return override?.(file, node.operator);
   } else {
     return undefined;
   }

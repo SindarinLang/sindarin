@@ -1,19 +1,8 @@
 import { LLVMOperation, matchSignature, OperationOverrides } from ".";
 import { Tokens } from "../../../../../scanner";
 import { IntegerOperator, BinaryOperationNode, isIntegerOperation } from "../../../../../parser/statement/tuple/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../../file";
-import { Types } from "../../../../primitive";
-
-const overrides: OperationOverrides = [{
-  signature: [
-    [Types.Int32],
-    [Types.Int32]
-  ],
-  fn: (file: LLVMFile, left: SymbolValue, operation: LLVMOperation, right: SymbolValue) => ({
-    type: Types.Int32,
-    value: file.builder[operation](left.value, right.value)
-  })
-}];
+import { LLVMFile } from "../../../../file";
+import { getType, Primitives, SymbolValue } from "../../../../types";
 
 const operations: {
   [key in IntegerOperator]: LLVMOperation;
@@ -24,10 +13,21 @@ const operations: {
   [Tokens.modulus]: "CreateSRem"
 };
 
-export function buildIntegerOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
+const overrides: OperationOverrides<IntegerOperator> = [{
+  signature: [
+    [Primitives.Int32],
+    [Primitives.Int32]
+  ],
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: IntegerOperator) => ({
+    type: getType(Primitives.Int32),
+    value: file.builder[operations[operator]](left.value, right.value)
+  })
+}];
+
+export function buildIntegerOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]) {
   if(isIntegerOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
-    return override?.(file, left, operations[node.operator], right);
+    return override?.(file, node.operator);
   } else {
     return undefined;
   }

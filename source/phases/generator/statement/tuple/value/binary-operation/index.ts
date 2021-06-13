@@ -1,9 +1,9 @@
 import llvm from "llvm-bindings";
 import reduceFirst from "reduce-first";
 import { ConditionalKeys } from "../../../../../../utils";
-import { BinaryOperationNode } from "../../../../../parser/statement/tuple/binary-operation";
-import { Types, Primitive, getLLVMType, isValue } from "../../../../primitive";
-import { LLVMFile, SymbolValue } from "../../../../file";
+import { BinaryOperationNode, BinaryOperator } from "../../../../../parser";
+import { LLVMFile } from "../../../../file";
+import { LLVMValue, Primitives, SymbolValue } from "../../../../types";
 import { buildValue } from "..";
 import { buildBitwiseOperation } from "./bitwise";
 import { buildLogicalOperation } from "./logical";
@@ -13,32 +13,31 @@ import { buildFloatOperation } from "./float";
 import { buildConditionalOperation } from "./conditional";
 import { buildDefaultOperation } from "./default";
 
-type OperationOverride<T = any> = {
-  fn: T;
-  signature: Types[][];
+export type LLVMOperation = ConditionalKeys<llvm.IRBuilder, ((lhs: LLVMValue, rhs: LLVMValue, name?: string) => LLVMValue)>;
+
+type OperationOverride<T extends BinaryOperator> = {
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: T) => SymbolValue;
+  signature: Primitives[][];
 };
 
-export type OperationOverrides<T = any> = OperationOverride<T>[];
+export type OperationOverrides<T extends BinaryOperator> = OperationOverride<T>[];
 
 export function getSignature(symbols: SymbolValue[]) {
   return symbols.map((symbol) => symbol.type);
 }
 
-export function getLLVMSignature(file: LLVMFile, argumentTypes: Primitive[]) {
-  return argumentTypes.map((type) => getLLVMType(file, type));
-}
-
-export function matchSignature<T = any>(overrides: OperationOverrides<T>, signature: Primitive[]) {
+export function matchSignature<T extends BinaryOperator>(overrides: OperationOverrides<T>, signature: SymbolValue[][]) {
   return overrides.find((override) => {
     return override.signature.reduce((retval, arg, index) => {
-      return retval && arg.includes(signature[index].type);
+      // TODO: search over signature
+      return retval && arg.includes(signature[index][0].type.primitive);
     }, true as boolean);
-  })?.fn;
+  })?.fn(signature[0][0], signature[1][0]);
 }
 
-export type LLVMOperation = ConditionalKeys<llvm.IRBuilder, ((lhs: llvm.Value, rhs: llvm.Value, name?: string) => llvm.Value)>;
+type Builder = (file: LLVMFile, left: SymbolValue[], operation: BinaryOperationNode, right: SymbolValue[]) => SymbolValue | undefined;
 
-const builders = [
+const builders: Builder[] = [
   buildBitwiseOperation,
   buildLogicalOperation,
   buildComparisonOperation,
@@ -48,14 +47,11 @@ const builders = [
   buildDefaultOperation
 ];
 
-export function buildBinaryOperation(file: LLVMFile, node: BinaryOperationNode): SymbolValue {
+export function buildBinaryOperation(file: LLVMFile, node: BinaryOperationNode): SymbolValue[] {
   const leftValue = buildValue(file, node.left);
   const rightValue = buildValue(file, node.right);
-  if(isValue(leftValue) && isValue(rightValue)) {
-    return reduceFirst(builders, (builder) => {
-      return builder(file, leftValue, node, rightValue);
-    });
-  } else {
-    throw new Error("Unsupported binary operation");
-  }
+  const result = reduceFirst(builders, (builder) => {
+    return builder(file, leftValue, node, rightValue);
+  });
+  return result ? [result] : [];
 }

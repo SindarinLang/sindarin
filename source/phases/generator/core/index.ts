@@ -1,9 +1,10 @@
 import { ModuleNode } from "../../parser/statement/modules/module";
-import { getFile, LLVMFile, SymbolFunction } from "../file";
+import { getFile, LLVMFile } from "../file";
+import { SymbolValue } from "../types";
 import { output } from "./output";
 import { random } from "./random";
 
-type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => SymbolFunction;
+type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => SymbolValue[];
 
 const core: {
   [name: string]: LLVMFunctionBuilder;

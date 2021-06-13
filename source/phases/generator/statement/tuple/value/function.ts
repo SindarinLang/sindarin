@@ -1,16 +1,15 @@
 import llvm from "llvm-bindings";
-import { buildStatement } from "../..";
 import { RootNode, FunctionNode, ParametersNode, isNode, Kinds, TypeNode } from "../../../../parser";
-import { LLVMFile, SymbolFunction, SymbolTable } from "../../../file";
-import { getLLVMFunctionType, FunctionType, Types, getPrimitive, Primitive } from "../../../primitive";
+import { LLVMFile, setTable, SymbolTable } from "../../../file";
+import { getFunctionType, Type, Primitives, SymbolValue, FunctionType, getBoolean, getType } from "../../../types";
+import { buildStatement } from "../..";
 import { getReturn } from "../../return";
-import { getBoolean } from "./boolean";
 
 let functionCounter = 0;
 
 export function getFunction(file: LLVMFile, type: FunctionType, name?: string) {
   const fn = llvm.Function.Create(
-    getLLVMFunctionType(file, type),
+    getFunctionType(file, type),
     llvm.Function.LinkageTypes.ExternalLinkage,
     name ?? `_f${functionCounter}`,
     file.mod
@@ -19,13 +18,11 @@ export function getFunction(file: LLVMFile, type: FunctionType, name?: string) {
   return fn;
 }
 
-function typeToPrimitive(node?: TypeNode): Primitive {
+function typeNodeToType(node?: TypeNode): Type {
   if(node) {
-    const type = Types[node.value as Types];
-    if(type) {
-      return {
-        type
-      };
+    const primitive = Primitives[node.value.primitive as Primitives];
+    if(primitive) {
+      return getType(primitive);
     } else {
       throw new Error("Unsupported parameter type");
     }
@@ -34,10 +31,10 @@ function typeToPrimitive(node?: TypeNode): Primitive {
   }
 }
 
-function getParameters(node: ParametersNode): Primitive[] {
+function getParameters(node: ParametersNode): Type[] {
   return node.value.map((parameterNode) => {
     if(isNode(parameterNode, Kinds.assignment)) {
-      return typeToPrimitive(parameterNode.declaration.type);
+      return typeNodeToType(parameterNode.declaration.type);
     } else {
       throw new Error("Unsupported parameter");
     }
@@ -47,23 +44,23 @@ function getParameters(node: ParametersNode): Primitive[] {
 function getArguments(node: ParametersNode, fn: llvm.Function): SymbolTable {
   return node.value.reduce((table, parameterNode, index) => {
     if(isNode(parameterNode, Kinds.assignment)) {
-      const primitive = typeToPrimitive(parameterNode.declaration.type);
-      table[parameterNode.declaration.identifier.value] = {
-        type: primitive.type,
+      const type = typeNodeToType(parameterNode.declaration.type);
+      return setTable(table, parameterNode.declaration.identifier.value, {
+        type,
         value: fn.getArg(index)
-      };
-      return table;
+      });
     } else {
       throw new Error("Unsupported argument");
     }
   }, {} as SymbolTable);
 }
 
-export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): SymbolFunction {
+export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): SymbolValue[] {
   // Create Function
   const type: FunctionType = {
+    ...getType(Primitives.Function),
     argumentTypes: isNode(node, Kinds.root) ? [] : getParameters(node.parameters),
-    returnType: isNode(node, Kinds.root) ? getPrimitive(Types.Boolean) : typeToPrimitive(node.type)
+    returnType: isNode(node, Kinds.root) ? getType(Primitives.Boolean) : typeNodeToType(node.type)
   };
   const fn = getFunction(file, type, isNode(node, Kinds.root) ? "main": undefined);
   // Push Scope
@@ -79,7 +76,9 @@ export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): Sy
     buildStatement(file, statementNode);
   });
   if(isNode(node, Kinds.root)) {
-    getReturn(file, getBoolean(file, false));
+    getReturn(file, [
+      getBoolean(file, false)
+    ]);
   }
   // Pop Scope
   file.scopeStack.pop();

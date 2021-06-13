@@ -1,4 +1,4 @@
-import { StatementNode } from "../../parser/statement";
+import { StatementNode } from "../../parser";
 import { LLVMFile } from "../file";
 import { buildAssign } from "./assign";
 import { buildExport } from "./export";

@@ -1,21 +1,8 @@
 import llvm from "llvm-bindings";
-import { Primitive, FunctionType } from "../primitive";
-
-export type FunctionOverride = {
-  type: FunctionType;
-  value: llvm.Function;
-};
-
-export type SymbolFunction = FunctionOverride[];
-
-export type LLVMValue = llvm.Value | llvm.CallInst;
-
-export interface SymbolValue<T extends LLVMValue = LLVMValue> extends Primitive {
-  value: T;
-}
+import { SymbolValue } from "./types";
 
 export type SymbolTable = {
-  [name: string]: SymbolValue | SymbolFunction;
+  [name: string]: SymbolValue[];
 };
 
 type Scope = {
@@ -33,8 +20,18 @@ export type LLVMFile = {
   scopeStack: Scope[];
 };
 
-export function setSymbol(file: LLVMFile, name: string, value: SymbolValue | SymbolFunction) {
-  file.scopeStack[file.scopeStack.length-1].symbolTable[name] = value;
+export function setTable(table: SymbolTable, name: string, symbol: SymbolValue) {
+  if(table[name] === undefined) {
+    table[name] = [];
+  }
+  table[name].push(symbol);
+  return table;
+}
+
+export function setSymbol(file: LLVMFile, name: string, symbols: SymbolValue[]) {
+  symbols.forEach((symbol) => {
+    setTable(file.scopeStack[file.scopeStack.length-1].symbolTable, name, symbol);
+  });
 }
 
 export function getSymbol(file: LLVMFile, name: string) {
@@ -43,7 +40,7 @@ export function getSymbol(file: LLVMFile, name: string) {
       return file.scopeStack[i].symbolTable[name];
     }
   }
-  return undefined;
+  return [];
 }
 
 export function getFile(name: string): LLVMFile {

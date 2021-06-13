@@ -1,44 +1,49 @@
-import { buildTuple } from "..";
 import { isNode, Kinds, CallNode } from "../../../../parser";
-import { getSymbol, LLVMFile, SymbolFunction, SymbolValue } from "../../../file";
-import { Primitive, isValue, isFunction, castFromPointer } from "../../../primitive";
+import { getSymbol, LLVMFile } from "../../../file";
+import { SymbolValue, Type, isFunctionType, isFunction, toPointer, fromPointer } from "../../../types";
+import { buildTuple } from "..";
 
-function matchPrimitives(a: Primitive, b: Primitive) {
-  return a.type === b.type && Boolean(a.isPointer) === Boolean(b.isPointer);
+function matchTypes(a: Type, b: Type) {
+  return a.primitive === b.primitive;
 }
 
-function matchSignature(overrides: SymbolFunction, signature: (SymbolValue | SymbolFunction)[]) {
+function matchSignature(overrides: SymbolValue[], signature: SymbolValue[]) {
   return overrides.find((override) => {
-    return override.type.argumentTypes.reduce((retval, arg, index) => {
-      const item = signature[index];
-      return retval && isValue(item) && matchPrimitives(arg, item);
-    }, true as boolean);
+    if(isFunctionType(override.type)) {
+      return override.type.argumentTypes.reduce((retval, parameter, index) => {
+        const arg = signature[index].type;
+        return retval && matchTypes(arg, parameter);
+      }, true as boolean);
+    } else {
+      return false;
+    }
   });
 }
 
-export function buildCall(file: LLVMFile, node: CallNode) {
-  const args = buildTuple(file, node.arguments);
+export function buildCall(file: LLVMFile, node: CallNode): SymbolValue[] {
+  const args = buildTuple(file, node.arguments)[0];
   if(isNode(node.left, Kinds.identifier)) {
-    const overrides = getSymbol(file, node.left.value);
-    if(overrides && isFunction(overrides)) {
-      const refs = args.map((arg) => {
-        if(isValue(arg)) {
-          return castFromPointer(file, arg);
-        } else {
-          throw new Error("Unsupported function argument");
-        }
-      });
-      const match = matchSignature(overrides, refs);
-      if(match) {
-        return {
-          type: match.type.returnType.type,
-          value: file.builder.CreateCall(match.value, refs.map((ref) => ref.value))
-        };
-      } else {
-        throw new Error("No matching override");
-      }
+    const caller = getSymbol(file, node.left.value);
+    const match = matchSignature(caller, args);
+    if(match && isFunction(match)) {
+      return [{
+        type: match.type.returnType,
+        value: file.builder.CreateCall(match.value, args.map((symbol, index) => {
+          if(match.type.argumentTypes[index].isPointer && !symbol.type.isPointer) {
+            return toPointer(file, symbol).value;
+          } else if(!match.type.argumentTypes[index].isPointer && symbol.type.isPointer) {
+            if(symbol.type.isOptional) {
+              throw new Error("Optional args not implemented");
+            } else {
+              return fromPointer(file, symbol).value;
+            }
+          } else {
+            return symbol.value;
+          }
+        }))
+      }];
     } else {
-      throw new Error(`No function ${node.left.value}`);
+      throw new Error("No matching override");
     }
   } else {
     throw new Error("Unsupported callee");

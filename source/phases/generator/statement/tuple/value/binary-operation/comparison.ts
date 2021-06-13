@@ -1,9 +1,8 @@
 import { LLVMOperation, matchSignature, OperationOverrides } from ".";
 import { Tokens } from "../../../../../scanner";
 import { ComparisonOperator, BinaryOperationNode, isComparisonOperation } from "../../../../../parser/statement/tuple/binary-operation";
-import { LLVMFile, SymbolValue } from "../../../../file";
-import { Types } from "../../../../primitive";
-import { castFloat } from "../float";
+import { LLVMFile } from "../../../../file";
+import { castToFloat32, Primitives, SymbolValue } from "../../../../types";
 
 const signedIntegerOperations: {
   [key in ComparisonOperator]: LLVMOperation;
@@ -38,42 +37,48 @@ const floatOperations: {
   [Tokens.not_equals]: "CreateFCmpONE"
 };
 
-const overrides: OperationOverrides = [{
+const type = {
+  primitive: Primitives.Boolean,
+  isPointer: false,
+  isOptional: false
+};
+
+const overrides: OperationOverrides<ComparisonOperator> = [{
   signature: [
-    [Types.Boolean],
-    [Types.Boolean]
+    [Primitives.Boolean],
+    [Primitives.Boolean]
   ],
-  fn: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
-    type: Types.Boolean,
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: ComparisonOperator) => ({
+    type,
     value: file.builder[unsignedIntegerOperations[operator]](left.value, right.value)
   })
 }, {
   signature: [
-    [Types.Int32],
-    [Types.Int32]
+    [Primitives.Int32],
+    [Primitives.Int32]
   ],
-  fn: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
-    type: Types.Boolean,
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: ComparisonOperator) => ({
+    type,
     value: file.builder[signedIntegerOperations[operator]](left.value, right.value)
   })
 }, {
   signature: [
-    [Types.Boolean, Types.Int32, Types.Float32],
-    [Types.Boolean, Types.Int32, Types.Float32]
+    [Primitives.Boolean, Primitives.Int32, Primitives.Float32],
+    [Primitives.Boolean, Primitives.Int32, Primitives.Float32]
   ],
-  fn: (file: LLVMFile, left: SymbolValue, operator: ComparisonOperator, right: SymbolValue) => ({
-    type: Types.Boolean,
+  fn: (left: SymbolValue, right: SymbolValue) => (file: LLVMFile, operator: ComparisonOperator) => ({
+    type,
     value: file.builder[floatOperations[operator]](
-      castFloat(file, left),
-      castFloat(file, right)
+      castToFloat32(file, left).value,
+      castToFloat32(file, right).value
     )
   })
 }];
 
-export function buildComparisonOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
+export function buildComparisonOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]) {
   if(isComparisonOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
-    return override(file, left, node.operator, right);
+    return override?.(file, node.operator);
   } else {
     return undefined;
   }
