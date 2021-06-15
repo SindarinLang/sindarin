@@ -17,6 +17,9 @@ export type LLVMFile = {
   name: string;
   imports: LLVMFile[];
   exports: SymbolTable;
+  structs: {
+    [name: string]: llvm.Type;
+  };
   scopeStack: Scope[];
 };
 
@@ -55,6 +58,7 @@ export function getFile(name: string): LLVMFile {
     name,
     imports,
     exports: {},
+    structs: {},
     scopeStack: []
   };
 }

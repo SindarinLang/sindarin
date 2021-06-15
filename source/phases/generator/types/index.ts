@@ -124,7 +124,8 @@ export function fromPointer(file: LLVMFile, symbol: SymbolValue) {
   }
 }
 
-export { getInt32, getInt32Value } from "./int32";
+export { getInt32, getInt32Value, getInt32Type } from "./int32";
+export { getUInt8Value, getUInt8Type } from "./uint8";
 export { getBoolean, getBooleanType, getBooleanValue, castToBoolean } from "./boolean";
 export { getFloat32, castToFloat32, getFloat32Value } from "./float32";
 export { getFunctionType, FunctionType, isFunctionType, isFunction } from "./function";

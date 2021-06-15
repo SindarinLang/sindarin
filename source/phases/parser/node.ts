@@ -4,6 +4,7 @@ import { StatementNode } from "./statement";
 import { AssignmentNode } from "./statement/assignment";
 import { DeclarationNode } from "./statement/assignment/declaration";
 import { TypeNode } from "./statement/assignment/declaration/type";
+import { ModuleNode } from "./statement/modules/module";
 import { ExpressionNode, TupletNode } from "./statement/tuple";
 import { BinaryOperationNode, BinaryOperator, BitwiseOperator, isBitwiseOperation, isLogicalOperation, LogicalOperator } from "./statement/tuple/binary-operation";
 import { UnaryOperationNode, UnaryOperator } from "./statement/tuple/unary-operation";
@@ -79,5 +80,6 @@ export {
   isBitwiseOperation,
   BinaryOperator,
   isLogicalOperation,
-  LogicalOperator
+  LogicalOperator,
+  ModuleNode
 };
