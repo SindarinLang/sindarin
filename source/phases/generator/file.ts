@@ -1,5 +1,5 @@
 import llvm from "llvm-bindings";
-import { SymbolValue } from "./types";
+import { Primitives, SymbolValue } from "./types";
 
 export type SymbolTable = {
   [name: string]: SymbolValue[];
@@ -17,7 +17,7 @@ export type LLVMFile = {
   name: string;
   imports: LLVMFile[];
   exports: SymbolTable;
-  structs: {
+  types: {
     [name: string]: llvm.Type;
   };
   scopeStack: Scope[];
@@ -46,8 +46,18 @@ export function getSymbol(file: LLVMFile, name: string) {
   return [];
 }
 
+const context = new llvm.LLVMContext();
+
+const Boolean = llvm.Type.getInt1Ty(context);
+const Int8 = llvm.Type.getInt8Ty(context);
+const Int32 = llvm.Type.getInt32Ty(context);
+const Float32 = llvm.Type.getFloatTy(context);
+const Rune = llvm.StructType.create(context, [
+  Int32,
+  llvm.Type.getInt8PtrTy(context)
+], Primitives.Rune);
+
 export function getFile(name: string): LLVMFile {
-  const context = new llvm.LLVMContext();
   const builder = new llvm.IRBuilder(context);
   const mod = new llvm.Module(name, context);
   const imports: LLVMFile[] = [];
@@ -58,7 +68,14 @@ export function getFile(name: string): LLVMFile {
     name,
     imports,
     exports: {},
-    structs: {},
+    types: {
+      Boolean,
+      Int8,
+      UInt8: Int8,
+      Int32,
+      Float32,
+      Rune
+    },
     scopeStack: []
   };
 }

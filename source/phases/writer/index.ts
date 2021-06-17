@@ -2,6 +2,7 @@ import llvm from "llvm-bindings";
 import { join } from "path";
 import { tmpdir } from "os";
 import { dir, DirectoryResult } from "tmp-promise";
+import { writeDir } from "write-dir-safe";
 import { PromisePhase, Result } from "..";
 import { Options } from "../";
 import { getError } from "../error";
@@ -25,7 +26,9 @@ export type WritePhase = PromisePhase<LLVMFile, WriteValue>;
 
 export const getWriteError = getError("Write");
 
-export function getTempDir() {
+export async function getTempDir() {
+  const tmp = join(tmpdir(), "sindarin");
+  await writeDir(tmp);
   return dir({
     tmpdir: join(tmpdir(), "sindarin"),
     unsafeCleanup: true

@@ -1,12 +1,7 @@
 import llvm from "llvm-bindings";
 import { LLVMFile } from "..";
 import { getEnum, ValueOf } from "../../../utils";
-import { getBooleanType } from "./boolean";
-import { getFloat32Type } from "./float32";
 import { getFunctionType, isFunctionType, isSameFunctionType } from "./function";
-import { getInt32Type } from "./int32";
-import { getRuneType } from "./rune";
-import { getUInt8Type } from "./uint8";
 
 export type Primitives = ValueOf<typeof Primitives>;
 
@@ -32,16 +27,6 @@ export type SymbolValue<V extends LLVMValue = LLVMValue, T extends Type = Type> 
   type: T;
 };
 
-const scalarTypes: {
-  [key: string]: (file: LLVMFile) => llvm.Type;
-} = {
-  [Primitives.Boolean]: getBooleanType,
-  [Primitives.UInt8]: getUInt8Type,
-  [Primitives.Int32]: getInt32Type,
-  [Primitives.Float32]: getFloat32Type,
-  [Primitives.Rune]: getRuneType
-};
-
 export function getType(primitive: Primitives, isPointer = false, isOptional = false) {
   return {
     primitive,
@@ -59,8 +44,8 @@ export function isSameType(a: Type, b: Type) {
 }
 
 function getLLVMBaseType(file: LLVMFile, type: Type): llvm.Type {
-  if(scalarTypes[type.primitive]) {
-    return scalarTypes[type.primitive](file);
+  if(file.types[type.primitive]) {
+    return file.types[type.primitive];
   } else if(isFunctionType(type)) {
     return getFunctionType(file, type);
   } else {
@@ -124,9 +109,9 @@ export function fromPointer(file: LLVMFile, symbol: SymbolValue) {
   }
 }
 
-export { getInt32, getInt32Value, getInt32Type } from "./int32";
-export { getUInt8Value, getUInt8Type } from "./uint8";
-export { getBoolean, getBooleanType, getBooleanValue, castToBoolean } from "./boolean";
+export { getInt32, getInt32Value } from "./int32";
+export { getUInt8Value } from "./uint8";
+export { getBoolean, getBooleanValue, castToBoolean } from "./boolean";
 export { getFloat32, castToFloat32, getFloat32Value } from "./float32";
 export { getFunctionType, FunctionType, isFunctionType, isFunction } from "./function";
 export { getRune } from "./rune";

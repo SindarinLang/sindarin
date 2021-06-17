@@ -22,7 +22,9 @@ export const parseFunction: ParsePhase<FunctionNode> = (tokens: Token[]) => {
     },
     type: {
       kind: Kinds.type,
-      value: "Void"
+      value: {
+        primitive: "Void"
+      }
     },
     value: []
   });

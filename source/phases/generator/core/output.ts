@@ -4,7 +4,7 @@ import mem from "mem-fn";
 import { ValueOf } from "../../../utils";
 import { LLVMFile } from "../file";
 import { getFunction } from "../statement/tuple/value/function";
-import { getType, Primitives, SymbolValue, getUInt8Type, getUInt8Value } from "../types";
+import { getType, Primitives, SymbolValue, getUInt8Value } from "../types";
 
 function fileMem<T extends llvm.Function | llvm.GlobalVariable>(fn: (file: LLVMFile) => T) {
   return mem(fn, {
@@ -195,7 +195,7 @@ function getOutputRune(exporter: LLVMFile, importer: LLVMFile) {
   );
   const result = exporter.builder.CreateCall(putchar, [
     exporter.builder.CreateLoad(
-      getUInt8Type(exporter),
+      exporter.types.UInt8,
       pointer
     )
   ]);

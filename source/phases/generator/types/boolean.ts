@@ -5,11 +5,7 @@ import { getInt32Value, isInt32 } from "./int32";
 import { getFloat32Value, isFloat32 } from "./float32";
 
 export function getBooleanValue(file: LLVMFile, value: boolean | llvm.Value) {
-  return typeof value === "boolean" ? llvm.ConstantInt.get(getBooleanType(file), value ? 1 : 0) : value;
-}
-
-export function getBooleanType(file: LLVMFile): llvm.Type {
-  return llvm.Type.getInt1Ty(file.context);
+  return typeof value === "boolean" ? llvm.ConstantInt.get(file.types.Boolean, value ? 1 : 0) : value;
 }
 
 export function getBoolean(file: LLVMFile, value: boolean | llvm.Value): SymbolValue {
