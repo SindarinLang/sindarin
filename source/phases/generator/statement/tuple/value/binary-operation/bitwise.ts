@@ -31,7 +31,7 @@ const overrides: OperationOverrides<BitwiseOperator> = [{
   ]
 }];
 
-export function buildBitwiseOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]): SymbolValue | undefined {
+export function buildBitwiseOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue): SymbolValue | undefined {
   if(isBitwiseOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
     return override?.(file, node.operator);

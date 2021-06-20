@@ -75,7 +75,7 @@ const overrides: OperationOverrides<ComparisonOperator> = [{
   })
 }];
 
-export function buildComparisonOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]) {
+export function buildComparisonOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
   if(isComparisonOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
     return override?.(file, node.operator);

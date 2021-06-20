@@ -1,8 +1,10 @@
 import llvm from "llvm-bindings";
 import { SymbolValue } from "./types";
 
+export type SymbolResolver = (args?: SymbolValue[]) => SymbolValue | undefined;
+
 export type SymbolTable = {
-  [name: string]: SymbolValue[];
+  [name: string]: SymbolResolver;
 };
 
 export type TypeTable = {
@@ -14,6 +16,8 @@ type Scope = {
   symbolTable: SymbolTable;
 };
 
+export type Export = (importer: LLVMFile) => SymbolResolver;
+
 export type LLVMFile = {
   context: llvm.LLVMContext;
   builder: llvm.IRBuilder;
@@ -21,33 +25,32 @@ export type LLVMFile = {
   name: string;
   imports: LLVMFile[];
   exports: {
-    [name: string]: (importer: LLVMFile) => SymbolValue[];
+    [name: string]: Export;
   };
   types: TypeTable;
   scopeStack: Scope[];
 };
 
-export function setTable(table: SymbolTable, name: string, symbol: SymbolValue) {
-  if(table[name] === undefined) {
-    table[name] = [];
+export function setTable(table: SymbolTable, name: string, symbol: SymbolValue | SymbolResolver) {
+  if(typeof symbol === "function") {
+    table[name] = symbol;
+  } else {
+    table[name] = () => symbol;
   }
-  table[name].push(symbol);
   return table;
 }
 
-export function setSymbol(file: LLVMFile, name: string, symbols: SymbolValue[]) {
-  symbols.forEach((symbol) => {
-    setTable(file.scopeStack[file.scopeStack.length-1].symbolTable, name, symbol);
-  });
+export function setSymbol(file: LLVMFile, name: string, symbol: SymbolValue | SymbolResolver) {
+  setTable(file.scopeStack[file.scopeStack.length-1].symbolTable, name, symbol);
 }
 
-export function getSymbol(file: LLVMFile, name: string) {
+export function getSymbol(file: LLVMFile, name: string, signature?: SymbolValue[]) {
   for(let i=file.scopeStack.length-1; i>=0; i-=1) {
     if(file.scopeStack[i].symbolTable[name]) {
-      return file.scopeStack[i].symbolTable[name];
+      return file.scopeStack[i].symbolTable[name](signature);
     }
   }
-  return [];
+  return undefined;
 }
 
 const context = new llvm.LLVMContext();

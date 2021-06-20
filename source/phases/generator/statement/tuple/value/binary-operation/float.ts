@@ -28,7 +28,7 @@ const overrides: OperationOverrides<NumericOperator> = [{
   })
 }];
 
-export function buildFloatOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]) {
+export function buildFloatOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
   if(isNumericOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
     return override?.(file, node.operator);

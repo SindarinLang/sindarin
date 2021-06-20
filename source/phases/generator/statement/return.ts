@@ -11,6 +11,6 @@ export function getReturn(file: LLVMFile, symbols: SymbolValue[]): llvm.ReturnIn
 export function buildReturn(file: LLVMFile, node: StatementNode) {
   if(isNode(node, Kinds.return)) {
     const value = buildTuple(file, node.value);
-    getReturn(file, value[0]);
+    getReturn(file, value);
   }
 }

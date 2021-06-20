@@ -25,7 +25,7 @@ const overrides: OperationOverrides<LogicalOperator> = [{
   })
 }];
 
-export function buildLogicalOperation(file: LLVMFile, left: SymbolValue[], node: BinaryOperationNode, right: SymbolValue[]) {
+export function buildLogicalOperation(file: LLVMFile, left: SymbolValue, node: BinaryOperationNode, right: SymbolValue) {
   if(isLogicalOperation(node)) {
     const override = matchSignature(overrides, [left, right]);
     return override?.(file, node.operator);

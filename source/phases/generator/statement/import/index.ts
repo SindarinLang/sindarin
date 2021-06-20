@@ -1,7 +1,7 @@
-import { isNode, Kinds, StatementNode } from "../../parser";
-import { getCore } from "../core";
-import { LLVMFile, setSymbol } from "../file";
-import { include } from "../c3po";
+import { isNode, Kinds, StatementNode } from "../../../parser";
+import { getCore } from "../../core";
+import { LLVMFile, setSymbol } from "../../file";
+import { include } from "./c3po";
 
 const includes = [
   "<math.h>",

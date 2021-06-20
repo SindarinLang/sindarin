@@ -26,17 +26,17 @@ export function getSignature(symbols: SymbolValue[]) {
   return symbols.map((symbol) => symbol.type);
 }
 
-export function matchSignature<T extends BinaryOperator>(overrides: OperationOverrides<T>, signature: SymbolValue[][]) {
+export function matchSignature<T extends BinaryOperator>(overrides: OperationOverrides<T>, signature: SymbolValue[]) {
   return overrides.find((override) => {
     return override.signature.reduce((retval, arg, index) => {
       // TODO: search over signature
-      const type = signature[index][0].type.primitive;
+      const type = signature[index].type.primitive;
       return retval && typeof type === "string" && arg.includes(type);
     }, true as boolean);
-  })?.fn(signature[0][0], signature[1][0]);
+  })?.fn(signature[0], signature[1]);
 }
 
-type Builder = (file: LLVMFile, left: SymbolValue[], operation: BinaryOperationNode, right: SymbolValue[]) => SymbolValue | undefined;
+type Builder = (file: LLVMFile, left: SymbolValue, operation: BinaryOperationNode, right: SymbolValue) => SymbolValue | undefined;
 
 const builders: Builder[] = [
   buildBitwiseOperation,
@@ -48,11 +48,15 @@ const builders: Builder[] = [
   buildDefaultOperation
 ];
 
-export function buildBinaryOperation(file: LLVMFile, node: BinaryOperationNode): SymbolValue[] {
+export function buildBinaryOperation(file: LLVMFile, node: BinaryOperationNode): SymbolValue {
   const leftValue = buildValue(file, node.left);
   const rightValue = buildValue(file, node.right);
   const result = reduceFirst(builders, (builder) => {
     return builder(file, leftValue, node, rightValue);
   });
-  return result ? [result] : [];
+  if(result === undefined) {
+    throw new Error("Cannot build binary operation");
+  } else {
+    return result;
+  }
 }

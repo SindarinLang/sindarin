@@ -54,7 +54,8 @@ function getArguments(node: ParametersNode, fn: llvm.Function): SymbolTable {
 }
 
 
-export function buildFunction(file: LLVMFile, node: FunctionNode): SymbolValue[] {
+// TODO: return SymbolResolver, save scope ahead of time
+export function buildFunction(file: LLVMFile, node: FunctionNode): SymbolValue {
   // Create Function
   const type: FunctionType = getFunctionType({
     argumentTypes: getParameters(node.parameters),
@@ -80,8 +81,8 @@ export function buildFunction(file: LLVMFile, node: FunctionNode): SymbolValue[]
   if(file.scopeStack.length > 0) {
     file.builder.SetInsertionPoint(file.scopeStack[file.scopeStack.length-1].block);
   }
-  return [{
+  return {
     value: fn,
     type
-  }];
+  };
 }

@@ -1,12 +1,12 @@
 import { spawn } from "child_process";
 import { join } from "path";
 import { writeFile } from "write-file-safe";
-import { getTempDir } from "../../../utils";
-import { LLVMFile } from "..";
-import { FunctionType, getFunctionType, getType, Primitives, StructType, Type } from "../types";
-import { getFunction } from "../statement/tuple/value/function";
-import { setSymbol } from "../file";
-import { ModuleNode } from "../../parser";
+import { getTempDir } from "../../../../../utils";
+import { LLVMFile } from "../../..";
+import { FunctionType, getFunctionType, getType, Primitives, StructType, Type } from "../../../types";
+import { getFunction } from "../../tuple/value/function";
+import { setSymbol } from "../../../file";
+import { ModuleNode } from "../../../../parser";
 
 type Types = {
   [name: string]: Type;
@@ -165,10 +165,10 @@ export async function include(file: LLVMFile, from: string, moduleNode: ModuleNo
           } else if(node.kind === "FunctionDecl") {
             const type = parseFunction(node, types);
             if(type && moduleNode.modules[node.name]) {
-              setSymbol(file, node.name, [{
+              setSymbol(file, node.name, {
                 value: getFunction(file, type),
                 type
-              }]);
+              });
             }
           }
         }

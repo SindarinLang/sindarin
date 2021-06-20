@@ -1,18 +1,13 @@
 import { generate } from "..";
 import { resolve, read, scan, parse } from "../..";
 import { ModuleNode } from "../../parser";
-import { LLVMFile } from "../file";
-import { SymbolValue } from "../types";
+import { LLVMFile, Export } from "../file";
 import { output } from "./output";
-// import { random } from "./random";
-
-type LLVMFunctionBuilder = (exporter: LLVMFile) => (importer: LLVMFile) => SymbolValue[];
 
 const coreExports: {
-  [name: string]: LLVMFunctionBuilder;
+  [name: string]: (exporter: LLVMFile) => Export;
 } = {
   output
-  // random
 };
 
 // TODO: only load functions in moduleNode

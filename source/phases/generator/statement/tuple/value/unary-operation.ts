@@ -14,14 +14,14 @@ type OperationOverride = {
 
 export type OperationOverrides = OperationOverride[];
 
-export function matchSignature(overrides: OperationOverrides, signature: SymbolValue[][]) {
+export function matchSignature(overrides: OperationOverrides, signature: SymbolValue[]) {
   return overrides.find((override) => {
     return override.signature.reduce((retval, arg, index) => {
       // TODO: search over signature
-      const type = signature[index][0].type.primitive;
+      const type = signature[index].type.primitive;
       return retval && typeof type === "string" && arg.includes(type);
     }, true as boolean);
-  })?.fn(signature[0][0]);
+  })?.fn(signature[0]);
 }
 
 const notOverrides: OperationOverrides = [{
@@ -69,9 +69,13 @@ const operators: {
   [Tokens.destruct]: []
 };
 
-export function buildUnaryOperation(file: LLVMFile, node: UnaryOperationNode): SymbolValue[] {
+export function buildUnaryOperation(file: LLVMFile, node: UnaryOperationNode): SymbolValue {
   const right = buildValue(file, node.right);
   const override = matchSignature(operators[node.operator], [right]);
   const result = override?.(file);
-  return result ? [result] : [];
+  if(result) {
+    return result;
+  } else {
+    throw new Error("Cannot build unary operation");
+  }
 }

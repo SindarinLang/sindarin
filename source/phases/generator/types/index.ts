@@ -141,6 +141,6 @@ export { getInt32, getInt32Value } from "./int32";
 export { getUInt8Value } from "./uint8";
 export { getBoolean, getBooleanValue, castToBoolean } from "./boolean";
 export { getFloat32, castToFloat32, getFloat32Value } from "./float32";
-export { getFunctionLLVMType, isFunctionType, isFunction, FunctionType, getFunctionType } from "./function";
+export { getFunctionLLVMType, isFunctionType, isFunction, FunctionType, getFunctionType, TypeUnion, FunctionSignature, FunctionOverrides, resolveOverride } from "./function";
 export { StructType, getStructType } from "./struct";
 export { getRune, getRuneType } from "./rune";

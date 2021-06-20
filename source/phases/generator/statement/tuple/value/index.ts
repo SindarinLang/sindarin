@@ -13,7 +13,7 @@ import { buildFunction } from "./function";
 import { buildTuple } from "..";
 import { buildRune } from "./rune";
 
-export type ValueBuilder = (file: LLVMFile, node: any) => SymbolValue[];
+export type ValueBuilder = (file: LLVMFile, node: any) => SymbolValue;
 
 export const getBuilders: () => {
   [key: string]: ValueBuilder;
@@ -29,7 +29,7 @@ export const getBuilders: () => {
   [Kinds.rune]: buildRune
 });
 
-export function buildValue(file: LLVMFile, node: TupletNode): SymbolValue[] {
+export function buildValue(file: LLVMFile, node: TupletNode): SymbolValue {
   const builders = getBuilders();
   if(builders[node.kind]) {
     return builders[node.kind](file, node);
