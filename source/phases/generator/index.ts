@@ -7,7 +7,7 @@ import { getFile, LLVMFile } from "./file";
 import { buildRootStatement } from "./statement";
 import { getReturn } from "./statement/return";
 import { getFunction } from "./statement/tuple/value/function";
-import { FunctionType, getBoolean, getType, Primitives } from "./types";
+import { FunctionType, getBoolean, getFunctionType, getType, Primitives } from "./types";
 
 export type GeneratePhase<T extends ASTNode> = PromisePhase<T, LLVMFile>;
 
@@ -23,14 +23,11 @@ export const getGenerateError = getError("Generate");
 export const generate: GeneratePhase<AST> = async (ast: AST, options?: Options) => {
   const file = getFile(options?.generator?.fileName ?? "main");
   // Create Main Function
-  const type: FunctionType = {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  const type: FunctionType = getFunctionType({
+    name: options?.generator?.fileName ?? "main",
     argumentTypes: [],
-    returnType: getType(Primitives.Boolean),
-    name: options?.generator?.fileName ?? "main"
-  };
+    returnType: getType(Primitives.Boolean)
+  });
   const fn = getFunction(file, type);
   // Push Scope
   const entry = llvm.BasicBlock.Create(file.context, "entry", fn);

@@ -2,13 +2,16 @@ import llvm from "llvm-bindings";
 import { LLVMFile } from "..";
 import { Type, getLLVMType, Primitives, SymbolValue, isSameType, TypeInterface } from ".";
 
-export interface FunctionType extends TypeInterface {
-  primitive: "Function";
+type FunctionTypeFields = {
+  name: string;
   argumentTypes: Type[];
   returnType: Type;
   isVarArg?: boolean;
-  name?: string;
-}
+};
+
+export type FunctionType = TypeInterface & {
+  primitive: "Function";
+} & FunctionTypeFields;
 
 export function isSameFunctionType(a: FunctionType, b: FunctionType): boolean {
   return a.argumentTypes.length === b.argumentTypes.length && a.argumentTypes.reduce((retval, argType, index) => {
@@ -24,7 +27,16 @@ export function isFunction(symbol: SymbolValue): symbol is SymbolValue<llvm.Func
   return isFunctionType(symbol.type);
 }
 
-export function getFunctionType(file: LLVMFile, type: FunctionType) {
+export function getFunctionType(fields: FunctionTypeFields, isPointer = false, isOptional = false): FunctionType {
+  return {
+    primitive: "Function",
+    isPointer,
+    isOptional,
+    ...fields
+  };
+}
+
+export function getFunctionLLVMType(file: LLVMFile, type: FunctionType) {
   return llvm.FunctionType.get(
     getLLVMType(file, type.returnType),
     type.argumentTypes.map((argType) => getLLVMType(file, argType)),

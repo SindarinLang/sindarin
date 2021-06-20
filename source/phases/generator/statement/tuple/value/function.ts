@@ -1,19 +1,18 @@
 import llvm from "llvm-bindings";
 import { FunctionNode, ParametersNode, isNode, Kinds, TypeNode } from "../../../../parser";
 import { LLVMFile, setTable, SymbolTable } from "../../../file";
-import { getFunctionType, Type, Primitives, SymbolValue, FunctionType, getType } from "../../../types";
+import { getFunctionLLVMType, Type, Primitives, SymbolValue, FunctionType, getType, getFunctionType } from "../../../types";
 import { buildStatement } from "../..";
 
 let functionCounter = 0;
 
 export function getFunction(file: LLVMFile, type: FunctionType) {
   const fn = llvm.Function.Create(
-    getFunctionType(file, type),
+    getFunctionLLVMType(file, type),
     llvm.Function.LinkageTypes.ExternalLinkage,
-    type.name ?? `_f${functionCounter}`,
+    type.name,
     file.mod
   );
-  functionCounter +=1;
   return fn;
 }
 
@@ -54,15 +53,15 @@ function getArguments(node: ParametersNode, fn: llvm.Function): SymbolTable {
   }, {} as SymbolTable);
 }
 
+
 export function buildFunction(file: LLVMFile, node: FunctionNode): SymbolValue[] {
   // Create Function
-  const type: FunctionType = {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  const type: FunctionType = getFunctionType({
     argumentTypes: getParameters(node.parameters),
-    returnType: typeNodeToType(node.type)
-  };
+    returnType: typeNodeToType(node.type),
+    name: `_f${functionCounter}`
+  });
+  functionCounter +=1;
   const fn = getFunction(file, type);
   // Push Scope
   const entry = llvm.BasicBlock.Create(file.context, "entry", fn);

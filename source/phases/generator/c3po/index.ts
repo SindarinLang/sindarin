@@ -3,7 +3,7 @@ import { join } from "path";
 import { writeFile } from "write-file-safe";
 import { getTempDir } from "../../../utils";
 import { LLVMFile } from "..";
-import { FunctionType, getType, Primitives, StructType, Type } from "../types";
+import { FunctionType, getFunctionType, getType, Primitives, StructType, Type } from "../types";
 import { getFunction } from "../statement/tuple/value/function";
 import { setSymbol } from "../file";
 import { ModuleNode } from "../../parser";
@@ -102,16 +102,13 @@ function parseFunction(node: ClangASTNode, types: Types): FunctionType | undefin
       return arr;
     }
   }, [] as (Type[] | undefined));
-  if(returnType && argumentTypes) {
-    return {
-      primitive: Primitives.Function,
-      isPointer: false,
-      isOptional: false,
+  if(returnType && argumentTypes && node.name) {
+    return getFunctionType({
       returnType,
       argumentTypes,
       isVarArg: node.variadic ?? false,
       name: node.name
-    };
+    });
   } else {
     return undefined;
   }

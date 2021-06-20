@@ -4,7 +4,7 @@ import mem from "mem-fn";
 import { ValueOf } from "../../../utils";
 import { LLVMFile } from "../file";
 import { getFunction } from "../statement/tuple/value/function";
-import { getType, Primitives, getUInt8Value, FunctionType } from "../types";
+import { getType, Primitives, getUInt8Value, FunctionType, getFunctionType, getRuneType } from "../types";
 
 function fileMem<T extends llvm.Function | llvm.GlobalVariable>(fn: (file: LLVMFile) => T) {
   return mem(fn, {
@@ -43,41 +43,32 @@ const getFormatS = fileMem((file: LLVMFile) => {
 });
 
 const getPutChar = fileMem((file: LLVMFile) => {
-  return getFunction(file, {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  return getFunction(file, getFunctionType({
     returnType: getType(Primitives.Int32),
     argumentTypes: [getType(Primitives.UInt8)],
     isVarArg: false,
     name: "putchar"
-  });
+  }));
 });
 
 const getPrintF = fileMem((file: LLVMFile) => {
-  return getFunction(file, {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  return getFunction(file, getFunctionType({
     returnType: getType(Primitives.Int32),
     argumentTypes: [getType(Primitives.UInt8, true)],
     isVarArg: true,
     name: "printf"
-  });
+  }));
 });
 
 function getOutputI1(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatS(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const type: FunctionType = {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  const type: FunctionType = getFunctionType({
     returnType: getType(Primitives.Int32),
     argumentTypes: [getType(Primitives.Boolean)],
     name: "_output_i1"
-  };
+  });
   const fn = getFunction(exporter, type);
   // blocks
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
@@ -120,14 +111,11 @@ function getOutputI32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatD(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const type: FunctionType = {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  const type: FunctionType = getFunctionType({
     returnType: getType(Primitives.Int32),
     argumentTypes: [getType(Primitives.Int32)],
     name: "_output_i32"
-  };
+  });
   const fn = getFunction(exporter, type);
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
@@ -155,14 +143,11 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
   const format = getFormatF(exporter);
   const printf = getPrintF(exporter);
   // fn
-  const type: FunctionType = {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  const type: FunctionType = getFunctionType({
     returnType: getType(Primitives.Int32),
     argumentTypes: [getType(Primitives.Float32)],
     name: "_output_f32"
-  };
+  });
   const fn = getFunction(exporter, type);
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);
@@ -191,23 +176,13 @@ function getOutputF32(exporter: LLVMFile, importer: LLVMFile) {
 function getOutputRune(exporter: LLVMFile, importer: LLVMFile) {
   const putchar = getPutChar(exporter);
   // fn
-  const type: FunctionType = {
-    primitive: "Function",
-    isPointer: false,
-    isOptional: false,
+  const type: FunctionType = getFunctionType({
     returnType: getType(Primitives.Int32),
-    argumentTypes: [{
-      primitive: "Struct",
-      name: "Rune",
-      fields: {
-        length: getType(Primitives.Int32),
-        data: getType(Primitives.UInt8, true)
-      },
-      isPointer: true,
-      isOptional: false
-    }],
+    argumentTypes: [
+      getRuneType()
+    ],
     name: "_output_Rune"
-  };
+  });
   const fn = getFunction(exporter, type);
   // entry block
   const entryBlock = llvm.BasicBlock.Create(exporter.context, "entry", fn);

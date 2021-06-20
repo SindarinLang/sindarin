@@ -2,13 +2,16 @@ import llvm from "llvm-bindings";
 import { LLVMFile } from "..";
 import { getLLVMType, isSameType, Primitives, Type, TypeInterface } from ".";
 
-export interface StructType extends TypeInterface {
-  primitive: "Struct";
+type StructTypeFields = {
   name: string;
   fields: {
     [name: string]: Type;
   };
-}
+};
+
+export type StructType = TypeInterface & {
+  primitive: "Struct";
+} & StructTypeFields;
 
 export function isStructType(type: Type): type is StructType {
   return type.primitive === Primitives.Struct;
@@ -25,7 +28,15 @@ export function isSameStructType(a: StructType, b: StructType): boolean {
   return true;
 }
 
-export function getStructType(file: LLVMFile, type: StructType) {
+export function getStructType(fields: StructTypeFields, isPointer = true, isOptional = false): StructType {
+  return {
+    primitive: "Struct",
+    isPointer,
+    isOptional,
+    ...fields
+  };
+}
+export function getStructLLVMType(file: LLVMFile, type: StructType) {
   return llvm.StructType.create(file.context, Object.keys(type.fields).map((key) => {
     return getLLVMType(file, type.fields[key]);
   }), type.name);

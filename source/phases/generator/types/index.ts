@@ -1,8 +1,8 @@
 import llvm from "llvm-bindings";
 import { LLVMFile } from "..";
 import { getEnum, ValueOf } from "../../../utils";
-import { FunctionType, getFunctionType, isFunctionType, isSameFunctionType } from "./function";
-import { getStructType, isSameStructType, isStructType, StructType } from "./struct";
+import { FunctionType, getFunctionLLVMType, isFunctionType, isSameFunctionType } from "./function";
+import { getStructLLVMType, isSameStructType, isStructType, StructType } from "./struct";
 
 export type Primitives = ValueOf<typeof Primitives>;
 
@@ -64,12 +64,12 @@ export function isSameType(a: Type, b: Type) {
 function getLLVMBaseType(file: LLVMFile, type: Type): llvm.Type {
   if(typeof type.primitive === "string") {
     if(isFunctionType(type)) {
-      return getFunctionType(file, type);
+      return getFunctionLLVMType(file, type);
     } else if(isStructType(type)) {
       if(file.types[type.name]) {
         return file.types[type.name];
       } else {
-        return getStructType(file, type);
+        return getStructLLVMType(file, type);
       }
     } else if(file.types[type.primitive]) {
       return file.types[type.primitive];
@@ -141,6 +141,6 @@ export { getInt32, getInt32Value } from "./int32";
 export { getUInt8Value } from "./uint8";
 export { getBoolean, getBooleanValue, castToBoolean } from "./boolean";
 export { getFloat32, castToFloat32, getFloat32Value } from "./float32";
-export { getFunctionType, isFunctionType, isFunction, FunctionType } from "./function";
-export { StructType } from "./struct";
-export { getRune } from "./rune";
+export { getFunctionLLVMType, isFunctionType, isFunction, FunctionType, getFunctionType } from "./function";
+export { StructType, getStructType } from "./struct";
+export { getRune, getRuneType } from "./rune";

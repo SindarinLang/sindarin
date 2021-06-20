@@ -2,6 +2,7 @@ import llvm from "llvm-bindings";
 import { getType, LLVMValue, Primitives, SymbolValue } from ".";
 import { LLVMFile } from "..";
 import { getInt32Value } from "./int32";
+import { getStructType } from "./struct";
 import { getUInt8Value } from "./uint8";
 
 export function getRuneValue(file: LLVMFile, value: string | LLVMValue) {
@@ -32,18 +33,19 @@ export function getRuneValue(file: LLVMFile, value: string | LLVMValue) {
   }
 }
 
+export function getRuneType() {
+  return getStructType({
+    name: "Rune",
+    fields: {
+      length: getType(Primitives.Int32),
+      data: getType(Primitives.UInt8, true)
+    }
+  });
+}
+
 export function getRune(file: LLVMFile, value: string): SymbolValue {
   return {
-    type: {
-      primitive: "Struct",
-      name: "Rune",
-      fields: {
-        length: getType(Primitives.Int32),
-        data: getType(Primitives.UInt8, true)
-      },
-      isPointer: true,
-      isOptional: false
-    },
+    type: getRuneType(),
     value: getRuneValue(file, value)
   };
 }
