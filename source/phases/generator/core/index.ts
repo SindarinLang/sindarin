@@ -1,27 +1,50 @@
+import { generate } from "..";
+import { resolve, read, scan, parse } from "../..";
 import { ModuleNode } from "../../parser";
-import { getFile, LLVMFile } from "../file";
+import { LLVMFile } from "../file";
 import { SymbolValue } from "../types";
 import { output } from "./output";
-import { random } from "./random";
+// import { random } from "./random";
 
-type LLVMFunctionBuilder = (exporter: LLVMFile, importer: LLVMFile) => SymbolValue[];
+type LLVMFunctionBuilder = (exporter: LLVMFile) => (importer: LLVMFile) => SymbolValue[];
 
-const core: {
+const coreExports: {
   [name: string]: LLVMFunctionBuilder;
 } = {
-  output,
-  random
+  output
+  // random
 };
 
-export const coreFile = getFile("sindarin");
-
-export function getCore(moduleNode: ModuleNode, importer: LLVMFile) {
-  Object.keys(moduleNode.modules ?? {}).forEach((key: string) => {
-    if(core[key]) {
-      coreFile.exports[key] = core[key](coreFile, importer);
+// TODO: only load functions in moduleNode
+export async function getCore(moduleNode: ModuleNode) {
+  const paths = resolve("./core/sindarin.si").value ?? [];
+  const file = await read(paths);
+  if(file.value) {
+    const tokens = scan(file.value);
+    if(tokens.value) {
+      const ast = parse(tokens.value);
+      if(ast.value) {
+        const result = await generate(ast.value, { generator: { fileName: "sindarin" } });
+        const exporter = result.value;
+        if(exporter) {
+          Object.keys(coreExports).forEach((key) => {
+            exporter.exports[key] = coreExports[key](exporter);
+          });
+          return result;
+        } else {
+          console.error(result.errors);
+          throw new Error("Could not import core");
+        }
+      } else {
+        console.error(ast.errors);
+        throw new Error("Could not parse core");
+      }
     } else {
-      throw new Error(`module '${key}' does not exist`);
+      console.error(tokens.errors);
+      throw new Error("Could not scan core");
     }
-  });
-  return coreFile;
+  } else {
+    console.error(file.errors);
+    throw new Error("Could not read core");
+  }
 }

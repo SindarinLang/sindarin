@@ -21,8 +21,8 @@ function matchSignature(overrides: SymbolValue[], signature: SymbolValue[]) {
 }
 
 export function buildCall(file: LLVMFile, node: CallNode): SymbolValue[] {
-  const args = buildTuple(file, node.arguments)[0];
-  if(isNode(node.left, Kinds.identifier)) {
+  const args = buildTuple(file, node.arguments)[0] ?? [];
+  if(isNode(node.left, Kinds.identifier) && node.left.value) {
     const caller = getSymbol(file, node.left.value);
     const match = matchSignature(caller, args);
     if(match && isFunction(match)) {

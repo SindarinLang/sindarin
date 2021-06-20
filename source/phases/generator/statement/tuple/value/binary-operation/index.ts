@@ -30,7 +30,8 @@ export function matchSignature<T extends BinaryOperator>(overrides: OperationOve
   return overrides.find((override) => {
     return override.signature.reduce((retval, arg, index) => {
       // TODO: search over signature
-      return retval && arg.includes(signature[index][0].type.primitive);
+      const type = signature[index][0].type.primitive;
+      return retval && typeof type === "string" && arg.includes(type);
     }, true as boolean);
   })?.fn(signature[0][0], signature[1][0]);
 }

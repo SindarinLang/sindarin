@@ -1,4 +1,4 @@
-import { Token, Tokens, isToken } from "../../../scanner";
+import { Token, Tokens, isToken, haveTokens } from "../../../scanner";
 import { parseImport, ImportNode } from "./import";
 import { parseExport, ExportNode } from "./export";
 import { ASTNode, Kinds } from "../../node";
@@ -12,21 +12,21 @@ export interface FromNode extends ASTNode {
 
 export const parseFrom: ParsePhase<ImportNode | ExportNode> = (tokens: Token[]) => {
   if(isToken(tokens[0], Tokens.from)) {
-    if(isToken(tokens[1], Tokens.string) && tokens[1].value) {
+    if(haveTokens(tokens.slice(1), Tokens.open_quote, Tokens.string, Tokens.close_quote) && tokens[2].value) {
       const fromNode: FromNode = {
         kind: Kinds.from,
-        source: tokens[1].value
+        source: tokens[2].value
       };
-      if(isToken(tokens[2], Tokens.import)) {
-        const result = parseImport(tokens.slice(2));
+      if(isToken(tokens[4], Tokens.import)) {
+        const result = parseImport(tokens.slice(4));
         if(result.value) {
           result.value.from = fromNode;
           return result;
         } else {
           return mergeError(result, getParseError(Kinds.from, tokens[0].location));
         }
-      } else if(isToken(tokens[3], Tokens.export)) {
-        const result = parseExport(tokens.slice(2));
+      } else if(isToken(tokens[4], Tokens.export)) {
+        const result = parseExport(tokens.slice(4));
         if(result.value) {
           result.value.from = fromNode;
           return result;

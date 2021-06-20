@@ -1,3 +1,4 @@
+import { allSeries } from "../../../utils";
 import { StatementNode } from "../../parser";
 import { LLVMFile } from "../file";
 import { buildAssign } from "./assign";
@@ -9,10 +10,18 @@ import { buildTuple } from "./tuple";
 const builders = [
   buildAssign,
   buildTuple,
-  buildExport,
-  buildImport,
   buildReturn
 ];
+
+const rootBuilders: ((file: LLVMFile, node: StatementNode) => void | Promise<void>)[] = [
+  buildExport,
+  buildImport,
+  ...builders
+];
+
+export function buildRootStatement(file: LLVMFile, node: StatementNode) {
+  return allSeries(rootBuilders.map((builder) => () => builder(file, node)));
+}
 
 export function buildStatement(file: LLVMFile, node: StatementNode) {
   builders.forEach((builder) => {

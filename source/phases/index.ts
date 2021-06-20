@@ -6,7 +6,7 @@ import { resolve, ResolveOptions } from "./resolver";
 import { read } from "./reader";
 import { scan } from "./scanner";
 import { parse } from "./parser";
-import { generate } from "./generator";
+import { generate, GenerateOptions } from "./generator";
 import { write, WriteOptions } from "./writer";
 import { build } from "./builder";
 import { execute } from "./executor";
@@ -31,6 +31,7 @@ type PhaseResult<C, T> = {
 export type Options = CLIOptions & {
   resolver?: ResolveOptions;
   writer?: WriteOptions;
+  generator?: GenerateOptions;
 };
 
 export type Phase<C, T> = (context: C, options?: Options) => PhaseResult<C, T>;

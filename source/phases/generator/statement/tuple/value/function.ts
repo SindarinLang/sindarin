@@ -1,17 +1,16 @@
 import llvm from "llvm-bindings";
-import { RootNode, FunctionNode, ParametersNode, isNode, Kinds, TypeNode } from "../../../../parser";
+import { FunctionNode, ParametersNode, isNode, Kinds, TypeNode } from "../../../../parser";
 import { LLVMFile, setTable, SymbolTable } from "../../../file";
-import { getFunctionType, Type, Primitives, SymbolValue, FunctionType, getBoolean, getType } from "../../../types";
+import { getFunctionType, Type, Primitives, SymbolValue, FunctionType, getType } from "../../../types";
 import { buildStatement } from "../..";
-import { getReturn } from "../../return";
 
 let functionCounter = 0;
 
-export function getFunction(file: LLVMFile, type: FunctionType, name?: string) {
+export function getFunction(file: LLVMFile, type: FunctionType) {
   const fn = llvm.Function.Create(
     getFunctionType(file, type),
     llvm.Function.LinkageTypes.ExternalLinkage,
-    name ?? `_f${functionCounter}`,
+    type.name ?? `_f${functionCounter}`,
     file.mod
   );
   functionCounter +=1;
@@ -55,19 +54,21 @@ function getArguments(node: ParametersNode, fn: llvm.Function): SymbolTable {
   }, {} as SymbolTable);
 }
 
-export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): SymbolValue[] {
+export function buildFunction(file: LLVMFile, node: FunctionNode): SymbolValue[] {
   // Create Function
   const type: FunctionType = {
-    ...getType(Primitives.Function),
-    argumentTypes: isNode(node, Kinds.root) ? [] : getParameters(node.parameters),
-    returnType: isNode(node, Kinds.root) ? getType(Primitives.Boolean) : typeNodeToType(node.type)
+    primitive: "Function",
+    isPointer: false,
+    isOptional: false,
+    argumentTypes: getParameters(node.parameters),
+    returnType: typeNodeToType(node.type)
   };
-  const fn = getFunction(file, type, isNode(node, Kinds.root) ? "main": undefined);
+  const fn = getFunction(file, type);
   // Push Scope
   const entry = llvm.BasicBlock.Create(file.context, "entry", fn);
   file.scopeStack.push({
     block: entry,
-    symbolTable: isNode(node, Kinds.root) ? {} : getArguments(node.parameters, fn)
+    symbolTable: getArguments(node.parameters, fn)
   });
   file.builder.SetInsertionPoint(entry);
   // Build Statements
@@ -75,11 +76,6 @@ export function buildFunction(file: LLVMFile, node: RootNode | FunctionNode): Sy
   statements.forEach((statementNode) => {
     buildStatement(file, statementNode);
   });
-  if(isNode(node, Kinds.root)) {
-    getReturn(file, [
-      getBoolean(file, false)
-    ]);
-  }
   // Pop Scope
   file.scopeStack.pop();
   if(file.scopeStack.length > 0) {

@@ -14,7 +14,7 @@ test("basic", async () => {
   });
   const ast = parse(tokens.value ?? []).value;
   if(ast !== undefined) {
-    const generateResult = generate(ast);
+    const generateResult = await generate(ast);
     if(generateResult.value) {
       const writeResult = await write(generateResult.value);
       if(writeResult.value) {

@@ -1,0 +1,5 @@
+from "<stdlib.h>" import { rand };
+
+random = rand;
+
+export random;

@@ -56,3 +56,31 @@ test("rune", () => {
   expect(result.value?.kind).toBe("root");
   expect(result.value?.value[0].kind).toBe("tuple");
 });
+
+test("export", () => {
+  const tokens = scan({
+    contents: "a = 5;\nexport a;",
+    location: {
+      path: "/test/file.si",
+      line: 1,
+      char: 0
+    }
+  });
+  const result = parse(tokens.value ?? []);
+  expect(result.value?.kind).toBe("root");
+  expect(result.value?.value[1].kind).toBe("export");
+});
+
+test("from", () => {
+  const tokens = scan({
+    contents: "from \"<stdlib.h>\" import { rand };",
+    location: {
+      path: "/test/file.si",
+      line: 1,
+      char: 0
+    }
+  });
+  const result = parse(tokens.value ?? []);
+  expect(result.value?.kind).toBe("root");
+  expect(result.value?.value[0].kind).toBe("import");
+});

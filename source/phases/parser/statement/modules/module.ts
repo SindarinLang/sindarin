@@ -1,5 +1,5 @@
 import { haveTokens, Token, Tokens } from "../../../scanner";
-import { ParsePhase } from "../..";
+import { ParsePhase, ParseResult } from "../..";
 import { ASTNode, Kinds } from "../../node";
 import { getErrorResult, getResult } from "../../result";
 
@@ -95,7 +95,7 @@ const parseWildcard: ParsePhase<ModuleNode> = (tokens: Token[]) => {
   }
 };
 
-export const parseModules: ParsePhase<ModuleNode> = (tokens: Token[]) => {
+export const parseModules: ParsePhase<ModuleNode> = (tokens: Token[]): ParseResult<ModuleNode> => {
   if(haveTokens(tokens, Tokens.multiply)) {
     return parseWildcard(tokens.slice(1));
   } else if(haveTokens(tokens, Tokens.open_curly)) {
@@ -112,6 +112,16 @@ export const parseModules: ParsePhase<ModuleNode> = (tokens: Token[]) => {
     } else {
       throw new Error("syntax error");
     }
+  } else if(haveTokens(tokens, Tokens.identifier) && tokens[0].value) {
+    return {
+      context: tokens.slice(1),
+      value: moduleNode(
+        false,
+        false,
+        mergeModule({}, tokens[0].value, moduleNode(true))
+      ),
+      errors: []
+    };
   } else {
     throw new Error("syntax error");
   }

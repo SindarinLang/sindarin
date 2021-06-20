@@ -1,8 +1,12 @@
 import llvm from "llvm-bindings";
-import { Primitives, SymbolValue } from "./types";
+import { SymbolValue } from "./types";
 
 export type SymbolTable = {
   [name: string]: SymbolValue[];
+};
+
+export type TypeTable = {
+  [name: string]: llvm.Type;
 };
 
 type Scope = {
@@ -16,10 +20,10 @@ export type LLVMFile = {
   mod: llvm.Module;
   name: string;
   imports: LLVMFile[];
-  exports: SymbolTable;
-  types: {
-    [name: string]: llvm.Type;
+  exports: {
+    [name: string]: (importer: LLVMFile) => SymbolValue[];
   };
+  types: TypeTable;
   scopeStack: Scope[];
 };
 
@@ -48,14 +52,20 @@ export function getSymbol(file: LLVMFile, name: string) {
 
 const context = new llvm.LLVMContext();
 
+const Void = llvm.Type.getVoidTy(context);
 const Boolean = llvm.Type.getInt1Ty(context);
 const Int8 = llvm.Type.getInt8Ty(context);
+const Int16 = llvm.Type.getInt16Ty(context);
 const Int32 = llvm.Type.getInt32Ty(context);
+const Int64 = llvm.Type.getInt64Ty(context);
+const Int128 = llvm.Type.getInt128Ty(context);
 const Float32 = llvm.Type.getFloatTy(context);
+const Float64 = llvm.Type.getDoubleTy(context);
+const Float128 = llvm.Type.getFP128Ty(context);
 const Rune = llvm.StructType.create(context, [
   Int32,
   llvm.Type.getInt8PtrTy(context)
-], Primitives.Rune);
+], "Rune");
 
 export function getFile(name: string): LLVMFile {
   const builder = new llvm.IRBuilder(context);
@@ -69,11 +79,17 @@ export function getFile(name: string): LLVMFile {
     imports,
     exports: {},
     types: {
+      Void,
       Boolean,
       Int8,
       UInt8: Int8,
+      Int16,
       Int32,
+      Int64,
+      Int128,
       Float32,
+      Float64,
+      Float128,
       Rune
     },
     scopeStack: []

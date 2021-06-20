@@ -18,7 +18,7 @@ export async function compile(entry: string, options: CLIOptions = {}) {
   const file = await runPhase(read, paths, options);
   const tokens = runPhase(scan, file, options);
   const ast = runPhase(parse, tokens, options);
-  const llvmFile = runPhase(generate, ast, options);
+  const llvmFile = await runPhase(generate, ast, options);
   const dir = await runPhase(write, llvmFile, options);
   return runPhase(build, dir, options);
 }

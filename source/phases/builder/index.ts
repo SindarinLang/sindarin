@@ -2,8 +2,9 @@ import { exec } from "child_process";
 import { join, isAbsolute } from "path";
 import { removeFile } from "remove-file-safe";
 import { Options, PromisePhase } from "..";
+import { getTempDir } from "../../utils";
 import { getError } from "../error";
-import { WriteValue, getTempDir } from "../writer";
+import { WriteValue } from "../writer";
 
 export type BuildPhase = PromisePhase<WriteValue, WriteValue>;
 

@@ -1,11 +1,13 @@
 import llvm from "llvm-bindings";
 import { LLVMFile } from "..";
-import { Type, getLLVMType, Primitives, SymbolValue, isSameType } from ".";
+import { Type, getLLVMType, Primitives, SymbolValue, isSameType, TypeInterface } from ".";
 
-export interface FunctionType extends Type {
+export interface FunctionType extends TypeInterface {
+  primitive: "Function";
   argumentTypes: Type[];
   returnType: Type;
   isVarArg?: boolean;
+  name?: string;
 }
 
 export function isSameFunctionType(a: FunctionType, b: FunctionType): boolean {

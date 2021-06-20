@@ -39,3 +39,13 @@ export function createAction(
     return Promise.resolve(fn(...transformArgs(...args))).then(() => undefined);
   };
 }
+
+export function allSeries(promises: (() => void | Promise<void>)[]) {
+  return promises.reduce(async (retval, fn) => {
+    return retval.then(() => {
+      return Promise.resolve(fn());
+    });
+  }, Promise.resolve());
+}
+
+export { getTempDir, Directory } from "./temp";

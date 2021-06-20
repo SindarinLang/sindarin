@@ -1,14 +1,12 @@
 import llvm from "llvm-bindings";
 import { join } from "path";
-import { tmpdir } from "os";
-import { dir, DirectoryResult } from "tmp-promise";
-import { writeDir } from "write-dir-safe";
 import { PromisePhase, Result } from "..";
 import { Options } from "../";
+import { Directory, getTempDir } from "../../utils";
 import { getError } from "../error";
 import { LLVMFile } from "../generator";
 
-export type WriteValue = DirectoryResult;
+export type WriteValue = Directory;
 
 type OutputOptions = {
   /**
@@ -19,21 +17,12 @@ type OutputOptions = {
 
 export type WriteOptions = {
   output?: OutputOptions;
-  tmpdir?: DirectoryResult;
+  tmpdir?: Directory;
 };
 
 export type WritePhase = PromisePhase<LLVMFile, WriteValue>;
 
 export const getWriteError = getError("Write");
-
-export async function getTempDir() {
-  const tmp = join(tmpdir(), "sindarin");
-  await writeDir(tmp);
-  return dir({
-    tmpdir: join(tmpdir(), "sindarin"),
-    unsafeCleanup: true
-  });
-}
 
 const print: WritePhase = async (file: LLVMFile, options?: Options) => {
   const result: Result<WritePhase> = {

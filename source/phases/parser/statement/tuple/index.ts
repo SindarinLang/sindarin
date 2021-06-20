@@ -1,14 +1,14 @@
-import { ParsePhase, ParseResult, ParserNodes } from "../..";
+import { ParsePhase, ParseResult } from "../..";
 import { Token } from "../../../scanner";
 import { parseCommaList } from "../../list";
 import { ASTNode, Kinds } from "../../node";
 import { getErrorResult, getResult, getResultFrom } from "../../result";
 import { BinaryOperationNode, parseBinaryOperation } from "./binary-operation";
-import { parseUnaryOperation } from "./unary-operation";
-import { parseValue } from "./value";
+import { parseUnaryOperation, UnaryOperationNode, UnaryOperator } from "./unary-operation";
+import { parseValue, UnaryOperandNode } from "./value";
 import { parseVoid, VoidNode } from "./void";
 
-export type BinaryOperandNode = ParserNodes<typeof binaryOperandParsers>;
+export type BinaryOperandNode = UnaryOperationNode<UnaryOperator> | UnaryOperandNode;
 
 export type ExpressionNode = BinaryOperationNode | BinaryOperandNode;
 
@@ -19,7 +19,7 @@ export interface TupleNode extends ASTNode {
   value: TupletNode[];
 }
 
-export const binaryOperandParsers = [
+export const binaryOperandParsers: ParsePhase<BinaryOperandNode>[] = [
   parseUnaryOperation,
   parseValue
 ];

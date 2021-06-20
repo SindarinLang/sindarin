@@ -34,7 +34,16 @@ export function getRuneValue(file: LLVMFile, value: string | LLVMValue) {
 
 export function getRune(file: LLVMFile, value: string): SymbolValue {
   return {
-    type: getType(Primitives.Rune, true),
+    type: {
+      primitive: "Struct",
+      name: "Rune",
+      fields: {
+        length: getType(Primitives.Int32),
+        data: getType(Primitives.UInt8, true)
+      },
+      isPointer: true,
+      isOptional: false
+    },
     value: getRuneValue(file, value)
   };
 }
