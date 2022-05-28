@@ -1,0 +1,29 @@
+from "<string.h>" import { strlen };
+from "./" import { if, while };
+from "./types" import { Boolean, Int, String, Char };
+
+export string = (value: Boolean): String => {
+  return if(value, "true", "false");
+};
+
+export string = (value: UInt): String => {
+  return if(value < 1, [], {
+    char = '0' + (value % 10);
+    return getDigit(value / 10) + char;
+  });
+}
+
+export string = (value: SInt): String => {
+  retval = string(|value|);
+  return if(value < 0, '-' + retval, retval);
+};
+
+export string = (value: Char): String => {
+  return [value];
+};
+
+export string = (value: String): String => value;
+
+export length = (value: String): String => {
+  return strlen(value);
+};

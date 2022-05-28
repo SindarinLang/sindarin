@@ -1,0 +1,39 @@
+from "<stdio.h>" import { puts };
+from "<stdlib.h" import { rand };
+
+export if = (condition: Value, then: Value, else: Value): Value => {
+  return condition ? then : else;
+};
+
+export for = (arr: Array<T>, do: (item: T) => Void) => {
+  do(arr[0]);
+  return for(slice(arr, 1), do);
+};
+
+// export while = (condition: Value, do: Function) => {
+//   return if(condition, {
+//     do();
+//     return while(condition, do);
+//   });
+// };
+
+export output = (value: Value): Boolean => {
+  return puts(value->string) >= 0;
+};
+
+export random = (): Int => {
+  return rand();
+};
+
+export { boolean } from "./boolean";
+export { string, length } from "./string";
+export {
+  Int,
+  Float,
+  Number,
+  Char,
+  Boolean,
+  String,
+  Null,
+  types
+} from "./types";

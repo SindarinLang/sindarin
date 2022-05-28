@@ -1,0 +1,14 @@
+from "./types" import { Boolean, Number, Char, String };
+from "./string" import { length };
+
+export boolean = (value: Boolean): Boolean => {
+  return value;
+};
+
+export boolean = (value: Number | Char): Boolean => {
+  return value != 0;
+};
+
+export boolean = (value: String): Boolean => {
+  return string->length > 0;
+};

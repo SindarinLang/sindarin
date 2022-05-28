@@ -14,8 +14,8 @@ const builders = [
 ];
 
 const rootBuilders: ((file: LLVMFile, node: StatementNode) => void | Promise<void>)[] = [
-  buildExport,
   buildImport,
+  buildExport,
   ...builders
 ];
 

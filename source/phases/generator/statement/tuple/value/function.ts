@@ -7,13 +7,12 @@ import { buildStatement } from "../..";
 let functionCounter = 0;
 
 export function getFunction(file: LLVMFile, type: FunctionType) {
-  const fn = llvm.Function.Create(
+  return llvm.Function.Create(
     getFunctionLLVMType(file, type),
     llvm.Function.LinkageTypes.ExternalLinkage,
     type.name,
     file.mod
   );
-  return fn;
 }
 
 function typeNodeToType(node?: TypeNode): Type {
@@ -62,7 +61,7 @@ export function buildFunction(file: LLVMFile, node: FunctionNode): SymbolValue {
     returnType: typeNodeToType(node.type),
     name: `_f${functionCounter}`
   });
-  functionCounter +=1;
+  functionCounter += 1;
   const fn = getFunction(file, type);
   // Push Scope
   const entry = llvm.BasicBlock.Create(file.context, "entry", fn);

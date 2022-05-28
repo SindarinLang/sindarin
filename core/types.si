@@ -1,0 +1,56 @@
+import {
+  Int32,
+  Int64,
+  Float32,
+  Float64,
+  Boolean,
+  Char,
+  Null,
+  Function,
+  Tuple
+};
+
+export UInt = UInt32 | UInt64;
+
+export Int = Int32 | Int64 | UInt;
+
+export Float = Float32 | Float64;
+
+export Number = Int | Float;
+
+export String = Char[];
+
+export Value = Number | String | Char | Boolean | Null;
+
+export types = {
+  string: "String",
+  char: "Char",
+  int: "Int",
+  float: "Float",
+  boolean: "Boolean",
+  function: "Function"
+};
+
+export {
+  UInt,
+  Int32,
+  Int64,
+  UInt32,
+  UInt64,
+  Float32,
+  Float64,
+  Int,
+  Float,
+  Number,
+  String,
+  Char,
+  Value,
+  Null,
+  Boolean,
+  Function
+};
+
+// Generics w/Functions & Tuples:
+// Args = Tuple<Boolean, String, Int>;
+// ReturnValue = Boolean; OR Tuple<Boolean>;
+// Function<Args, ReturnValue>;
