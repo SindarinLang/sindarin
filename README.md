@@ -27,7 +27,7 @@
 
 Naming things is good, as it makes code more readable. However, keywords are bad as they prevent you from naming things using certain words.
 
-Sindarin has no keywords - only operators so that ou can name your variables whatever you want.
+Sindarin has no keywords - only operators so that you can name your variables whatever you want.
 
 Instead you can import many of the things that would normally be keywords from the standard library. If one of the imports collides with something you've already named, you can simply rename the import.
 
