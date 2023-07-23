@@ -4,5 +4,7 @@ code
 coverage
 lib
 node_modules
+output
+target
 .DS_Store
 *.txt
