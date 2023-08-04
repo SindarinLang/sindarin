@@ -100,5 +100,5 @@ Sindarin is designed to be type safe, even when the underlying transpilation tar
 
 ## LLVM Branch
 
-The previous version of Sindarin was simply focused on syntax, rather than on transpilation. The [llvm branch](https://github.com/SindarinLang/sindarin/tree/llvm) includes a proof-of-concept LLVM compiler written in TypeScript.
+The previous version of Sindarin was simply focused on syntax, rather than on transpilation. The [llvm branch](https://github.com/SindarinLang/sindarin/tree/llvm) has a lot more code (including a proof-of-concept LLVM compiler written in TypeScript), but has a less developed syntax.
 
