@@ -2,13 +2,13 @@
   <h1 align="center">
     <div>🕊</div><i>Sindarin ~</i>
   </h1>
-  <h6><a href="https://www.youtube.com/watch?v=vQA5aLctA0I"><i>"An elegant language, for a more civilized age."</i></a></h6>
+  <h6><i>"One Language to Rule Them All"</i></h6>
   <br />
 </div>
 
-<h2 id="installation"><div align="right"><a href="#sindarin">🔝</a></div><i>Installation</i></h2>
+Sindarin is an attempt to design a "universal transpiler". Primitives are imported so multiple transpilation targets can be used as "backends" for the language.
 
-> Coming Soon&trade;
+> _"Write once, run any how."_
 
 <h2 id="contents"><div align="right"><a href="#sindarin">🔝</a></div><i>Contents</i></h2>
 
@@ -16,8 +16,6 @@
   - [Syntax](#syntax)
   - [Features](#features)
 - [Docs](#docs)
-- [FAQ](#faq)
-- [Development Setup](#development-setup)
 
 <h2 id="philosophy"><div align="right"><a href="#sindarin">🔝</a></div><i>Philosophy</i></h2>
 
@@ -25,13 +23,7 @@
 
 #### _Keywords_
 
-Naming things is good, as it makes code more readable. However, keywords are bad as they prevent you from naming things using certain words.
-
-Sindarin has no keywords - only operators so that you can name your variables whatever you want.
-
-Instead you can import many of the things that would normally be keywords from the standard library. If one of the imports collides with something you've already named, you can simply rename the import.
-
-This also makes Sindarin usable without the standard library. You can bring your own standard library if you want.
+Sindarin has no keywords - only operators and punctuation.
 
 #### _Separators_
 
@@ -43,7 +35,7 @@ Operators should visually imply their function as much as possible.
 
 #### _Autocomplete_
 
-A language should be ordered such that autocomplete is possible. For example, the import / from ordering in JavaScript prevents useful autocomplete:
+A language should be grammatically ordered such that autocomplete is possible. For example, the import / from ordering in JavaScript prevents useful autocomplete:
 
 ```js
 import { foo } from "bar;
@@ -58,50 +50,55 @@ bar { foo };
 
 #### _"Function Oriented"_
 
-Sindarin is designed to make function oriented programming easy. [Partial Application](docs/functions.md#partial-application) for example, makes currying easy.
-
-#### _Compiled_
-
-Sindarin is compiled using LLVM.
+Sindarin is designed to make function oriented programming easy. [Partial Application](docs/functions.md#partial-application) for example, makes currying much easier.
 
 #### _Type Safe_
 
-Sindarin is statically typed.
+Sindarin is designed to be type safe, even when the underlying transpilation target is not.
 
-#### _Memory Safe?_
-#### _Copy on Write?_
-#### _Exceptionless_
+### _Docs_
 
-Don't throw exceptions.
+#### _Language_
 
-<h2 id="docs"><div align="right"><a href="#sindarin">🔝</a></div><i>Docs</i></h2>
-
-- [Syntax](docs/syntax.md)
+- [Basics](docs/basics.md)
+  - [Variables](docs/basics.md#variables)
+  - [Types](docs/basics.md#types)
+  - [Assignment](docs/basics.md#assignment)
+  - [Values](docs/basics.md#values)
+  - [Comments](docs/basics.md#comments)
+  - [Separators](docs/basics.md#separators)
 - [Operators](docs/operators.md)
+  - [Precedence](docs/operators.md#precedence)
+  - [Accessors](docs/operators.md#accessors)
+  - [Comparison Operators](docs/operators.md#comparison_operators)
+  - [Bitwise Operators](docs/operators.md#bitwise-operators)
+  - [Logical Operators](docs/operators.md#logical-operators)
+  - [Arithmetic Operators](docs/operators.md#arithmetic-operators)
+  - [Array Operators](docs/operators.md#array-operators)
 - [Functions](docs/functions.md)
-- [Modules](docs/modules.md)
+  - [Basics](docs/functions.md#basics)
+  - [Generics](docs/functions.md#generics)
+  - [First Class Functions](docs/functions.md#first-class-functions)
+  - [Argument Forwarding](docs/functions.md#argument-forwarding)
+  - [Partial Application](docs/functions.md#partial-application)
+  - [Multiple Return Values](docs/functions.md#multiple-return-values)
+  - [Solving the Colored Function Problem](docs/functions.md#solving-the-colored-function-problem)
+- [Units](docs/units.md)
+  - [Type Abbreviations](docs/units.md#type-abbreviations)
+  - [Conversions](docs/units.md#conversions)
+  - [Higher Order Units](docs/units.md#higher-order-units)
+  - [Operator Overloading](docs/units.md#operator-overloading)
+- [Traits](docs/traits.md)
+- [Enums](docs/enums.md)
+  - [Pattern Matching](docs/enums.md#pattern-matching)
+- [Imports](docs/imports.md)
+  - [Sindarin](docs/imports.md#sindarin)
+  - [Plugins](docs/imports.md#plugins)
 - [Standard Library](docs/standard-library.md)
-- [Types](docs/types.md)
+  - [Types](docs/standard-library.md#types)
+  - [Functions](docs/standard-library.md#functions)
 
-<h2 id="faq"><div align="right"><a href="#sindarin">🔝</a></div><i>FAQ</i></h2>
+## LLVM Branch
 
-### _What is the goal of Sindarin?_
+The previous version of Sindarin was simply focused on syntax, rather than on transpilation. The [llvm branch](https://github.com/SindarinLang/sindarin/tree/llvm) includes a proof-of-concept LLVM compiler written in TypeScript.
 
-This is a project exploring what a programming language with the ideal syntax might look like.
-
-### _Why TypeScript?_
-
-TypeScript is fast to develop in, which is great for proof of concept/design space exploration. If this gets to a point where it's actually usable, I'd rewrite it in Rust.
-
-
-<h2 id="development-setup"><div align="right"><a href="#sindarin">🔝</a></div><i>Development Setup</i></h2>
-
-### _Install on macOS:_
-```
-brew install cmake llvm
-```
-
-### _Install on Ubuntu:_
-```
-sudo apt-get install cmake llvm
-```
